@@ -43,5 +43,6 @@
 | `src/alghanem/arabic/composition_closure_replication.py` | إعادةُ إنتاج سقوط الإغلاق بصفريٍّ يحفظ شرطَيه |
 | `src/alghanem/arabic/triangle_licensing_preregistration.py` | تسجيلُ المثلّث B₁₃ — مُسجَّلٌ ولا يُختبَر |
 | `src/alghanem/arabic/interaction_complex_lemmas.py` | ل١ و ل٢ و ل٣ مفحوصةً عند كلّ استيراد، وحدٌّ مؤشَّر |
+| `src/alghanem/arabic/decision_register.py` | القراراتُ المعلَّقةُ مُقيَّدةً بأثمانها، ولا توقّعها الجلسة |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

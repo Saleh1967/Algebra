@@ -7,6 +7,11 @@
 المتوقَّع**، وأنّ جسرَي الحلق يتّفقان اتّجاهًا ويفترقان مقدارًا بفارقٍ محسوب،
 وأنّ الأرجحيّةَ تُظهِر من الفارق ما تُخفيه النسبة، وأنّ مقابلةَ ترتيبين على
 فئتين مختلفتين تُرَدّ.
+
+ويُثبِت معها أنّ التصادمَ **أُغلق تسميةً لا تصحيحًا**: لكلّ قسمٍ معرِّفٌ متمايزٌ
+واردٌ في وثيقة التمييز ومقروءٌ من بايتاتها، وأنّ العددَ في المُودَع بقي اثنين،
+وأنّ الإحالةَ القديمةَ تتعيّن باسم اختبارها وما لا يتعيّن يُرَدّ، وأنّ إعادةَ
+المعرِّف المتصادم اسمًا مُميَّزًا مردودةٌ بالبناء.
 """
 
 from __future__ import annotations
@@ -22,10 +27,14 @@ from alghanem.arabic.slgae_third_version_deposit import (
     THIRD_VERSION_EXPERIMENTS,
     V3_PREDICTED_ORDER,
     OrderingCheck,
+    SectionExperiment,
     derive_bridge_gap,
     derive_identifier_collision,
     derive_ordering_check,
     derive_statistic_checks,
+    disambiguation_digest,
+    disambiguation_path,
+    resolve_colliding_citation,
     slgae_v3_digest,
     slgae_v3_path,
     version_chain_digests,
@@ -120,4 +129,85 @@ def test_two_orders_over_different_categories_are_refused() -> None:
             observed=("ب", "ج"),
             matches_prediction=False,
             is_exact_reverse=False,
+        )
+
+
+def test_each_section_carries_a_distinct_identifier_after_the_closure() -> None:
+    """التمييزُ أعطى كلَّ قسمٍ اسمًا؛ والمعرِّفان متمايزان ولا أحدَ منهما المتصادم."""
+
+    first, second = THIRD_VERSION_EXPERIMENTS
+
+    assert first.assigned_identifier == "MAKHRAJ-INHERITS-VOWELS-AR-1"
+    assert second.assigned_identifier == "VOWEL-FIRST-BIRTH-CHAIN-AR-1"
+    assert first.assigned_identifier != second.assigned_identifier
+    assert COLLIDING_IDENTIFIER not in {
+        first.assigned_identifier,
+        second.assigned_identifier,
+    }
+
+
+def test_the_closure_is_read_from_the_document_bytes_not_written_here() -> None:
+    """المعرِّفان واردان في وثيقة التمييز، والإغلاقُ مُشتَقٌّ من بايتاتها."""
+
+    collision = derive_identifier_collision()
+    document = disambiguation_path().read_text(encoding="utf-8")
+
+    assert collision.closing_identifiers_in_document == collision.assigned_identifiers
+    assert all(identifier in document for identifier in collision.assigned_identifiers)
+    assert (
+        disambiguation_digest()
+        == hashlib.sha256(disambiguation_path().read_bytes()).hexdigest()
+    )
+    assert collision.is_closed
+
+
+def test_the_deposit_is_untouched_by_the_closure() -> None:
+    """الإغلاقُ تسميةٌ بعد اليوم: بايتاتُ المُودَع كما هي، والعددُ باقٍ اثنين."""
+
+    collision = derive_identifier_collision()
+
+    assert collision.is_a_collision
+    assert collision.heading_occurrences == 2
+    assert collision.identifier_occurrences == 2
+
+
+def test_an_old_citation_is_resolved_by_the_test_name_beside_it() -> None:
+    """الإحالةُ القديمةُ ناقصةٌ لا خاطئة: اسمُ الاختبار يعيّن قسمَها."""
+
+    first, second = THIRD_VERSION_EXPERIMENTS
+
+    assert resolve_colliding_citation("P1") is first
+    assert resolve_colliding_citation("v0") is second
+    assert resolve_colliding_citation(" V3 ") is second
+
+
+def test_a_citation_that_names_no_test_is_refused_not_guessed() -> None:
+    """ما لا يتعيّن يُرَدّ، ولا يُحمَل على أقرب القسمين."""
+
+    with pytest.raises(SlgaeDepositError, match="لا تُخمَّن"):
+        resolve_colliding_citation("")
+
+    with pytest.raises(SlgaeDepositError, match="لا تُخمَّن"):
+        resolve_colliding_citation("P9")
+
+
+def test_reusing_the_colliding_identifier_as_a_distinct_name_is_refused() -> None:
+    """إعادةُ المعرِّف المتصادم اسمًا مُميَّزًا تُبقي التصادمَ فتُرَدّ بالبناء."""
+
+    with pytest.raises(SlgaeDepositError, match="المعرِّفُ المتصادمُ نفسُه"):
+        SectionExperiment(
+            title="قسمٌ",
+            data="بيانٌ",
+            test_names=("P1",),
+            verdict="حكمٌ",
+            assigned_identifier=COLLIDING_IDENTIFIER,
+        )
+
+    with pytest.raises(SlgaeDepositError, match="معرِّفٍ مُميَّز"):
+        SectionExperiment(
+            title="قسمٌ",
+            data="بيانٌ",
+            test_names=("P1",),
+            verdict="حكمٌ",
+            assigned_identifier="   ",
         )

@@ -57,24 +57,31 @@ def test_standings_are_three_and_closed() -> None:
     assert "ASSUMED" not in DecisionStanding.__members__
 
 
-def test_every_deposited_decision_is_delegated_not_taken() -> None:
-    """الثلاثةُ **مُفوَّضةٌ**: فرعٌ مُسمًّى، ووكيلٌ مُسمًّى، ولا توقيعَ للمودِع.
+def test_the_register_holds_three_delegated_and_one_pending() -> None:
+    """أربعةُ قرارات: **ثلاثةٌ مُفوَّضةٌ** وواحدٌ معلَّقٌ (ق-4) — لا كلُّها ولا تلك.
 
-    و«لا تفضيل» ليست اختيارَ فرع؛ فلا يُقيَّد القرارُ متَّخَذًا باسم المودِع،
-    ولا يبقى معلَّقًا فيُخفي أنّه فوَّض.
+    والدمجُ ههنا خبرٌ لا إجراء: ق-4 وُضِع على السجلّ **قبل** التفويض، فلو
+    قُرئ الفرعان معًا بلا فحصٍ لقيل «أربعةٌ معلَّقة» أو «ثلاثةٌ مُفوَّضة»،
+    وكلاهما يُخفي نصفَ الحال. و«لا تفضيل» لم تشمل ق-4 لأنّه لم يكن مسؤولًا
+    عنه يومَ فوَّض، فيبقى معلَّقًا حتى يُسأل عنه.
     """
 
-    assert len(DECISIONS) == 3
+    assert len(DECISIONS) == 4
     assert len(delegated_decisions()) == 3
+    assert len(pending_decisions()) == 1
     assert taken_decisions() == ()
-    assert pending_decisions() == ()
-    for decision in DECISIONS:
+    assert pending_decisions()[0].identifier.startswith("ق-4")
+    for decision in delegated_decisions():
         assert decision.taken_branch is not None
         assert decision.delegate is not None
         assert decision.authority is not None
         assert decision.delegate != decision.authority
         assert "Saleh1967" in decision.authority
         assert decision.taken_branch in [branch.label for branch in decision.branches]
+    for decision in pending_decisions():
+        assert decision.taken_branch is None
+        assert decision.authority is None
+        assert decision.delegate is None
 
 
 def test_a_delegated_decision_needs_a_named_delegate_and_branch() -> None:
@@ -116,13 +123,25 @@ def test_a_delegated_decision_needs_a_named_delegate_and_branch() -> None:
         )
 
 
-def test_delegation_lifts_the_block_and_the_session_is_never_the_authority() -> None:
-    """التفويضُ يرفع الحجبَ، والوكيلُ يُسمّى في حقلٍ غيرِ حقل السلطة."""
+def test_delegation_lifts_only_what_the_delegated_decisions_blocked() -> None:
+    """التفويضُ رفع حجبَ [123] وحدَه؛ وما يحجُبه ق-4 باقٍ لأنّه لم يُفوَّض.
 
-    assert blocked_items() == ()
-    assert not is_blocked("تشغيلُ اختبار [123] كما جُمِّد")
-    assert blockers_of("تشغيلُ اختبار [123] كما جُمِّد") == ()
-    assert_not_reportable_as_done("تشغيلُ اختبار [123] كما جُمِّد")
+    فالرفعُ ليس عامًّا: كلُّ محجوبٍ يُرفَع بقرارٍ بعينه، وقرارٌ جديدٌ يحجُب
+    جديدًا.
+    """
+
+    lifted = "تشغيلُ اختبار [123] كما جُمِّد"
+    assert not is_blocked(lifted)
+    assert blockers_of(lifted) == ()
+    assert_not_reportable_as_done(lifted)
+    still_blocked = blocked_items()
+    assert still_blocked
+    for item in still_blocked:
+        assert all(
+            blocker.identifier.startswith("ق-4") for blocker in blockers_of(item)
+        )
+        with pytest.raises(DecisionRegisterError):
+            assert_not_reportable_as_done(item)
     for decision in DECISIONS:
         assert decision.authority not in REFUSED_AUTHORITIES
 

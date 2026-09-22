@@ -42,5 +42,6 @@
 | `src/alghanem/arabic/slot_rights_algebra.py` | جبرُ الحقوق بثلاث طبقات، مُشغَّلًا على المقاييس |
 | `src/alghanem/arabic/composition_closure_replication.py` | إعادةُ إنتاج سقوط الإغلاق بصفريٍّ يحفظ شرطَيه |
 | `src/alghanem/arabic/triangle_licensing_preregistration.py` | تسجيلُ المثلّث B₁₃ — مُسجَّلٌ ولا يُختبَر |
+| `src/alghanem/arabic/interaction_complex_lemmas.py` | ل١ و ل٢ و ل٣ مفحوصةً عند كلّ استيراد، وحدٌّ مؤشَّر |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

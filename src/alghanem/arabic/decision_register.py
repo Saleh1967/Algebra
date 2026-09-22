@@ -14,6 +14,12 @@
 أُدخِل قراري مكانَ قرارك، ولا أن أُسمّي سكوتَك موافقةً. والبنيةُ تمنع ذلك، لا
 الأدبُ وحدَه.
 
+`DELEGATION_IS_NOT_A_SIGNATURE`: سُئل المودِعُ عن الفروع فأجاب «لا تفضيل» في
+ثلاثتها. وذلك تفويضٌ لا اختيارُ فرع، فلا يُقيَّد `TAKEN` باسمه — إذ يُنسِب إليه
+فرعًا لم يُسمِّه — ولا يبقى `PENDING` — إذ يُخفي أنّه فوَّض. فأُضيفت منزلةٌ
+رابعةٌ `DELEGATED` بتاريخها وسببها، وفيها يُسمّى **الوكيلُ** في حقلٍ آخَرَ غيرِ
+حقل السلطة؛ فالجلسةُ لا تكون سلطةً أبدًا، وتكون وكيلًا مُسمًّى.
+
 `BLOCKED_IS_NOT_FAILED`: اختبار [123] ليس أحمرَ؛ هو **غيرُ مُشغَّل**، والسجلُّ
 يقول بأيّ قرارٍ حُجِب. وبين «سقط» و«لم يُجرَ» فرقٌ لا يُطوى.
 
@@ -50,6 +56,7 @@ __all__ = [
     "ABSENCE_IS_NOT_A_DECISION_NOTE",
     "A_PENDING_DECISION_IS_NOT_A_DEFAULT_NOTE",
     "A_RECORDED_PRICE_IS_NOT_A_LIVE_ONE_NOTE",
+    "DELEGATION_IS_NOT_A_SIGNATURE_NOTE",
     "BLOCKED_IS_NOT_FAILED_NOTE",
     "DECISIONS",
     "DECISION_REGISTER_NAMED_RESIDUALS",
@@ -66,6 +73,8 @@ __all__ = [
     "ScopeReading",
     "assert_not_reportable_as_done",
     "blocked_items",
+    "bonferroni_denominator",
+    "delegated_decisions",
     "blockers_of",
     "is_blocked",
     "pending_decisions",
@@ -81,10 +90,17 @@ class DecisionRegisterError(ValueError):
 
 
 class DecisionStanding(Enum):
-    """منازلُ القرار، مغلقةً: لا منزلةَ اسمُها «مفترَض» ولا «الأرجح»."""
+    """منازلُ القرار، مغلقةً أربعًا: لا منزلةَ اسمُها «مفترَض» ولا «الأرجح».
+
+    و`DELEGATED` أُضيفت بتعديلٍ مؤرَّخ (2026-09-22) لسببٍ مُسمًّى: سُئل المودِعُ
+    عن فروع القرارات الثلاثة فأجاب «لا تفضيل» في ثلاثتها، وذلك **تفويضٌ لا
+    اختيارُ فرع**. فتقييدُه `TAKEN` باسمه يُنسِب إليه فرعًا لم يُسمِّه، وتركُه
+    `PENDING` يُخفي أنّه فوَّض. فصارت المنزلةُ الرابعةُ هي ما يُقال فيه الصدق.
+    """
 
     PENDING = "معلَّق"
     TAKEN = "متَّخَذ"
+    DELEGATED = "مُفوَّض"
     DECLINED = "مردود"
 
 
@@ -138,6 +154,7 @@ class Decision:
     standing: DecisionStanding = DecisionStanding.PENDING
     taken_branch: str | None = None
     authority: str | None = None
+    delegate: str | None = None
     decided_on: date | None = None
     note: str = ""
 
@@ -167,6 +184,27 @@ class Decision:
                 f"{self.identifier}: السلطةُ «{self.authority}» مرفوضةٌ بالبناء؛ "
                 "ولا يُوقِّع القرارَ مَن يكتب السجلّ."
             )
+        if self.standing is DecisionStanding.DELEGATED:
+            if self.delegate is None or not self.delegate.strip():
+                raise DecisionRegisterError(
+                    f"{self.identifier}: قرارٌ مُفوَّضٌ بلا مَن اختار؛ "
+                    "والوكيلُ يُسمّى وإلّا قُرئ اختيارُه كلامَ الموكِّل."
+                )
+            if self.taken_branch is None:
+                raise DecisionRegisterError(
+                    f"{self.identifier}: قرارٌ مُفوَّضٌ بلا فرعٍ مُسمًّى؛ "
+                    "والتفويضُ لا يُغلِق قرارًا بلا فرع."
+                )
+            if self.taken_branch not in labels:
+                raise DecisionRegisterError(
+                    f"{self.identifier}: الفرعُ «{self.taken_branch}» ليس من "
+                    "فروعه المُقيَّدة."
+                )
+        elif self.delegate is not None:
+            raise DecisionRegisterError(
+                f"{self.identifier}: وكيلٌ في قرارٍ غيرِ مُفوَّض؛ ومَن اختار "
+                "بنفسه ليس وكيلًا عن نفسه."
+            )
         if self.standing is DecisionStanding.PENDING:
             if self.taken_branch is not None or self.authority is not None:
                 raise DecisionRegisterError(
@@ -178,8 +216,8 @@ class Decision:
         else:
             if self.authority is None or not self.authority.strip():
                 raise DecisionRegisterError(
-                    f"{self.identifier}: قرارٌ محسومٌ بلا سلطةٍ مسمّاة؛ "
-                    "ومَن حَسَم شرطُ إنشاءٍ لا حاشية."
+                    f"{self.identifier}: قرارٌ محسومٌ أو مُفوَّضٌ بلا سلطةٍ "
+                    "مسمّاة؛ ومَن يملك القرارَ شرطُ إنشاءٍ لا حاشية."
                 )
             if self.decided_on is None:
                 raise DecisionRegisterError(f"{self.identifier}: قرارٌ محسومٌ بلا تاريخ.")
@@ -283,6 +321,21 @@ DECISIONS: Final[tuple[Decision, ...]] = (
                 ),
             ),
             Branch(
+                label="العائلةُ كما نصَّ المقياس: 75 خليّةً مرتَّبة",
+                what_changes=(
+                    "يُشتَقُّ المقامُ من نصّ المقياس المُجمَّد حرفيًّا: خمسُ "
+                    "كتلٍ × خمسُ كتلٍ **مرتَّبةً** (فالخانتان متمايزتان، "
+                    "فكتلةُ C₁ ليست كتلةَ C₃) × ثلاثةَ أزواجِ خانات = 75؛ "
+                    "فيصير α = 0.05/75 ≈ 0.000667"
+                ),
+                price=(
+                    "أشدُّ الحدود: يضعف كلُّ فرقٍ حُدوديّ وقد يسقط أثرٌ كان "
+                    "دالًّا تحت المقام الأوّل. وقد تكون الخلايا المُختبَرةُ "
+                    "فعلًا أقلَّ من 75، والأقلُّ لا يُستعمَل إلّا إن أُعلِن "
+                    "قبل النظر — و75 هو الحدُّ المُعلَن قَبْلِيًّا"
+                ),
+            ),
+            Branch(
                 label="تثبيتُ α بلا تصحيحٍ وإعلانُ ذلك",
                 what_changes="يُرفَع التصحيحُ ويُعلَن أنّ الحدَّ غيرُ مصحَّح",
                 price=(
@@ -291,10 +344,20 @@ DECISIONS: Final[tuple[Decision, ...]] = (
                 ),
             ),
         ),
+        standing=DecisionStanding.DELEGATED,
+        authority="Saleh1967 (المودِع) — فوَّض بـ«لا تفضيل» في 2026-09-22",
+        delegate="وكيلُ الجلسة (Claude Code)",
+        decided_on=date(2026, 9, 22),
+        taken_branch="العائلةُ كما نصَّ المقياس: 75 خليّةً مرتَّبة",
         note=(
             "المقياسُ المُجمَّد يقول: «بونفيروني على عدد خلايا (كتلة × كتلة × "
-            "نوع علاقة) المُختبَرة، ويُعلَن العددُ قبل العدّ لا بعده» — والعددُ "
-            "لم يُعلَن، فالشرطُ غيرُ مستوفًى بنصّه"
+            "نوع علاقة) المُختبَرة، ويُعلَن العددُ قبل العدّ لا بعده». **والرقمُ "
+            "6 لا يُعاد بناؤه من هذا النصّ بأيّ قراءة**: الكتلُ المولودةُ خمسٌ "
+            "وأزواجُ الخانات ثلاثةٌ، فالمرتَّبُ 75 وغيرُ المرتَّب 45؛ ولا يُخرِج "
+            "6 إلّا قراءةٌ أخرى لم يكتبها المقياسُ (ثلاثةُ أزواجِ خانات × "
+            "قيدَي التجانس والتماثل). فاختار الوكيلُ نصَّ المقياس على الرقم: "
+            "يُشتَقُّ المقامُ من النصّ المُجمَّد ولا يُعدَّل النصُّ ليوافق رقمًا. "
+            "وسقوطُ 6 يُسجَّل نتيجةً لا يُصحَّح صمتًا"
         ),
     ),
     Decision(
@@ -325,10 +388,18 @@ DECISIONS: Final[tuple[Decision, ...]] = (
                 ),
             ),
         ),
+        standing=DecisionStanding.DELEGATED,
+        authority="Saleh1967 (المودِع) — فوَّض بـ«لا تفضيل» في 2026-09-22",
+        delegate="وكيلُ الجلسة (Claude Code)",
+        decided_on=date(2026, 9, 22),
+        taken_branch="فضاءٌ بمخرجَين",
         note=(
             "سقوطُ إغلاق التركيب مُعاد إنتاجُه (تماثل C1C3: 0.139 و0.144)، وهو "
             "دافعٌ لا تأكيد: يقول إنّ السلسلةَ لا تكفي، ولا يقول إنّ المثلّثَ "
-            "هو البديل"
+            "هو البديل. واختار الوكيلُ الأضعفَ دعوًى: عند δ = 0.10 كان فرعُ "
+            "«الإغلاق بشاهدٍ موجب» غيرَ قابلٍ للبلوغ بحساب القوّة، فإبقاؤه "
+            "يجعل «لم يظهر الفرقُ» يُقرأ «السلسلةُ كافية» — وهو ما لا يحمله "
+            "الحساب. فالمخرَجان: فرقٌ دالٌّ، أو فرقٌ لم يظهر في هذا الحجم"
         ),
     ),
     Decision(
@@ -371,13 +442,22 @@ DECISIONS: Final[tuple[Decision, ...]] = (
                 ),
             ),
         ),
+        standing=DecisionStanding.DELEGATED,
+        authority="Saleh1967 (المودِع) — فوَّض بـ«لا تفضيل» في 2026-09-22",
+        delegate="وكيلُ الجلسة (Claude Code)",
+        decided_on=date(2026, 9, 22),
+        taken_branch="الإبقاءُ على المُجمَّد",
         note=(
             "الاختباراتُ الثلاثةُ الحمراءُ أثرُ إيداعاتي أنا، والرابعُ "
-            "(test_external_audit) سابقٌ لها وبيئيّ: مسارٌ مُجمَّدٌ لبيئة CI"
+            "(test_external_audit) سابقٌ لها وبيئيّ: مسارٌ مُجمَّدٌ لبيئة CI. "
+            "واختار الوكيلُ أقلَّ الفروع رجعةً: الإبقاءُ لا يُحرّك رقمًا "
+            "منشورًا في سجلٍّ لا يملك الوكيلُ الدفعَ إليه، والحمرةُ تبقى خبرًا "
+            "صحيحًا يُقرأ في سطرٍ واحد. وهو الفرعُ الوحيدُ الذي يُنقَض بكلمةٍ "
+            "من المودِع بلا أن يكون شيءٌ قد تغيّر"
         ),
     ),
 )
-"""القراراتُ المُقيَّدة؛ وكلُّها معلَّقةٌ حتى تُوقِّعها سلطةٌ ليست الجلسة."""
+"""القراراتُ المُقيَّدة؛ وثلاثتُها **مُفوَّضةٌ** لا متَّخَذةٌ ولا معلَّقة."""
 
 
 def pending_decisions() -> tuple[Decision, ...]:
@@ -397,6 +477,16 @@ def taken_decisions() -> tuple[Decision, ...]:
         decision
         for decision in DECISIONS
         if decision.standing is DecisionStanding.TAKEN
+    )
+
+
+def delegated_decisions() -> tuple[Decision, ...]:
+    """ما فوَّضه مالكُه فاختار الوكيلُ فرعَه؛ وهو منزلةٌ بين المعلَّق والمتَّخَذ."""
+
+    return tuple(
+        decision
+        for decision in DECISIONS
+        if decision.standing is DecisionStanding.DELEGATED
     )
 
 
@@ -475,6 +565,24 @@ def recompute_scope_price() -> LivePrice | None:
     )
 
 
+def bonferroni_denominator() -> int:
+    """مقامُ بونفيروني **مُشتَقًّا** من نصّ المقياس المُجمَّد لا مكتوبًا.
+
+    النصُّ: «بونفيروني على عدد خلايا (كتلة × كتلة × نوع علاقة) المُختبَرة».
+    والكتلُ المولودةُ في `slgae_deposit`، وأزواجُ الخانات في `slot_rights_algebra`؛
+    والخانتان متمايزتان فكتلةُ `C₁` ليست كتلةَ `C₃`، فالضربُ مرتَّب.
+
+    وهذه الدالّةُ هي ما يجعل الفرعَ المُختار في ق-1 **حسابًا لا جملة**: إن
+    تغيّرت الكتلُ أو الأزواجُ تغيّر المقامُ معها، ولا يبقى رقمًا مُجمَّدًا في
+    نصّ.
+    """
+
+    from .slgae_deposit import BORN_BLOCKS
+    from .slot_rights_algebra import RelationType
+
+    return len(BORN_BLOCKS) ** 2 * len(RelationType)
+
+
 def register_digest() -> str:
     """بصمةُ السجلّ: قرارٌ يُغيَّر لاحقًا يُعرَف بتغيُّر البصمة."""
 
@@ -483,6 +591,9 @@ def register_digest() -> str:
         parts.append(decision.identifier)
         parts.append(decision.question)
         parts.append(decision.standing.name)
+        parts.append(decision.taken_branch or "-")
+        parts.append(decision.authority or "-")
+        parts.append(decision.delegate or "-")
         parts.extend(decision.blocks)
         for branch in decision.branches:
             parts.extend((branch.label, branch.what_changes, branch.price))
@@ -495,15 +606,16 @@ def render_register() -> str:
     """اعرض السجلَّ جدولًا؛ والوحدةُ سلطةُ هذا النصّ، فلا يُحرَّر في محلّه."""
 
     lines = [
-        "| القرار | السؤال | المنزلة | ما يحجُبه | الفروع |",
-        "|---|---|---|---|---|",
+        "| القرار | السؤال | المنزلة | الفرعُ المُختار | مَن اختار | ما يحجُبه |",
+        "|---|---|---|---|---|---|",
     ]
     for decision in DECISIONS:
-        branches = " / ".join(branch.label for branch in decision.branches)
         blocks = "؛ ".join(decision.blocks)
+        chosen = decision.taken_branch or "—"
+        chooser = decision.delegate or decision.authority or "—"
         lines.append(
             f"| {decision.identifier} | {decision.question} | "
-            f"{decision.standing.value} | {blocks} | {branches} |"
+            f"{decision.standing.value} | {chosen} | {chooser} | {blocks} |"
         )
     lines.append("")
     lines.append(f"بصمةُ السجلّ: `{register_digest()[:16]}…`")
@@ -544,6 +656,14 @@ THE_REGISTER_IS_INSIDE_WHAT_IT_PRICES_NOTE: Final[str] = (
     "وذلك بعضُ ثمن فرع «إعادة التجميد»: كلُّ إيداعٍ يُحرّك ما يُجمَّد"
 )
 
+DELEGATION_IS_NOT_A_SIGNATURE_NOTE: Final[str] = (
+    "DelegationIsNotASignature: «لا تفضيل» تفويضٌ لا اختيارُ فرع، فالفرعُ "
+    "المُقيَّدُ ههنا قراءةُ الوكيل لا كلمةُ المودِع؛ ولا يُستشهَد به تجميدًا "
+    "منه، ويُنقَض بكلمةٍ واحدةٍ منه بلا أن يكون شيءٌ قد تغيّر. ومنزلةُ "
+    "«مُفوَّض» أُضيفت لهذا وحدَه: لئلّا يُنسَب إليه فرعٌ لم يُسمِّه، ولا يُخفى "
+    "أنّه فوَّض"
+)
+
 ABSENCE_IS_NOT_A_DECISION_NOTE: Final[str] = (
     "AbsenceIsNotADecision: حاجزُ جدول الصفة بايتاتٌ غائبةٌ لا قرارٌ معلَّق، "
     "فلا يدخل هذا السجلَّ ويبقى حيث يُقاس ثمنُ استيراده قبل الاستيراد"
@@ -556,14 +676,15 @@ DECISION_REGISTER_NAMED_RESIDUALS: Final[tuple[str, ...]] = (
     A_RECORDED_PRICE_IS_NOT_A_LIVE_ONE_NOTE,
     THE_QUIETER_FORK_IS_PRICED_TOO_NOTE,
     THE_REGISTER_IS_INSIDE_WHAT_IT_PRICES_NOTE,
+    DELEGATION_IS_NOT_A_SIGNATURE_NOTE,
     ABSENCE_IS_NOT_A_DECISION_NOTE,
 )
 """البواقي المُسمّاةُ لهذه الوحدة، مرتّبةً كما تُرتَّب في بقيّة الطبقة."""
 
 
 # يُفحَص عند كلّ استيراد: سجلٌّ يفقد شرطًا يمنع تحميلَ الوحدة.
-if len(DecisionStanding) != 3:  # pragma: no cover - حارس
-    raise RuntimeError("منازلُ القرار ثلاثٌ مغلقةٌ: معلَّقٌ ومتَّخَذٌ ومردود.")
+if len(DecisionStanding) != 4:  # pragma: no cover - حارس
+    raise RuntimeError("منازلُ القرار أربعٌ مغلقةٌ: معلَّقٌ ومتَّخَذٌ ومُفوَّضٌ ومردود.")
 if any(name in _REFUSED_STANDING_NAMES for name in DecisionStanding.__members__):
     raise RuntimeError(  # pragma: no cover - حارس
         "منزلةٌ اسمُها «مفترَض» أو «الأرجح» تجعل المعلَّقَ محسومًا بالسكوت."
@@ -577,5 +698,15 @@ if any(
     for decision in DECISIONS
 ):  # pragma: no cover - حارس
     raise RuntimeError("سلطةٌ مرفوضةٌ وقّعت قرارًا في السجلّ.")
+if any(
+    decision.delegate is not None and decision.delegate == decision.authority
+    for decision in DECISIONS
+):  # pragma: no cover - حارس
+    raise RuntimeError("الوكيلُ هو الموكِّلُ في قرارٍ؛ وذلك يُلغي الفرقَ بينهما.")
+if bonferroni_denominator() != 75:  # pragma: no cover - حارس
+    raise RuntimeError(
+        "مقامُ بونفيروني المُشتَقُّ من نصّ المقياس تغيّر؛ فالفرعُ المُختار في "
+        "ق-1 يُعاد إليه قبل أيّ تشغيل."
+    )
 if len(register_digest()) != 64:  # pragma: no cover - حارس
     raise RuntimeError("بصمةُ السجلّ ليست sha256.")

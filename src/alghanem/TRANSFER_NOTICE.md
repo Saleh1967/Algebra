@@ -39,5 +39,6 @@
 | `src/alghanem/arabic/minimal_complete_slot_comparison.py` | مقابلةُ (C,H,B) بـ(a,g,p,r)، وعدُّ غير المولود بالاتّحاد |
 | `src/alghanem/arabic/closure_window_reduction.py` | ردُّ Closure إلى s ≤ 1، وتطابقُ القسمتين |
 | `src/alghanem/arabic/closure_identifiability.py` | تنفيذُ شرط الإبطال الرابع: العددُ لا يتعيّن |
+| `src/alghanem/arabic/slot_rights_algebra.py` | جبرُ الحقوق بثلاث طبقات، مُشغَّلًا على المقاييس |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

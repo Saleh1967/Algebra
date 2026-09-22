@@ -38,5 +38,6 @@
 | `src/alghanem/arabic/pre_articulatory_preregistration.py` | تسجيلٌ مسبقٌ لقاعدةٍ تحت المخرج، ومَسبارا ء/ع، والمانع |
 | `src/alghanem/arabic/minimal_complete_slot_comparison.py` | مقابلةُ (C,H,B) بـ(a,g,p,r)، وعدُّ غير المولود بالاتّحاد |
 | `src/alghanem/arabic/closure_window_reduction.py` | ردُّ Closure إلى s ≤ 1، وتطابقُ القسمتين |
+| `src/alghanem/arabic/closure_identifiability.py` | تنفيذُ شرط الإبطال الرابع: العددُ لا يتعيّن |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

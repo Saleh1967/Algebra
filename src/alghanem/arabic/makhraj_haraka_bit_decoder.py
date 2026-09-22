@@ -22,6 +22,16 @@
 وليس في الفضاء نمطٌ مرفوضٌ لخروجه عن المجال. والعرضان مشتقّان من حجمَي
 المفردتَين، فينقلبان متى تحرّكتا.
 
+`THE_EIGHTH_MEMBER_IS_A_STIPULATION_NOT_A_MEASUREMENT` — **تصحيحٌ لاحق**:
+وامتلاءُ `2**3` أعلاه ليس خبرًا، بل **أثرُ اصطلاحٍ منّا**. فالعلاماتُ
+المُودَعةُ سبعٌ، والثامنُ «غيابُ العلامة» **مُلحَقٌ من خارج الجدول**: ليس في
+البتّات نقطةُ ترميزٍ اسمُها الغياب. وقد سبق أن سُمّي هذا الإلحاقُ بعينه في
+`haraka_fiber_structure`:
+`ADJOINING_ABSENCE_RESTORES_THE_BUNDLE_BY_STIPULATION_NOT_BY_MEASUREMENT` —
+إلحاقُ الغياب يُسوّي الأليافَ ثمانيةً فيُعيد الحزمةَ تافهةً، وهو اصطلاحٌ لا
+قياس. فالامتلاءُ ههنا يدور على الاصطلاح، ولا يُقرأ بعد جلساتٍ خاصّيّةً
+للعربيّة. ولم تُحذَف العبارةُ الأولى لأنّ التصحيحَ يُسجَّل ولا يُمحى موضعُه.
+
 `THE_AXIS_IS_A_MARK_SLOT_NOT_A_MEASURED_DURATION`: قراءةُ هذا المحور «زمنًا»
 قراءةٌ مقبولةٌ في الاصطلاح، لكنّ المُودَعَ هنا **خانةُ علامةٍ مكتوبة** لا مقدارُ
 زمنٍ مقيس. ولا مقدارَ في هذه الشجرة يُسند إلى فتحةٍ أو سكون؛ فمن قرأ الخانةَ
@@ -64,6 +74,7 @@ __all__ = [
     "HARAKA_BIT_WIDTH",
     "HARAKA_NAMES",
     "THE_ABSENCE_IS_A_MEMBER_NOT_A_SUKUN_NOTE",
+    "THE_EIGHTH_MEMBER_IS_A_STIPULATION_NOT_A_MEASUREMENT_NOTE",
     "THE_ABSENCE_NAME",
     "THE_AXIS_IS_A_MARK_SLOT_NOT_A_MEASURED_DURATION_NOTE",
     "THE_ORDER_WITHIN_THE_UNIT_CARRIES_NO_BIT_NOTE",
@@ -120,6 +131,13 @@ THE_ABSENCE_IS_A_MEMBER_NOT_A_SUKUN_NOTE: Final[str] = (
     "TheAbsenceIsAMemberNotASukun: ثامنُ أعضاء المحور غيابُ العلامة، وهو عضوٌ "
     "قائمٌ بذاته لا سكونٌ مُضمَر؛ وتسميتُه سكونًا تُعيد استيرادَ النظريّة "
     "الصوتيّة من بابٍ خلفيّ"
+)
+
+THE_EIGHTH_MEMBER_IS_A_STIPULATION_NOT_A_MEASUREMENT_NOTE: Final[str] = (
+    "TheEighthMemberIsAStipulationNotAMeasurement: العلاماتُ المُودَعةُ سبعٌ، "
+    "والثامنُ «غيابُ العلامة» مُلحَقٌ من خارج الجدول إذ ليس في البتّات نقطةُ "
+    "ترميزٍ اسمُها الغياب؛ فامتلاءُ 2**3 أثرُ اصطلاحٍ لا خاصّيّةٌ مقيسة، على "
+    "منوال ADJOINING_ABSENCE_RESTORES_THE_BUNDLE_BY_STIPULATION_NOT_BY_MEASUREMENT"
 )
 
 EIGHT_MEMBERS_FILL_THREE_BITS_NOTE: Final[str] = (

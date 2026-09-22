@@ -35,5 +35,6 @@
 | `src/alghanem/arabic/slgae_second_version_deposit.py` | مراتبُ الادّعاء، وتدقيقُ جدول ماركوف |
 | `src/alghanem/arabic/slgae_third_version_deposit.py` | تصادمُ معرِّف ٥ك، وفحوصُ ما نُشر |
 | `src/alghanem/arabic/slgae_fourth_version_deposit.py` | جسرٌ بثلاثة مقادير، ونافذةٌ تتّزن |
+| `src/alghanem/arabic/pre_articulatory_preregistration.py` | تسجيلٌ مسبقٌ لقاعدةٍ تحت المخرج، ومَسبارا ء/ع، والمانع |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

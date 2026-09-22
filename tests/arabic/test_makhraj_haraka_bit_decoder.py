@@ -1,11 +1,12 @@
 """المحورُ الثاني: وسعٌ مقيسٌ في المخرَج، وكسبُ فصلٍ مطروحٌ فيخرج صفرًا.
 
-يُثبِت هذا الاختبارُ ثمانيةَ أشياء: أنّ عرضَ المتّجه مجموعُ عرضَي محورَيه لا
+يُثبِت هذا الاختبارُ تسعةَ أشياء: أنّ عرضَ المتّجه مجموعُ عرضَي محورَيه لا
 رقمًا مكتوبًا، وأنّ فضاءَه ممسوحٌ كاملًا بلا نمطٍ مرفوض، وأنّ المخرَجَ صار
 وحدةً مشكولةً من نقطتَين مستقرّةً تحت NFC، وأنّ الغيابَ عضوٌ في المفردة لا
 سكونٌ مُضمَر، وأنّ **كسبَ الفصل صفرٌ مطروحًا** فالحركةُ توسّع ولا تحسم، وأنّ
 الترميزَ ثمّ الفكَّ يُرجِع الخانةَ مشكولةً بعلامتها، وأنّ علامةً أو عرضًا خارجَ
-الشرط يُرَدُّ ولا يُصفَّر صمتًا، وأنّ حاجزَ جدول الصفة لم يُمسّ.
+الشرط يُرَدُّ ولا يُصفَّر صمتًا، وأنّ حاجزَ جدول الصفة لم يُمسّ، وأنّ العضوَ الثامنَ مُصرَّحٌ بأنّه اصطلاحٌ
+لا قياس.
 """
 
 from __future__ import annotations
@@ -28,6 +29,7 @@ from alghanem.arabic.makhraj_haraka_bit_decoder import (
     HARAKA_ALPHABET,
     HARAKA_BIT_WIDTH,
     THE_ABSENCE_NAME,
+    THE_EIGHTH_MEMBER_IS_A_STIPULATION_NOT_A_MEASUREMENT_NOTE,
     VECTOR_BIT_WIDTH,
     bits_of_haraka,
     census,
@@ -135,3 +137,17 @@ def test_the_second_axis_leaves_the_sifat_barrier_untouched() -> None:
     """المحورُ الثاني مأخوذٌ من مُودَعٍ قائم، فحاجزُ جدول الصفة باقٍ كما كان."""
 
     assert sifat_barrier_standing() is ImportBarrierStanding.OPEN
+
+
+def test_the_eighth_member_is_declared_a_stipulation() -> None:
+    """امتلاءُ 2**3 أثرُ إلحاقٍ منّا: سبعٌ مُودَعةٌ وثامنٌ من خارج الجدول."""
+
+    assert len(THE_IMPORTED_HARAKAT) == 7
+    assert len(HARAKA_ALPHABET) == len(THE_IMPORTED_HARAKAT) + 1
+    assert HARAKA_ABSENT not in THE_IMPORTED_HARAKAT
+    assert "اصطلاحٍ لا خاصّيّةٌ مقيسة" in (
+        THE_EIGHTH_MEMBER_IS_A_STIPULATION_NOT_A_MEASUREMENT_NOTE
+    )
+    assert "ADJOINING_ABSENCE_RESTORES_THE_BUNDLE" in (
+        THE_EIGHTH_MEMBER_IS_A_STIPULATION_NOT_A_MEASUREMENT_NOTE
+    )

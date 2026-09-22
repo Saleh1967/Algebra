@@ -36,5 +36,6 @@
 | `src/alghanem/arabic/slgae_third_version_deposit.py` | تصادمُ معرِّف ٥ك، وفحوصُ ما نُشر |
 | `src/alghanem/arabic/slgae_fourth_version_deposit.py` | جسرٌ بثلاثة مقادير، ونافذةٌ تتّزن |
 | `src/alghanem/arabic/pre_articulatory_preregistration.py` | تسجيلٌ مسبقٌ لقاعدةٍ تحت المخرج، ومَسبارا ء/ع، والمانع |
+| `src/alghanem/arabic/minimal_complete_slot_comparison.py` | مقابلةُ (C,H,B) بـ(a,g,p,r)، وعدُّ غير المولود بالاتّحاد |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

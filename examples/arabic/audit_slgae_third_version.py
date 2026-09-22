@@ -1,4 +1,4 @@
-"""يعرض سلسلةَ النسخ الثلاث، وتصادمَ معرِّف ٥ك، وفحوصَ ما نُشر في قسمَيه."""
+"""يعرض سلسلةَ النسخ الثلاث، وتصادمَ معرِّف ٥ك وإغلاقَه، وفحوصَ ما نُشر."""
 
 from __future__ import annotations
 
@@ -13,6 +13,8 @@ from alghanem.arabic.slgae_third_version_deposit import (  # noqa: E402
     derive_identifier_collision,
     derive_ordering_check,
     derive_statistic_checks,
+    disambiguation_digest,
+    resolve_colliding_citation,
     version_chain_digests,
 )
 
@@ -35,6 +37,12 @@ def main() -> None:
         print(f"      البيان: {experiment.data}")
         print(f"      الاختبارات: {'، '.join(experiment.test_names)}")
         print(f"      الحكم: {experiment.verdict}")
+        print(f"      المعرِّفُ بعد التمييز: {experiment.assigned_identifier}")
+    print(f"أُغلق التصادم: {collision.is_closed}")
+    print(f"بصمةُ وثيقة التمييز: {disambiguation_digest()}")
+    for test_name in ("P1", "V0"):
+        section = resolve_colliding_citation(test_name)
+        print(f"  إحالةٌ قديمةٌ ذُكر معها {test_name} ← " f"{section.assigned_identifier}")
     print()
 
     print("فحوصُ الإحصاءات المنشورة:")

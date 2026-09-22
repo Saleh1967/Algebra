@@ -13,6 +13,14 @@
 سقوطُ P1 فيُحمَل على نجاح V0، أو بالعكس. والعددان يُقرآن من بايتات الملفّ لا
 يُكتَبان هنا.
 
+`THE_COLLISION_IS_CLOSED_IN_THE_DOCUMENT_NOT_IN_THE_DEPOSIT`: التصادمُ أُغلق
+بمعرِّفين متمايزين، واحدٍ لكلّ قسم، في
+`docs/reference/slgae_5k_identifier_disambiguation.md`. وبايتاتُ `_v3.md` لا
+تُمَسّ: هي مُودَعةٌ بنصّها كما وردت ومُبصَّمة، فالعددُ يبقى اثنين مقروءًا منها،
+والإغلاقُ **تسميةٌ بعد اليوم لا تصحيحٌ في المُودَع**. وكلُّ إحالةٍ قديمةٍ إلى
+المعرِّف المتصادم **ناقصةٌ لا خاطئة**: تتعيّن باسم الاختبار المذكور معها
+(P1–P3 مقابل V0–V3)، وما لا يتعيّن يُرَدّ ولا يُخمَّن.
+
 `A_SHARED_DIRECTION_IS_NOT_A_SHARED_MAGNITUDE`: القسمان يتّفقان أنّ الحلقَ
 يجرّ الفتح، ويفترقان في المقدار فرقًا كبيرًا: نسبةٌ 1.15 في الأوّل مقابل 4.77
 في الثاني، وأرجحيّةٌ 1.39 مقابل 20.8. وهما مجتمعان مختلفان ومقياسان مختلفان،
@@ -47,9 +55,11 @@ __all__ = [
     "AN_INTERNAL_CHECK_IS_NOT_A_REDERIVATION_NOTE",
     "COLLIDING_IDENTIFIER",
     "COLLIDING_SECTION_NUMBER",
+    "DISAMBIGUATION_RELATIVE_PATH",
     "ONE_IDENTIFIER_OVER_TWO_EXPERIMENTS_NOTE",
     "SLGAE_V3_NAMED_RESIDUALS",
     "SLGAE_V3_RELATIVE_PATH",
+    "THE_COLLISION_IS_CLOSED_IN_THE_DOCUMENT_NOTE",
     "THIRD_VERSION_EXPERIMENTS",
     "V3_PREDICTED_ORDER",
     "V3_OBSERVED_VALUES",
@@ -62,12 +72,19 @@ __all__ = [
     "derive_identifier_collision",
     "derive_ordering_check",
     "derive_statistic_checks",
+    "disambiguation_digest",
+    "disambiguation_path",
+    "resolve_colliding_citation",
     "slgae_v3_digest",
     "slgae_v3_path",
     "version_chain_digests",
 ]
 
 SLGAE_V3_RELATIVE_PATH: Final[str] = "docs/reference/slgae_slot_licensing_algebra_v3.md"
+
+DISAMBIGUATION_RELATIVE_PATH: Final[str] = (
+    "docs/reference/slgae_5k_identifier_disambiguation.md"
+)
 
 COLLIDING_SECTION_NUMBER: Final[str] = "٥ك"
 
@@ -96,6 +113,33 @@ def slgae_v3_digest(root: Path | None = None) -> str:
     return canonical_digest(slgae_v3_path(root).read_bytes())
 
 
+def disambiguation_path(root: Path | None = None) -> Path:
+    """مسارُ وثيقة التمييز، مبنيًّا من جذر الشجرة لا مكتوبًا مطلقًا."""
+
+    base = root if root is not None else Path(__file__).resolve().parents[3]
+    return base / DISAMBIGUATION_RELATIVE_PATH
+
+
+def disambiguation_digest(root: Path | None = None) -> str:
+    """بصمةُ وثيقة التمييز؛ فالإغلاقُ نصٌّ له بايتاتٌ لا إحالةٌ في الذاكرة."""
+
+    return canonical_digest(_disambiguation_file(root).read_bytes())
+
+
+def _disambiguation_file(root: Path | None = None) -> Path:
+    path = disambiguation_path(root)
+    if not path.is_file():
+        raise SlgaeDepositError(
+            f"وثيقةُ التمييز غيرُ موجودةٍ في موضعها: {DISAMBIGUATION_RELATIVE_PATH}؛ "
+            "وإغلاقٌ بلا نصٍّ في الشجرة إغلاقٌ في المحادثة."
+        )
+    return path
+
+
+def _read_disambiguation(root: Path | None = None) -> str:
+    return _disambiguation_file(root).read_text(encoding="utf-8")
+
+
 def version_chain_digests(root: Path | None = None) -> tuple[tuple[str, str], ...]:
     """بصماتُ النسخ الثلاث بمساراتها؛ والسابقتان باقيتان لا تُمحيان."""
 
@@ -114,16 +158,27 @@ def version_chain_digests(root: Path | None = None) -> tuple[tuple[str, str], ..
 
 @dataclass(frozen=True, slots=True)
 class SectionExperiment:
-    """تجربةٌ واحدةٌ من قسمَي ٥ك: بيانُها، وأسماءُ اختباراتها، وحكمُها."""
+    """تجربةٌ واحدةٌ من قسمَي ٥ك: بيانُها، وأسماءُ اختباراتها، وحكمُها، ومعرِّفُها."""
 
     title: str
     data: str
     test_names: tuple[str, ...]
     verdict: str
+    assigned_identifier: str
 
     def __post_init__(self) -> None:
         if not self.test_names:
             raise SlgaeDepositError("تجربةٌ بلا اسمِ اختبارٍ واحدٍ لا تُقابَل بغيرها.")
+        if not self.assigned_identifier.strip():
+            raise SlgaeDepositError(
+                "تجربةٌ بلا معرِّفٍ مُميَّزٍ تبقى تحت المعرِّف المتصادم، "
+                "والإغلاقُ يقتضي اسمًا يُستشهَد به."
+            )
+        if self.assigned_identifier == COLLIDING_IDENTIFIER:
+            raise SlgaeDepositError(
+                f"«{COLLIDING_IDENTIFIER}» هو المعرِّفُ المتصادمُ نفسُه؛ "
+                "وإعادتُه اسمًا مُميَّزًا تُبقي التصادمَ وتسمّيه إغلاقًا."
+            )
 
 
 THIRD_VERSION_EXPERIMENTS: Final[tuple[SectionExperiment, ...]] = (
@@ -132,6 +187,7 @@ THIRD_VERSION_EXPERIMENTS: Final[tuple[SectionExperiment, ...]] = (
         data="جذوع QAC، أنواع، 4837 جذعًا في التأكيد؛ ملفُّ الميل إلى a/i/u",
         test_names=("P1", "P2", "P3"),
         verdict="المخرجُ لا يرث ا و ي؛ والجسرُ الوحيد الحلق ↔ الفتح",
+        assigned_identifier="MAKHRAJ-INHERITS-VOWELS-AR-1",
     ),
     SectionExperiment(
         title="سلسلة الولادة من الصائت أولًا",
@@ -141,6 +197,7 @@ THIRD_VERSION_EXPERIMENTS: Final[tuple[SectionExperiment, ...]] = (
             "يولد الطورُ الأوّل، وينعكس الاتّجاه: الصائتُ في الخانة المعجميّة "
             "يرث المخرجَ لا العكس"
         ),
+        assigned_identifier="VOWEL-FIRST-BIRTH-CHAIN-AR-1",
     ),
 )
 """التجربتان اللتان يحملهما الرقمُ والمعرِّفُ نفساهما، بما يفرّق بينهما."""
@@ -156,12 +213,28 @@ class IdentifierCollision:
     identifier_occurrences: int
     experiments: tuple[SectionExperiment, ...]
     shared_test_names: tuple[str, ...]
+    closing_identifiers_in_document: tuple[str, ...]
 
     @property
     def is_a_collision(self) -> bool:
         """أيسمّي المعرِّفُ أكثرَ من موضع؟ مُشتَقٌّ من العدّ لا مكتوبٌ بجانبه."""
 
         return self.heading_occurrences > 1 or self.identifier_occurrences > 1
+
+    @property
+    def assigned_identifiers(self) -> tuple[str, ...]:
+        """المعرِّفان المُميَّزان بترتيب قسمَيهما، مُشتَقَّين من التجربتين."""
+
+        return tuple(experiment.assigned_identifier for experiment in self.experiments)
+
+    @property
+    def is_closed(self) -> bool:
+        """أأُغلق التصادم؟ لكلّ قسمٍ معرِّفٌ متمايزٌ، وكلُّها واردةٌ في الوثيقة."""
+
+        assigned = self.assigned_identifiers
+        return len(set(assigned)) == len(assigned) == len(self.experiments) and set(
+            assigned
+        ) <= set(self.closing_identifiers_in_document)
 
 
 def derive_identifier_collision(root: Path | None = None) -> IdentifierCollision:
@@ -175,6 +248,12 @@ def derive_identifier_collision(root: Path | None = None) -> IdentifierCollision
     )
     first, second = THIRD_VERSION_EXPERIMENTS
     shared = tuple(sorted(set(first.test_names) & set(second.test_names)))
+    disambiguation_text = _read_disambiguation(root)
+    closing = tuple(
+        experiment.assigned_identifier
+        for experiment in THIRD_VERSION_EXPERIMENTS
+        if experiment.assigned_identifier in disambiguation_text
+    )
     return IdentifierCollision(
         identifier=COLLIDING_IDENTIFIER,
         section_number=COLLIDING_SECTION_NUMBER,
@@ -182,7 +261,31 @@ def derive_identifier_collision(root: Path | None = None) -> IdentifierCollision
         identifier_occurrences=text.count(COLLIDING_IDENTIFIER),
         experiments=THIRD_VERSION_EXPERIMENTS,
         shared_test_names=shared,
+        closing_identifiers_in_document=closing,
     )
+
+
+def resolve_colliding_citation(test_name: str) -> SectionExperiment:
+    """عيِّن القسمَ المقصودَ باسم الاختبار المذكور مع الإحالة القديمة.
+
+    والإحالةُ التي لا يُذكر معها اسمُ اختبارٍ **ناقصةٌ لا خاطئة**، فتُرَدّ
+    ولا تُحمَل على أقرب القسمين.
+    """
+
+    wanted = test_name.strip().upper()
+    matches = tuple(
+        experiment
+        for experiment in THIRD_VERSION_EXPERIMENTS
+        if wanted in experiment.test_names
+    )
+    if not matches:
+        raise SlgaeDepositError(
+            f"«{test_name}» ليس اسمَ اختبارٍ في قسمَي "
+            f"{COLLIDING_SECTION_NUMBER}؛ وإحالةٌ لا تتعيّن لا تُخمَّن."
+        )
+    if len(matches) > 1:  # pragma: no cover - يمنعه افتراقُ الأسماء البنيويّ
+        raise SlgaeDepositError(f"«{test_name}» في القسمين معًا؛ فلا يعيّن أحدَهما.")
+    return matches[0]
 
 
 @dataclass(frozen=True, slots=True)
@@ -346,14 +449,26 @@ AN_INTERNAL_CHECK_IS_NOT_A_REDERIVATION_NOTE: Final[str] = (
     "إعادةُ اشتقاقٍ من مدوّنة؛ فلا يُقال صوابٌ ولا خطأ، بل ما يتّسق وما لا يتّسق"
 )
 
+THE_COLLISION_IS_CLOSED_IN_THE_DOCUMENT_NOTE: Final[str] = (
+    "TheCollisionIsClosedInTheDocumentNotInTheDeposit: لكلّ قسمٍ معرِّفٌ "
+    "متمايزٌ في وثيقة التمييز، وبايتاتُ المُودَع لا تُمَسّ فيبقى العددُ اثنين؛ "
+    "والإحالةُ القديمةُ ناقصةٌ تتعيّن باسم اختبارها، وما لا يتعيّن يُرَدّ"
+)
+
 SLGAE_V3_NAMED_RESIDUALS: Final[tuple[str, ...]] = (
     ONE_IDENTIFIER_OVER_TWO_EXPERIMENTS_NOTE,
     A_SHARED_DIRECTION_IS_NOT_A_SHARED_MAGNITUDE_NOTE,
     A_FAILED_ORDER_IS_NOT_A_REVERSED_ORDER_NOTE,
     AN_INTERNAL_CHECK_IS_NOT_A_REDERIVATION_NOTE,
+    THE_COLLISION_IS_CLOSED_IN_THE_DOCUMENT_NOTE,
 )
 """البواقي المُسمّاةُ لهذه الوحدة، مرتّبةً كما تُرتَّب في بقيّة الطبقة."""
 
 
 if len(THIRD_VERSION_EXPERIMENTS) != 2:  # pragma: no cover - حارس
     raise RuntimeError("قسما ٥ك اثنان؛ وزيادةٌ أو نقصٌ يجعل التصادمَ موصوفًا لا معدودًا.")
+
+if len(  # pragma: no cover - حارس
+    {experiment.assigned_identifier for experiment in THIRD_VERSION_EXPERIMENTS}
+) != len(THIRD_VERSION_EXPERIMENTS):
+    raise RuntimeError("معرِّفان متطابقان بعد التمييز؛ وتصادمٌ يُغلَق باسمٍ واحدٍ لا يُغلَق.")

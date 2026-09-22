@@ -37,5 +37,6 @@
 | `src/alghanem/arabic/slgae_fourth_version_deposit.py` | جسرٌ بثلاثة مقادير، ونافذةٌ تتّزن |
 | `src/alghanem/arabic/pre_articulatory_preregistration.py` | تسجيلٌ مسبقٌ لقاعدةٍ تحت المخرج، ومَسبارا ء/ع، والمانع |
 | `src/alghanem/arabic/minimal_complete_slot_comparison.py` | مقابلةُ (C,H,B) بـ(a,g,p,r)، وعدُّ غير المولود بالاتّحاد |
+| `src/alghanem/arabic/closure_window_reduction.py` | ردُّ Closure إلى s ≤ 1، وتطابقُ القسمتين |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

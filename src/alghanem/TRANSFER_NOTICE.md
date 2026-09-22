@@ -43,6 +43,7 @@
 | `src/alghanem/arabic/composition_closure_replication.py` | إعادةُ إنتاج سقوط الإغلاق بصفريٍّ يحفظ شرطَيه |
 | `src/alghanem/arabic/triangle_licensing_preregistration.py` | تسجيلُ المثلّث B₁₃ — مُسجَّلٌ ولا يُختبَر |
 | `src/alghanem/arabic/interaction_complex_lemmas.py` | ل١ و ل٢ و ل٣ مفحوصةً عند كلّ استيراد، وحدٌّ مؤشَّر |
+| `src/alghanem/arabic/movement_workbook_crosscheck.py` | فحصُ أرقام مصنَّف الحركة: عددٌ يُخفي سياسةً، وفحوصٌ تعريفيّةٌ لا تسقط |
 | `src/alghanem/arabic/word_schema_falsification.py` | اختبارُ «كلمة = جذر + وزن + زوائد» بثلاثة شروطِ إبطالٍ مكتوبةٍ قبل النظر |
 | `src/alghanem/arabic/decision_register.py` | القراراتُ الثلاثةُ مُفوَّضةً بفروعها وأثمانها، والوكيلُ مُسمًّى في غير حقل السلطة |
 

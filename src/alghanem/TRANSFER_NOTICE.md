@@ -40,5 +40,7 @@
 | `src/alghanem/arabic/closure_window_reduction.py` | ردُّ Closure إلى s ≤ 1، وتطابقُ القسمتين |
 | `src/alghanem/arabic/closure_identifiability.py` | تنفيذُ شرط الإبطال الرابع: العددُ لا يتعيّن |
 | `src/alghanem/arabic/slot_rights_algebra.py` | جبرُ الحقوق بثلاث طبقات، مُشغَّلًا على المقاييس |
+| `src/alghanem/arabic/composition_closure_replication.py` | إعادةُ إنتاج سقوط الإغلاق بصفريٍّ يحفظ شرطَيه |
+| `src/alghanem/arabic/triangle_licensing_preregistration.py` | تسجيلُ المثلّث B₁₃ — مُسجَّلٌ ولا يُختبَر |
 
 ومعها اختباراتُها في `tests/arabic/` وأمثلتُها في `examples/arabic/`.

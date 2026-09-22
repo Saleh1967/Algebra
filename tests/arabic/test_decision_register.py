@@ -55,10 +55,10 @@ def test_standings_are_three_and_closed() -> None:
 
 
 def test_every_deposited_decision_is_pending() -> None:
-    """القراراتُ الثلاثةُ معلَّقةٌ، ولا فرعَ مُتَّخَذًا ولا سلطةَ مُوقِّعة."""
+    """القراراتُ الأربعةُ معلَّقةٌ، ولا فرعَ مُتَّخَذًا ولا سلطةَ مُوقِّعة."""
 
-    assert len(DECISIONS) == 3
-    assert len(pending_decisions()) == 3
+    assert len(DECISIONS) == 4
+    assert len(pending_decisions()) == 4
     assert taken_decisions() == ()
     assert all(decision.taken_branch is None for decision in DECISIONS)
     assert all(decision.authority is None for decision in DECISIONS)

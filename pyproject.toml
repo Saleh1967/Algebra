@@ -20,9 +20,13 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
+include = ["hawk_dove*"]
 
+# `tests/arabic` تختبر وحداتِ إيداعِ النقل في `src/alghanem`، وهي غيرُ قابلة
+# للاستيراد في هذا المستودع (انظر `src/alghanem/TRANSFER_NOTICE.md`). ومكانُ
+# تشغيلها نسخةٌ كاملةٌ من Saleh1967/Alghanem، لا هنا.
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["tests/hawk_dove"]
 
 [tool.ruff]
 line-length = 88
@@ -39,9 +43,6 @@ select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
 strict = true
-packages = ["alghanem"]
+packages = ["hawk_dove"]
 mypy_path = "src"
 
-[[tool.mypy.overrides]]
-module = "alghanem.realization.generated.*"
-ignore_errors = true

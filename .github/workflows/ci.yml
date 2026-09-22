@@ -17,7 +17,10 @@ jobs:
         with:
           python-version: "3.10"
       - run: python -m pip install -e ".[dev]"
+      # يُشغَّل ما يملكه هذا المستودعُ ويستورده فعلًا. و`src/alghanem` إيداعُ
+      # نقلٍ لا حزمةٌ تعمل هنا، ومكانُ فحصها نسخةٌ كاملة من Alghanem —
+      # انظر `src/alghanem/TRANSFER_NOTICE.md`.
       - run: pytest
       - run: ruff check .
       - run: ruff format --check .
-      - run: mypy src
+      - run: mypy src/hawk_dove

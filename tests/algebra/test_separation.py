@@ -14,14 +14,32 @@
 from __future__ import annotations
 
 import ast
+import re
 from pathlib import Path
 
-import tomllib
-
 REPOSITORY = Path(__file__).resolve().parents[2]
+CONFIGURATION = (REPOSITORY / "pyproject.toml").read_text(encoding="utf-8")
 PACKAGE = REPOSITORY / "src" / "algebra"
 TESTS = REPOSITORY / "tests" / "algebra"
 FOREIGN = "alghanem"
+
+
+def _section(name: str) -> str:
+    """نصُّ قسمٍ من `pyproject.toml` وحدَه؛ وقراءتُه نصًّا تعمل على 3.10 أيضًا.
+
+    و`tomllib` لا يوجد قبل 3.11، وهذا المستودعُ يُعلِن `requires-python >= 3.10`
+    ويُشغّل CI عليها؛ فقراءةُ الإعدادات بأداةٍ أحدثَ من أدنى ما يدّعي دعمَه
+    تجعل الاختبارَ يسقط حيث يجب أن يعمل — وقد سقط فعلًا.
+    """
+
+    match = re.search(
+        rf"^\[{re.escape(name)}\]\n(.*?)(?=^\[|\Z)",
+        CONFIGURATION,
+        re.MULTILINE | re.DOTALL,
+    )
+    if match is None:
+        raise AssertionError(f"لا قسمَ باسم [{name}] في pyproject.toml")
+    return match.group(1)
 
 
 def _imported_names(path: Path) -> set[str]:
@@ -71,14 +89,27 @@ def test_the_package_imports_on_its_own() -> None:
 def test_the_distribution_is_no_longer_named_after_the_other_project() -> None:
     """اسمُ التوزيعة `algebra`: وهو أعمقُ التشابك، إذ كان التثبيتُ يضع تلك الحزمة."""
 
-    data = tomllib.loads((REPOSITORY / "pyproject.toml").read_text(encoding="utf-8"))
-    assert data["project"]["name"] == "algebra"
-    assert "algebra*" in data["tool"]["setuptools"]["packages"]["find"]["include"]
-    assert "algebra" in data["tool"]["mypy"]["packages"]
+    project = _section("project")
+    assert re.search(r'^name = "algebra"$', project, re.MULTILINE)
+    assert not re.search(rf'^name = "{FOREIGN}"$', project, re.MULTILINE)
+    assert '"algebra*"' in _section("tool.setuptools.packages.find")
+    assert '"algebra"' in _section("tool.mypy")
 
 
 def test_the_package_tests_are_actually_run() -> None:
     """`pyproject` يُشغّل اختباراتِ الحزمة، فلا يكون الفصلُ دعوًى بلا فحص."""
 
-    data = tomllib.loads((REPOSITORY / "pyproject.toml").read_text(encoding="utf-8"))
-    assert "tests/algebra" in data["tool"]["pytest"]["ini_options"]["testpaths"]
+    assert '"tests/algebra"' in _section("tool.pytest.ini_options")
+
+
+def test_the_configuration_is_read_with_the_minimum_python_it_declares() -> None:
+    """لا تُقرأ الإعداداتُ بأداةٍ أحدثَ من أدنى مفسّرٍ يدّعي المستودعُ دعمَه.
+
+    `tomllib` لا يوجد قبل 3.11، و`requires-python` ههنا `>= 3.10`؛ فاستعمالُه
+    أسقط CI على 3.10 وهو أخضرُ محلّيًّا على 3.11. وهذا الاختبارُ يمنع عودةَ
+    ذلك: أداةُ القراءة تُذكَر في الشرط لا في التعليق.
+    """
+
+    assert 'requires-python = ">=3.10"' in _section("project")
+    for module in sorted(TESTS.glob("*.py")) + sorted(PACKAGE.glob("*.py")):
+        assert "tomllib" not in _imported_names(module), module.name

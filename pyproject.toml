@@ -3,9 +3,9 @@ requires = ["setuptools>=78.1.1"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "alghanem"
+name = "algebra"
 version = "0.1.0"
-description = "A language-agnostic research kernel for structurally admissible transformations"
+description = "Standalone algebra: simplicial homology, decision registers, and threshold attainability"
 readme = "README.md"
 requires-python = ">=3.10"
 license = {file = "LICENSE"}
@@ -20,13 +20,13 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["hawk_dove*"]
+include = ["algebra*", "hawk_dove*"]
 
 # `tests/arabic` تختبر وحداتِ إيداعِ النقل في `src/alghanem`، وهي غيرُ قابلة
 # للاستيراد في هذا المستودع (انظر `src/alghanem/TRANSFER_NOTICE.md`). ومكانُ
 # تشغيلها نسخةٌ كاملةٌ من Saleh1967/Alghanem، لا هنا.
 [tool.pytest.ini_options]
-testpaths = ["tests/hawk_dove"]
+testpaths = ["tests/algebra", "tests/hawk_dove"]
 
 [tool.ruff]
 line-length = 88
@@ -43,6 +43,6 @@ select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
 strict = true
-packages = ["hawk_dove"]
+packages = ["algebra", "hawk_dove"]
 mypy_path = "src"
 

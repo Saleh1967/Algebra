@@ -29,6 +29,8 @@ from alghanem.arabic.decision_register import (
     assert_not_reportable_as_done,
     blocked_items,
     blockers_of,
+    bonferroni_denominator,
+    delegated_decisions,
     is_blocked,
     pending_decisions,
     recompute_scope_price,
@@ -49,19 +51,99 @@ def test_standings_are_three_and_closed() -> None:
     assert [standing.name for standing in DecisionStanding] == [
         "PENDING",
         "TAKEN",
+        "DELEGATED",
         "DECLINED",
     ]
     assert "ASSUMED" not in DecisionStanding.__members__
 
 
-def test_every_deposited_decision_is_pending() -> None:
-    """القراراتُ الأربعةُ معلَّقةٌ، ولا فرعَ مُتَّخَذًا ولا سلطةَ مُوقِّعة."""
+def test_the_register_holds_three_delegated_and_one_pending() -> None:
+    """أربعةُ قرارات: **ثلاثةٌ مُفوَّضةٌ** وواحدٌ معلَّقٌ (ق-4) — لا كلُّها ولا تلك.
+
+    والدمجُ ههنا خبرٌ لا إجراء: ق-4 وُضِع على السجلّ **قبل** التفويض، فلو
+    قُرئ الفرعان معًا بلا فحصٍ لقيل «أربعةٌ معلَّقة» أو «ثلاثةٌ مُفوَّضة»،
+    وكلاهما يُخفي نصفَ الحال. و«لا تفضيل» لم تشمل ق-4 لأنّه لم يكن مسؤولًا
+    عنه يومَ فوَّض، فيبقى معلَّقًا حتى يُسأل عنه.
+    """
 
     assert len(DECISIONS) == 4
-    assert len(pending_decisions()) == 4
+    assert len(delegated_decisions()) == 3
+    assert len(pending_decisions()) == 1
     assert taken_decisions() == ()
-    assert all(decision.taken_branch is None for decision in DECISIONS)
-    assert all(decision.authority is None for decision in DECISIONS)
+    assert pending_decisions()[0].identifier.startswith("ق-4")
+    for decision in delegated_decisions():
+        assert decision.taken_branch is not None
+        assert decision.delegate is not None
+        assert decision.authority is not None
+        assert decision.delegate != decision.authority
+        assert "Saleh1967" in decision.authority
+        assert decision.taken_branch in [branch.label for branch in decision.branches]
+    for decision in pending_decisions():
+        assert decision.taken_branch is None
+        assert decision.authority is None
+        assert decision.delegate is None
+
+
+def test_a_delegated_decision_needs_a_named_delegate_and_branch() -> None:
+    """مُفوَّضٌ بلا وكيلٍ أو بلا فرعٍ يُرفَض، ووكيلٌ في غيرِ مُفوَّضٍ يُرفَض."""
+
+    with pytest.raises(DecisionRegisterError):
+        Decision(
+            identifier="ق-س",
+            question="أيُحسَم؟",
+            blocks=("شيءٌ ما",),
+            branches=_BRANCHES,
+            standing=DecisionStanding.DELEGATED,
+            taken_branch="أ",
+            authority="المودِع",
+            decided_on=date(2026, 9, 22),
+        )
+    with pytest.raises(DecisionRegisterError):
+        Decision(
+            identifier="ق-س",
+            question="أيُحسَم؟",
+            blocks=("شيءٌ ما",),
+            branches=_BRANCHES,
+            standing=DecisionStanding.DELEGATED,
+            authority="المودِع",
+            delegate="وكيل",
+            decided_on=date(2026, 9, 22),
+        )
+    with pytest.raises(DecisionRegisterError):
+        Decision(
+            identifier="ق-س",
+            question="أيُحسَم؟",
+            blocks=("شيءٌ ما",),
+            branches=_BRANCHES,
+            standing=DecisionStanding.TAKEN,
+            taken_branch="أ",
+            authority="المودِع",
+            delegate="وكيل",
+            decided_on=date(2026, 9, 22),
+        )
+
+
+def test_delegation_lifts_only_what_the_delegated_decisions_blocked() -> None:
+    """التفويضُ رفع حجبَ [123] وحدَه؛ وما يحجُبه ق-4 باقٍ لأنّه لم يُفوَّض.
+
+    فالرفعُ ليس عامًّا: كلُّ محجوبٍ يُرفَع بقرارٍ بعينه، وقرارٌ جديدٌ يحجُب
+    جديدًا.
+    """
+
+    lifted = "تشغيلُ اختبار [123] كما جُمِّد"
+    assert not is_blocked(lifted)
+    assert blockers_of(lifted) == ()
+    assert_not_reportable_as_done(lifted)
+    still_blocked = blocked_items()
+    assert still_blocked
+    for item in still_blocked:
+        assert all(
+            blocker.identifier.startswith("ق-4") for blocker in blockers_of(item)
+        )
+        with pytest.raises(DecisionRegisterError):
+            assert_not_reportable_as_done(item)
+    for decision in DECISIONS:
+        assert decision.authority not in REFUSED_AUTHORITIES
 
 
 def test_the_session_cannot_sign_a_decision() -> None:
@@ -165,16 +247,26 @@ def test_one_branch_is_not_a_decision() -> None:
         )
 
 
-def test_a_blocked_item_is_not_reportable_as_done() -> None:
+def test_a_blocked_item_is_not_reportable_as_done(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
     """المحجوبُ يُرَدُّ عند الاستدعاء، ويُسمّى القرارُ الذي حجَبه."""
 
-    item = "تشغيلُ اختبار [123] كما جُمِّد"
-    assert item in blocked_items()
-    assert is_blocked(item)
-    assert len(blockers_of(item)) == 2
+    import alghanem.arabic.decision_register as module
+
+    pending = Decision(
+        identifier="ق-ص",
+        question="أيُحسَم؟",
+        blocks=("شيءٌ محجوب",),
+        branches=_BRANCHES,
+    )
+    monkeypatch.setattr(module, "DECISIONS", (*DECISIONS, pending))
+    assert "شيءٌ محجوب" in module.blocked_items()
+    assert module.is_blocked("شيءٌ محجوب")
     with pytest.raises(DecisionRegisterError) as caught:
-        assert_not_reportable_as_done(item)
-    assert "ق-1" in str(caught.value) and "ق-2" in str(caught.value)
+        module.assert_not_reportable_as_done("شيءٌ محجوب")
+    assert "ق-ص" in str(caught.value)
+    monkeypatch.undo()
     assert_not_reportable_as_done("شيءٌ لا يحجُبه قرار")
 
 
@@ -202,11 +294,34 @@ def test_the_digest_moves_when_a_decision_moves() -> None:
     assert digest == register_digest()
     assert digest[:16] in render_register()
     assert all(decision.identifier in render_register() for decision in DECISIONS)
-    assert "معلَّق" in render_register()
+    assert "مُفوَّض" in render_register()
+    assert "وكيلُ الجلسة" in render_register()
+
+
+def test_the_chosen_denominator_is_computed_not_written() -> None:
+    """مقامُ ق-1 مُشتَقٌّ: خمسُ كتلٍ مرتَّبةً × ثلاثةَ أزواجِ خانات = 75.
+
+    و6 لا يُعاد بناؤه من نصّ المقياس بأيّ قراءة: المرتَّبُ 75، وغيرُ المرتَّب
+    45؛ والذي يُخرِج 6 قراءةٌ لم يكتبها المقياس.
+    """
+
+    from alghanem.arabic.slgae_deposit import BORN_BLOCKS
+    from alghanem.arabic.slot_rights_algebra import RelationType
+
+    blocks = len(BORN_BLOCKS)
+    pairs = len(RelationType)
+    assert bonferroni_denominator() == blocks**2 * pairs == 75
+    assert blocks * (blocks + 1) // 2 * pairs == 45
+    assert bonferroni_denominator() != 6
+    signed = next(
+        decision for decision in DECISIONS if decision.identifier.startswith("ق-1")
+    )
+    assert signed.taken_branch is not None
+    assert "75" in signed.taken_branch
 
 
 def test_named_residuals_are_deposited() -> None:
     """البواقي المُسمّاةُ سبعٌ، ولا مكرَّرَ فيها."""
 
-    assert len(DECISION_REGISTER_NAMED_RESIDUALS) == 7
-    assert len(set(DECISION_REGISTER_NAMED_RESIDUALS)) == 7
+    assert len(DECISION_REGISTER_NAMED_RESIDUALS) == 8
+    assert len(set(DECISION_REGISTER_NAMED_RESIDUALS)) == 8

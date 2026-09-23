@@ -23,4 +23,4 @@ jobs:
       - run: pytest
       - run: ruff check .
       - run: ruff format --check .
-      - run: mypy src/hawk_dove
+      - run: mypy src/algebra src/hawk_dove

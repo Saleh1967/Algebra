@@ -1,10 +1,10 @@
-"""شجرةُ نتائجِ المشروع مبنيّةً ديكارتيًّا: خمسُ طبقاتٍ × أربعةُ أصنافِ قول.
+"""شجرةُ نتائجِ المشروع مبنيّةً ديكارتيًّا: ستُّ طبقاتٍ × أربعةُ أصنافِ قول.
 
 **لماذا شجرةٌ لا قائمة**: كان ما أُنجِز مبثوثًا في ستّةَ عشرَ ملفَّ تدقيق،
 يُقرَأ رقمًا رقمًا فلا يُرى ما **ليس** فيه. والقائمةُ تُظهِر ما عندك؛ والجداءُ
 يُظهِر ما ليس عندك. فتُقام الشجرةُ على محورين مغلقين — **الطبقةُ** التي يقع
 فيها القول، و**صنفُ القول** نفسِه — ويُفرَض تمامُها شرطَ إنشاءٍ
-(`results.Library`): كلُّ نقطةٍ من العشرين إمّا نتيجةٌ مُودَعةٌ بشروطها، وإمّا
+(`results.Library`): كلُّ نقطةٍ من الأربع والعشرين إمّا نتيجةٌ مُودَعةٌ بشروطها، وإمّا
 امتناعٌ مُعلَنٌ **يُسمّي ناقضَه**، وإمّا موضعٌ مفتوحٌ **يُسمّي فحصَه الفاصل**.
 
 **وما ليس في الشجرة**: السُّلَّمُ نفسُه (أحدَ عشرَ مستوًى، ستّةُ جسورٍ مبنيّةٌ
@@ -16,9 +16,9 @@
 نفسِها، ومصدرُه مكتوبٌ في حقل `source` من كلّ نتيجة. وهذا الملفُّ **يجمع
 ويُحصي**، ولا يقيس.
 
-`WHAT_THE_TREE_SAYS_ABOUT_ITSELF`: ستَّ عشرةَ خانةً مُودَعةً، وثلاثٌ مفتوحةٌ،
+`WHAT_THE_TREE_SAYS_ABOUT_ITSELF`: عشرون خانةً مُودَعةً، وثلاثٌ مفتوحةٌ،
 وواحدةٌ ممتنعة. ولا عمودَ ولا صفَّ مفتوحًا بتمامه — فالفجوةُ ههنا **خلايا لا
-محور**، بخلاف شبكة ش١–ش٥. وخمسُ نتائجَ من ستَّ عشرةَ **مبدئيّةٌ** لخرمِ شرطٍ
+محور**، بخلاف شبكة ش١–ش٥. وستُّ نتائجَ من عشرين **مبدئيّةٌ** لخرمِ شرطٍ
 مُسمًّى، وذلك يُطبَع مع العدد لا بعدَه.
 """
 
@@ -44,6 +44,7 @@ SH1, SH2, SH3, SH4, SH5 = COMPLETENESS_CONDITIONS
 LAYER = Axis(
     name="الطبقة",
     values=(
+        "ط٠ الرسمُ والحرف",
         "ط١ الصوتُ والمقطع",
         "ط٢ الوزنُ والصيغة",
         "ط٣ الجذرُ والمعجم",
@@ -64,6 +65,83 @@ GRID = Product(axes=(LAYER, KIND))
 
 MUSHAF = "أوراكلُ التقطيع: تقطيعُ المصحف كما وُسِم، مُعلَنٌ والقولُ مقيَّدٌ به"
 NO_ORACLE = "لا أوراكل: الاشتقاقُ من التعريف لا من وسمٍ خارجيّ"
+
+# ====================================================== ط٠ الرسمُ والحرف
+
+GRAPHEME_POSITIONS = Finding(
+    statement=(
+        "من ٣٦ محرفًا في المصحف، **واحدٌ** ذو موضعٍ واحدٍ في الكلمة (ة، "
+        "منتهى)؛ ومن ٦٣٠ زوجًا **زوجان** لا موضعَ يجمعهما. و**ي لا يقع في "
+        "آخر كلمةٍ ولا مرّةً واحدة** وى يقع ٦٬٠٤٦ — توزيعٌ متكاملٌ في الرسم"
+    ),
+    source="test_grapheme_positions",
+    unit="وقوعُ محرفٍ أساسٍ في موضعٍ من الكلمة، بعد إسقاط العلامات",
+    null="حصرٌ تامٌّ على ٧٧٬٤٢٨ كلمةً يُغني: كلُّ وقوعٍ يُصنَّف",
+    oracle="لا أوراكل: الموضعُ يُقرأ من الرسم نفسِه",
+    invariance="ثابتٌ تحت ترتيب الكلمات؛ غيرُ ثابتٍ تحت تعريفٍ أدقَّ للموضع",
+    residue=(
+        "«الموضع» ههنا موضعُ **الكلمة في الرسم** لا موضعُ المقطع ولا خانةُ "
+        "الجذر؛ ومن عرّفه أدقَّ فله عددٌ آخرُ لا يُنقَل إليه هذا"
+    ),
+)
+
+MERGE_COST = Finding(
+    statement=(
+        "النزولُ بالرسم إلى ما دون تمييزه يكلّف **١٧ نوعًا من ١٨٬٩٩٢** "
+        "(٠٫٠٩٠٪)، وكلُّها أزواجٌ تفترق في **موضعٍ واحدٍ** من صنفين: ة~ت "
+        "(١١) وء~ئ (٦). وى→ي تكلّف **صفرًا**: من ١٬٤٥١ نوعًا فيها ى، لا "
+        "واحدٌ له نظيرٌ بالياء"
+    ),
+    source="test_merge_cost_replication · test_substrate_convergence",
+    unit="نوعٌ مشكولٌ يُفقَد عند الاستبدال — لا وقوعٌ ولا جذر",
+    null="حصرٌ تامٌّ على الأنواع كلِّها: كلُّ نوعٍ يُطبَّق عليه الاستبدال",
+    oracle="لا أوراكل: الاستبدالُ يُجرى على الرسم ويُعَدّ أثرُه",
+    invariance=(
+        "غيرُ ثابتٍ تحت التطبيع: على أساسٍ مطبَّعٍ تتغيّر الأرقام، وذلك "
+        "**مُعلَنٌ ومقيس** لا مسكوتٌ عنه"
+    ),
+    residue=(
+        "هذه كلفةُ **ضغطٍ** لا كلفةُ **استرجاع**؛ ودمجٌ لا يُفقِد نوعًا قد "
+        "يُفقِد بتّاتِ كلّ كلمةٍ فيها أحدُ طرفيه، والمعياران يرتّبان "
+        "الأبجديّة بارتباطِ رتبٍ ٠٫٣٩٧ لا غير"
+    ),
+    unmet=(SH5,),
+)
+
+LOAD_ON_AFFIXES = Finding(
+    statement=(
+        "الحملُ الوظيفيُّ للرسم **يقع على أبجديّة الزوائد**: عشرةُ حروفٍ من "
+        "ثمانيةٍ وعشرين تدخل الزوائد، والأزواجُ الخمسةُ والأربعون التي "
+        "طرفاها منها (١١٫٩٪ من الأزواج) تحمل **٥٤٫٤٪ من الحمل** — تركيزٌ "
+        "٤٫٦ أضعاف. وحروفُ أثقل الأزواج كلُّها منها بلا استثناء"
+    ),
+    source="test_functional_load_arabic",
+    unit="نوعٌ مشكولٌ ينهار عند دمج زوجِ حروف — على ٣٧٨ زوجًا كلِّها",
+    null="التوزيعُ المتساوي: ١١٫٩٪ من الأزواج تحمل ١١٫٩٪ من الحمل لو تساوت",
+    oracle="زوائدُ ط٢ كما تُخرِجها المحاذاة، مُعلَنةً والقولُ مقيَّدٌ بها",
+    invariance="ثابتٌ تحت ترتيب الأزواج؛ مقيَّدٌ بتقطيع ط٢ للزوائد",
+    residue=(
+        "لا يقول هذا إنّ الجذورَ لا تُميَّز، بل إنّ **الرسمَ** يحمل تمييزَ "
+        "الصرف والأدوات أكثر؛ وقد يحمل السياقُ تمييزَ الجذور فلا يظهر ههنا"
+    ),
+)
+
+ZEROS_ARE_RARITY = Finding(
+    statement=(
+        "ثلاثةٌ وخمسون زوجًا حملُها **صفرٌ تامّ**، و**صفرٌ منها كلا حرفيه "
+        "شائع**: اثنان وعشرون كلاهما دون وسيط التردّد، وواحدٌ وثلاثون "
+        "أحدُهما. فالأصفارُ ندرةٌ بتمامها، ولا واحدَ منها امتناعٌ بنيويّ"
+    ),
+    source="test_functional_load_arabic · test_grapheme_positions",
+    unit="زوجُ حروفٍ حملُه صفرٌ، مصنَّفًا بتردّد طرفيه حول الوسيط",
+    null="حصرٌ تامٌّ على الأزواج الثلاثمئة والثمانية والسبعين",
+    oracle="لا أوراكل: التردّدُ والحملُ كلاهما معدودٌ من النصّ",
+    invariance="ثابتٌ تحت اختيار الوسيط حدًّا: لا زوجَ صفريٍّ طرفاه فوقه",
+    residue=(
+        "«ندرة» تعني أنّ مدوَّنةً أكبرَ قد تحسمها؛ ولا يُعرَف كم تلزم، ولا "
+        "يُقاس ذلك من داخل هذه المدوَّنة"
+    ),
+)
 
 # ======================================================= ط١ الصوتُ والمقطع
 
@@ -409,57 +487,67 @@ TREE = Library(
     product=GRID,
     placements=(
         Placement(
-            coordinate=(LAYER.values[0], KIND.values[0]), finding=SYLLABLE_INVENTORY
+            coordinate=(LAYER.values[0], KIND.values[0]), finding=GRAPHEME_POSITIONS
+        ),
+        Placement(coordinate=(LAYER.values[0], KIND.values[1]), finding=MERGE_COST),
+        Placement(
+            coordinate=(LAYER.values[0], KIND.values[2]), finding=LOAD_ON_AFFIXES
         ),
         Placement(
-            coordinate=(LAYER.values[0], KIND.values[1]), finding=DESCENT_ENUMERATION
+            coordinate=(LAYER.values[0], KIND.values[3]), finding=ZEROS_ARE_RARITY
         ),
         Placement(
-            coordinate=(LAYER.values[0], KIND.values[2]), finding=CODA_IS_NOT_FREE
+            coordinate=(LAYER.values[1], KIND.values[0]), finding=SYLLABLE_INVENTORY
         ),
         Placement(
-            coordinate=(LAYER.values[0], KIND.values[3]), finding=RATE_ACROSS_UNITS
+            coordinate=(LAYER.values[1], KIND.values[1]), finding=DESCENT_ENUMERATION
         ),
         Placement(
-            coordinate=(LAYER.values[1], KIND.values[0]), finding=MEALY_TRANSDUCER
+            coordinate=(LAYER.values[1], KIND.values[2]), finding=CODA_IS_NOT_FREE
         ),
         Placement(
-            coordinate=(LAYER.values[1], KIND.values[1]), finding=WAZN_TABLE_COUNTS
+            coordinate=(LAYER.values[1], KIND.values[3]), finding=RATE_ACROSS_UNITS
         ),
         Placement(
-            coordinate=(LAYER.values[1], KIND.values[2]),
+            coordinate=(LAYER.values[2], KIND.values[0]), finding=MEALY_TRANSDUCER
+        ),
+        Placement(
+            coordinate=(LAYER.values[2], KIND.values[1]), finding=WAZN_TABLE_COUNTS
+        ),
+        Placement(
+            coordinate=(LAYER.values[2], KIND.values[2]),
             finding=FORM_CARRIES_THE_DIVISION,
         ),
         Placement(
-            coordinate=(LAYER.values[1], KIND.values[3]), finding=MEALY_PRODUCT_AUDIT
+            coordinate=(LAYER.values[2], KIND.values[3]), finding=MEALY_PRODUCT_AUDIT
         ),
         ROOT_FROM_STRUCTURE,
         ROOT_CENSUS,
         Placement(
-            coordinate=(LAYER.values[2], KIND.values[2]), finding=MASDAR_TWO_SOURCE
+            coordinate=(LAYER.values[3], KIND.values[2]), finding=MASDAR_TWO_SOURCE
         ),
         Placement(
-            coordinate=(LAYER.values[2], KIND.values[3]), finding=WEAK_COLUMN_ESCAPED
+            coordinate=(LAYER.values[3], KIND.values[3]), finding=WEAK_COLUMN_ESCAPED
         ),
         Placement(
-            coordinate=(LAYER.values[3], KIND.values[0]), finding=IRAAB_SIGNATURES
+            coordinate=(LAYER.values[4], KIND.values[0]), finding=IRAAB_SIGNATURES
         ),
         Placement(
-            coordinate=(LAYER.values[3], KIND.values[1]), finding=IRAAB_ENUMERATION
+            coordinate=(LAYER.values[4], KIND.values[1]), finding=IRAAB_ENUMERATION
         ),
         Placement(
-            coordinate=(LAYER.values[3], KIND.values[2]), finding=CASE_MARKING_MEASURED
+            coordinate=(LAYER.values[4], KIND.values[2]), finding=CASE_MARKING_MEASURED
         ),
         Placement(
-            coordinate=(LAYER.values[3], KIND.values[3]), finding=CASE_DENOMINATOR
+            coordinate=(LAYER.values[4], KIND.values[3]), finding=CASE_DENOMINATOR
         ),
         MEANING_FROM_FORM,
         MAQAYIS_CENSUS,
         Placement(
-            coordinate=(LAYER.values[4], KIND.values[2]), finding=SEALED_FALSIFICATION
+            coordinate=(LAYER.values[5], KIND.values[2]), finding=SEALED_FALSIFICATION
         ),
         Placement(
-            coordinate=(LAYER.values[4], KIND.values[3]),
+            coordinate=(LAYER.values[5], KIND.values[3]),
             finding=AN_IDENTIFIER_IS_NOT_A_CATEGORY,
         ),
     ),
@@ -469,10 +557,10 @@ TREE = Library(
 def test_the_product_is_covered_and_nothing_was_forgotten() -> None:
     """عشرون نقطةً، وكلُّ نقطةٍ خانةٌ — والتمامُ شرطُ إنشاءٍ لا دعوى."""
 
-    assert GRID.size == 5 * 4 == 20
+    assert GRID.size == 6 * 4 == 24
     assert TREE.covers_the_product()
-    assert len(TREE.paths()) == 20
-    assert TREE.census() == {SHELVED: 16, FORBIDDEN: 1, OPEN: 3}
+    assert len(TREE.paths()) == 24
+    assert TREE.census() == {SHELVED: 20, FORBIDDEN: 1, OPEN: 3}
 
 
 def test_a_forgotten_branch_would_sink_the_tree() -> None:
@@ -480,28 +568,28 @@ def test_a_forgotten_branch_would_sink_the_tree() -> None:
 
     with pytest.raises(ResultsError) as raised:
         Library(name=TREE.name, product=GRID, placements=TREE.placements[1:])
-    assert "1 من 20" in str(raised.value)
+    assert "1 من 24" in str(raised.value)
 
 
-def test_sixteen_deposits_and_five_of_them_are_provisional() -> None:
+def test_twenty_deposits_and_six_of_them_are_provisional() -> None:
     """المبدئيُّ يُفصَل عن المُوثَّق بالعدّ، والشرطُ المخرومُ يُسمّى."""
 
-    assert len(TREE.findings()) == 16
-    assert len(TREE.certified()) == 11
-    assert len(TREE.provisional()) == 5
-    assert [one.standing for one in TREE.provisional()] == ["مبدئيّ"] * 5
+    assert len(TREE.findings()) == 20
+    assert len(TREE.certified()) == 14
+    assert len(TREE.provisional()) == 6
+    assert [one.standing for one in TREE.provisional()] == ["مبدئيّ"] * 6
 
     broken = TREE.broken_conditions()
     assert broken[SH1] == 0
     assert broken[SH2] == 3
     assert broken[SH3] == 1
     assert broken[SH4] == 0
-    assert broken[SH5] == 2
-    assert sum(broken.values()) == 6
+    assert broken[SH5] == 3
+    assert sum(broken.values()) == 7
 
 
 def test_the_most_broken_condition_is_the_name_not_the_count() -> None:
-    """ش١ سليمٌ في الستَّ عشرةَ كلِّها؛ والخرمُ الأكثرُ ش٢ — **اسمٌ يطابق المقيس**.
+    """ش١ سليمٌ في العشرين كلِّها؛ والخرمُ الأكثرُ ش٢ وش٥ معًا — **اسمٌ يطابق المقيس**.
 
     وذلك خبرٌ عن العمل لا عن العربيّة: ما عُدَّ عُدَّ عدًّا مباشرًا، ولكنّ
     ما سُمّي به المعدودُ جاوزه ثلاثَ مرّات — «٨٦ وقوعًا» شهادةً، و«١٢٠ وزنًا»
@@ -520,6 +608,7 @@ def test_the_gap_here_is_cells_not_a_column() -> None:
     assert TREE.slabs_entirely(OPEN) == ()
     assert TREE.slabs_entirely(FORBIDDEN) == ()
     assert TREE.slabs_entirely(SHELVED) == (
+        ("الطبقة", "ط٠ الرسمُ والحرف"),
         ("الطبقة", "ط١ الصوتُ والمقطع"),
         ("الطبقة", "ط٢ الوزنُ والصيغة"),
         ("الطبقة", "ط٤ القسمةُ والإعراب"),
@@ -540,7 +629,12 @@ def test_two_layers_and_two_kinds_are_not_distinguished_by_the_tree() -> None:
         ("ص٣ قياسٌ على مدوَّنة", "ص٤ تدقيقُ اتّساق"),
     )
     assert TREE.indistinguishable_values("الطبقة") == (
-        ("ط١ الصوتُ والمقطع", "ط٢ الوزنُ والصيغة", "ط٤ القسمةُ والإعراب"),
+        (
+            "ط٠ الرسمُ والحرف",
+            "ط١ الصوتُ والمقطع",
+            "ط٢ الوزنُ والصيغة",
+            "ط٤ القسمةُ والإعراب",
+        ),
     )
 
 
@@ -580,8 +674,8 @@ def test_every_deposit_names_its_source_and_its_residue() -> None:
     for finding in TREE.findings():
         assert finding.source.startswith("test_") or " · " in finding.source
         assert len(finding.residue) > 20
-    assert len(TREE.residues()) == 16
-    assert len({finding.residue for finding in TREE.findings()}) == 16
+    assert len(TREE.residues()) == 20
+    assert len({finding.residue for finding in TREE.findings()}) == 20
 
 
 def test_the_tree_prints_one_path_for_every_point() -> None:
@@ -590,9 +684,9 @@ def test_the_tree_prints_one_path_for_every_point() -> None:
     drawing = TREE.tree(width=64)
     lines = drawing.splitlines()
     assert lines[0] == TREE.name
-    assert len(lines) == 1 + 5 + 20
+    assert len(lines) == 1 + 6 + 24
     leaves = [line for line in lines if " · [" in line]
-    assert len(leaves) == 20
-    assert sum(f"[{SHELVED}]" in leaf for leaf in leaves) == 16
+    assert len(leaves) == 24
+    assert sum(f"[{SHELVED}]" in leaf for leaf in leaves) == 20
     assert sum(f"[{OPEN}]" in leaf for leaf in leaves) == 3
     assert sum(f"[{FORBIDDEN}]" in leaf for leaf in leaves) == 1

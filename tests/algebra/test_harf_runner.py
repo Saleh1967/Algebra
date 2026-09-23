@@ -101,7 +101,7 @@ def test_every_rule_appears_in_the_ablation_table() -> None:
     tokens = RUNNER.parse_alignment(RUNNER.SMOKE)  # type: ignore[attr-defined]
     table = RUNNER.ablation(tokens, RUNNER.NO_CASE)  # type: ignore[attr-defined]
     assert set(table) == set(RUNNER.ALL_RULES)  # type: ignore[attr-defined]
-    assert len(table) == 8
+    assert len(table) == 9  # ق٥ انقسمت ثلاثًا: حرفٌ ومبنيٌّ وفعل
 
 
 def test_the_renumbering_trap_is_mapped_not_guessed() -> None:

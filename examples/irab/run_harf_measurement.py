@@ -49,6 +49,7 @@ from harf_rules import (  # noqa: E402
     ALL_RULES,
     DEFER,
     NO_CASE,
+    R0D_RULES,
     SEALED_RULES,
     four_way,
     revised_irab_of,
@@ -102,9 +103,16 @@ def parse_alignment(text: str) -> list[Token]:
     for number, line in enumerate(text.splitlines(), 1):
         if not line.strip() or line.startswith("#"):
             continue
+        if line.split("\t")[0] == "surface":
+            continue  # ترويسةٌ تُتخطّى بالاسم لا بالموضع
         fields = line.split("\t")
+        if len(fields) == 8:
+            fields = fields[:7]  # عمودُ `ref` الثامنُ موضعٌ لا معطًى للقاعدة
         if len(fields) != 7:
-            raise ValueError(f"السطرُ {number}: {len(fields)} عمودًا والمُعلَنُ سبعة.")
+            raise ValueError(
+                f"السطرُ {number}: {len(fields)} عمودًا، والمقبولُ سبعةٌ أو ثمانيةٌ "
+                "بعمود `ref` موضعًا."
+            )
         surface, prefixes, suffixes, pos, deictic, prev_jarr, gold = fields
         tokens.append(
             Token(
@@ -227,10 +235,33 @@ def report(tokens: list[Token], defer_as: str) -> None:
     whole4 = four_way_score(tokens, ALL_RULES, defer_as)
     sealed4 = four_way_score(tokens, SEALED_RULES, defer_as)
     oracle4 = four_way_score(tokens, ALL_RULES, defer_as, oracle_pos=True)
-    print(f"الثلاثيُّ على الموسوم        : {_pct(whole3)}")
-    print(f"الرباعيُّ على الكلّ          : {_pct(whole4)}")
-    print(f"الرباعيُّ بق٥ المختومة وحدَها : {_pct(sealed4)}")
-    print(f"الرباعيُّ بوسمٍ صحيحٍ لط٧     : {_pct(oracle4)}")
+    r0d3 = three_way(tokens, R0D_RULES)
+    r0d4 = four_way_score(tokens, R0D_RULES, defer_as)
+    print("ثلاثُ مجموعاتِ قواعدَ تُقاس، ولا يُحكَم شرطٌ إلّا بالمجموعة التي خُتِم عليها:")
+    print(
+        f"  R0d (المختومُ عليها التسجيلُ الثاني)  ثلاثيّ {_pct(r0d3)}  رباعيّ {_pct(r0d4)}"
+    )
+    print(
+        f"  ق٥ المختومة (حرفٌ ومبنيُّ إحالة)      ثلاثيّ "
+        f"{_pct(three_way(tokens, SEALED_RULES))}  رباعيّ {_pct(sealed4)}"
+    )
+    print(
+        f"  R0e الكاملة (ومعها توسيعُ الفعل)      ثلاثيّ {_pct(whole3)}  "
+        f"رباعيّ {_pct(whole4)}"
+    )
+    print(f"  سقفُ الامتناع التامّ (وسمٌ مُشتَقٌّ من الهدف) رباعيّ {_pct(oracle4)}")
+    print()
+    print("تعارضُ المصدرين — ط٧ مقابلَ العرّاف، وهو أثقلُ ما ههنا:")
+    conflict = sum(1 for one in tokens if one.gold and one.pos in ("harf", "fi'l"))
+    missed = sum(1 for one in tokens if not one.gold and one.pos == "ism")
+    print(
+        f"  موسومٌ بحالةٍ وط٧ يقول حرفًا أو فعلًا: {conflict} "
+        f"= {_pct(Fraction(conflict, marked))} من الموسوم"
+    )
+    print(
+        f"  غيرُ موسومٍ وط٧ يقول اسمًا:           {missed} "
+        f"= {_pct(Fraction(missed, unmarked))} من غير الموسوم"
+    )
     print()
 
     print("جدولُ الاستئصال — زيادةُ كلّ قاعدةٍ وحدَها (الشرط هـ):")
@@ -259,11 +290,10 @@ def report(tokens: list[Token], defer_as: str) -> None:
         ("ب' ", SECOND_SEAL, joint(("ق١", "ق٢", "ق٤")), Fraction("0.05"), True),
         ("ك١ ", SECOND_SEAL, joint(("ق٦",)), Fraction("0.01"), True),
         ("ك٢ ", SECOND_SEAL, joint(("ق٤",)), Fraction(0), True),
-        ("ك٣ ", SECOND_SEAL, whole3, Fraction("0.88"), True),
+        ("ك٣ ", SECOND_SEAL, r0d3, Fraction("0.88"), True),
         ("ك٤ ", SECOND_SEAL, precision, Fraction("0.90"), True),
         ("ك٥ ", SECOND_SEAL, coverage, Fraction("0.93"), True),
         ("و  ", THIRD_SEAL, sealed4, baseline4 + Fraction("0.15"), True),
-        ("ز  ", THIRD_SEAL, oracle4 - whole4, Fraction("0.05"), False),
     )
     print("الأحكام:")
     for name, fingerprint, measured, threshold, at_least in rows:
@@ -272,6 +302,14 @@ def report(tokens: list[Token], defer_as: str) -> None:
             f"  {name} {fingerprint[:8]}…  المقيس {_pct(measured)}  "
             f"{sign} {_pct(threshold)}  ⇒  {_verdict(measured, threshold, at_least)}"
         )
+    print(
+        f"  ز   {THIRD_SEAL[:8]}…  المقيس {_pct(oracle4 - whole4)}  ≤   5.00٪  ⇒  VOID"
+    )
+    print(
+        "      وأوراكلُها مفقود: «الوسمُ الصحيح» ههنا مُشتَقٌّ من عمود الهدف "
+        "(ما له حالةٌ اسمٌ)، فالفرقُ يقيس المسافةَ إلى السقف لا ثمنَ ط٧ وحدَه. "
+        f"والرقمُ المستقلُّ عن ذلك منشورٌ فوق: {conflict} تعارضًا."
+    )
 
 
 SMOKE = """\

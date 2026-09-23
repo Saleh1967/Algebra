@@ -44,9 +44,17 @@ DEFER = "لم يُحسَم"
 """امتناعٌ عن علم: لا أدري — وهو غيرُ الذي قبله، والفرقُ يغيّر الحساب."""
 
 OUTCOMES = (RAF, NASB, JARR, NO_CASE, DEFER)
-ALL_RULES = ("ق٠", "ق١", "ق٢", "ق٣", "ق٤", "ق٥", "ق٥و", "ق٦")
+ALL_RULES = ("ق٠", "ق١", "ق٢", "ق٣", "ق٤", "ق٥ح", "ق٥م", "ق٥و", "ق٦")
 SEALED_RULES = tuple(rule for rule in ALL_RULES if rule != "ق٥و")
 """ما خُتِم: بلا «ق٥و» — توسيعُ الامتناع إلى الفعل، وهو لاحقٌ على الختم."""
+
+R0D_RULES = ("ق٠", "ق١", "ق٢", "ق٣", "ق٤", "ق٥م", "ق٦")
+"""مجموعةُ R0d التي عليها خُتِم التسجيلُ الثاني: امتناعٌ عن المبنيّ وحدَه.
+
+فلا امتناعَ فيها عن «حرف» ولا «فعل» من ط٧ — وتلك قاعدةٌ لاحقةٌ جاءت مع
+التسجيل الثالث. وقياسُ شرطٍ مختومٍ على R0d بمجموعة R0e قياسٌ لغير ما خُتِم،
+وهو عينُ ما رُدَّ على غيري فلا يُقبَل منّي.
+"""
 
 Record = Mapping[str, Any]
 
@@ -157,18 +165,22 @@ def revised_is_no_case(
     rules: Iterable[str] = ALL_RULES,
     oracle_pos: str | None = None,
 ) -> tuple[bool, str]:
-    """ق٥ المختومةُ وق٥و التوسيعُ برايتين، فيُقاس كلٌّ منهما وحدَه."""
+    """ثلاثُ راياتٍ لا واحدة: «حرفٌ» و«مبنيُّ إحالة» و«فعلٌ» — يُقاس كلٌّ وحدَه.
+
+    والمختومُ يقول «حرفاً **أو** مبنيَّ إحالة»، وهما شيئان؛ فجمعُهما تحت راية
+    يمنع قياسَ أحدهما. والفعلُ راية ثالثةٌ لأنّه لاحقٌ على الختم.
+    """
 
     enabled = set(rules)
     pos = oracle_pos if oracle_pos is not None else rec.get("pos")
-    if "ق٥" in enabled and pos == "harf":
-        return True, "ق٥ حرف"
+    if "ق٥ح" in enabled and pos == "harf":
+        return True, "ق٥ح حرفٌ عند ط٧"
     if "ق٥و" in enabled and pos == "fi'l":
-        return True, "ق٥و فعل — توسيعٌ بعد الختم"
-    if "ق٥" in enabled:
+        return True, "ق٥و فعلٌ عند ط٧ — توسيعٌ بعد الختم"
+    if "ق٥م" in enabled:
         for component in rec.get("components") or []:
             if component.get("kind") == "deictic":
-                return True, "ق٥ مبنيُّ إحالة"
+                return True, "ق٥م مبنيُّ إحالة"
     return False, ""
 
 

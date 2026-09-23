@@ -23,6 +23,7 @@ from algebra.simplicial import (
     boundary_matrix,
     closure_of,
     enumerate_complexes,
+    enumeration_passes,
     euler_characteristic,
     euler_witness_holds,
     matrix_rank,
@@ -139,3 +140,26 @@ def test_named_residuals_are_deposited() -> None:
 
     assert len(SIMPLICIAL_NAMED_RESIDUALS) == 3
     assert len(set(SIMPLICIAL_NAMED_RESIDUALS)) == 3
+
+
+def test_the_enumeration_is_priced_before_it_is_attempted() -> None:
+    """السقفُ مُعلَنٌ والثمنُ محسوبٌ قبل الدفع، فلا تُحاوَل دورةٌ لا تنتهي.
+
+    وكان التعدادُ بلا حارس: `n = 5` يدور ٦٧ مليونَ مرّة، و`n = 6` مئةً وأربعًا
+    وأربعين مليونَ مليار. فوحدةٌ تزن بلوغَ اختبارٍ حدَّه لا يليق بها أن تحاول
+    ما لا يُبلَغ — والرقمُ يُحسَب من `2 ** (2**n − n − 1)` لا يُجرَّب.
+    """
+
+    assert [enumeration_passes(n) for n in (1, 2, 3, 4)] == [1, 2, 16, 2_048]
+    assert enumeration_passes(5) == 67_108_864
+    assert enumeration_passes(6) == 144_115_188_075_855_872
+
+    with pytest.raises(SimplicialError) as raised:
+        enumerate_complexes(5)
+    assert "67,108,864" in str(raised.value)
+    assert "4,096" in str(raised.value)
+
+    # ورفعُ السقف صريحٌ لا ضمنيّ، ويبقى الحدُّ الأدنى عاملًا
+    assert len(enumerate_complexes(4, passes_at_most=2_048)) == 114
+    with pytest.raises(SimplicialError):
+        enumerate_complexes(4, passes_at_most=2_047)

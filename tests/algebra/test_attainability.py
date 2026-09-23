@@ -118,3 +118,43 @@ def test_named_residuals_are_deposited() -> None:
 
     assert len(ATTAINABILITY_NAMED_RESIDUALS) == 2
     assert len(set(ATTAINABILITY_NAMED_RESIDUALS)) == 2
+
+
+def test_a_reading_may_not_contradict_what_it_was_derived_from() -> None:
+    """حقلٌ مُشتَقٌّ يُخالف اشتقاقَه ليس قراءةً بل دعوًى ثانيةً تُرَدّ.
+
+    وكان البناءُ يقبل قراءةً كاذبةً في نفسها: حدٌّ ½ وتكرارٌ ١٠ مع أرضيّةٍ
+    ⅓ ومخارجَ ٩٩ — والمشتقُّ منهما ١⁄١١ وخمسة. فالقراءةُ تُصدَّق بما اشتُقّت
+    منه لا بمن كتبها.
+    """
+
+    sound = read_attainability(Fraction(1, 2), 10)
+    assert sound.floor == Fraction(1, 11)
+    assert sound.outcomes == 5
+
+    for wrong in (
+        {"floor": Fraction(1, 3)},
+        {"outcomes": 99},
+        {"outcomes": 0, "standing": Attainability.UNREACHABLE},
+    ):
+        with pytest.raises(AttainabilityError):
+            AttainabilityReading(
+                **{
+                    "threshold": Fraction(1, 2),
+                    "replicates": 10,
+                    "floor": Fraction(1, 11),
+                    "outcomes": 5,
+                    "standing": Attainability.ROOMY,
+                    **wrong,
+                }
+            )
+
+    # و«لا يُبلَغ» مع مخارجَ مُعلَنةٍ تناقضٌ كذلك
+    with pytest.raises(AttainabilityError):
+        AttainabilityReading(
+            threshold=Fraction(1, 2),
+            replicates=10,
+            floor=Fraction(1, 11),
+            outcomes=5,
+            standing=Attainability.UNREACHABLE,
+        )

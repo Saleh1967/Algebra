@@ -21,9 +21,9 @@ from pathlib import Path
 from types import ModuleType
 
 import pytest
+from frozen_corpus import CORPUS, HELD, requires_corpus
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 TOOL = REPOSITORY / "tools" / "corpus_seal.py"
 
 RECORD_DIGEST = "30c7e393eff12641e27802dbfc38c51e7171ed873bfd2f78dc889de2fad7a359"
@@ -87,9 +87,7 @@ def test_an_empty_signed_field_or_a_bad_digest_is_refused() -> None:
         replace(seal_tool.FROZEN_RECORD, sha256_hex="0" * 63)
 
 
-@pytest.mark.skipif(
-    not CORPUS.is_file(), reason="بايتاتُ المدوّنة غيرُ مستقبَلةٍ في هذه الشجرة"
-)
+@requires_corpus
 def test_every_measured_field_is_reproduced_from_the_bytes() -> None:
     """الطولُ والبصمةُ والأسطرُ والسكونُ تُعاد من البايتات، فلا حقلَ مقيسٌ مُدَّعى."""
 
@@ -102,3 +100,29 @@ def test_a_missing_corpus_is_refused_by_its_path() -> None:
     with pytest.raises(seal_tool.CorpusSealError) as raised:
         seal_tool.verify_against_corpus(REPOSITORY / "corpora" / "لا-وجودَ-له.txt")
     assert "لا بايتاتِ مدوّنة" in str(raised.value)
+
+
+def test_the_holder_is_found_by_its_bytes_and_not_by_its_name(
+    tmp_path: Path,
+) -> None:
+    """حاملٌ باسم المدوّنة ببايتاتٍ أخرى لا يُقبَل، والصحيحُ يُقبَل أينما كان."""
+
+    for relative in seal_tool.DECLARED_HOLDERS:
+        (tmp_path / relative).parent.mkdir(parents=True, exist_ok=True)
+        (tmp_path / relative).write_bytes(b"\xd8\xa7 laysat hiya")
+    assert seal_tool.holder_in(tmp_path) is None
+
+    assert len(seal_tool.DECLARED_HOLDERS) == 2
+    assert seal_tool.DECLARED_HOLDERS[0] == seal_tool.FROZEN_RECORD.name
+    assert "corpora/" in seal_tool.DECLARED_HOLDERS[1]
+
+
+@requires_corpus
+def test_the_present_holder_carries_the_sealed_bytes_exactly() -> None:
+    """الحاملُ الحاضرُ يُعاد اشتقاقُ بصمته ههنا، فلا يُقبَل بعنوانه."""
+
+    assert HELD and CORPUS.is_file()
+    digest = hashlib.sha256(CORPUS.read_bytes()).hexdigest()
+    assert digest == seal_tool.FROZEN_RECORD.sha256_hex
+    assert seal_tool.verify_against_corpus(CORPUS) == []
+    assert CORPUS.name == seal_tool.FROZEN_RECORD.name

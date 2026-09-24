@@ -27,15 +27,11 @@ from __future__ import annotations
 from fractions import Fraction
 from pathlib import Path
 
-import pytest
+from frozen_corpus import requires_corpus
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_file(),
-    reason="بايتاتُ المدوّنة المُجمَّدة غيرُ مستقبَلةٍ في هذه الشجرة",
-)
+pytestmark = requires_corpus
 
 # (المجموعة، الحجم، أزواجُ القياس، مئينُها: داخلَ الكلمة · عابرًا · بالضبط)
 MEASURED: tuple[tuple[str, int, int, Fraction, Fraction, Fraction], ...] = (

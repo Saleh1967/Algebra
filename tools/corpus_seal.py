@@ -15,6 +15,12 @@
 يُعاد اشتقاقُه من البايتات في `verify_against_corpus`، فمخالفتُه تُوقِف
 ولا تُطوى.
 
+`THE_NAME_IS_AN_ADDRESS_AND_THE_BYTES_ARE_THE_PROOF`: والمدوّنةُ تُطلَب
+**ببصمتها لا بمسارها**: فالحواملُ مُعلَنةٌ في `DECLARED_HOLDERS`، ويُقبَل
+منها ما طابقت بايتاتُه السجلَّ ويُرَدّ ما خالف. فملفٌّ باسمها في غير
+موضعها **يُوجَد**، وملفٌّ في موضعها بغير بايتاتها **لا يُقبَل** — والاسمُ
+عنوانٌ والبصمةُ دليل.
+
 `THE_READING_CARRIES_ITS_KIND_INSIDE_THE_RECORD`: والروايةُ في السجلّ
 بمنزلتها: **منسوبةٌ استدلالًا** بثلاثة فوارقَ مُعلَنة، لا مرويّةٌ بسند.
 فمن نقل الاسمَ نقل معه أنّه استدلال، أو خالف السجلَّ ببصمته.
@@ -108,8 +114,39 @@ RECORD_DIGEST: Final[str] = rederive_record_digest()
 """ختمُ السجلّ؛ وبه يُستشهَد في أوراكل ما بعده بدل النثر."""
 
 
+DECLARED_HOLDERS: Final[tuple[str, ...]] = (
+    "quran-simple-enhanced.txt",
+    "corpora/quran-simple-enhanced.txt",
+)
+"""حواملُ مُعلَنةٌ للبايتات: إيداعُ صاحب المستودع، ثمّ هدفُ الاستقبال المحلّيّ.
+
+وترتيبُها ترتيبُ **العنوان المطبوع** لا ترتيبُ تفضيلٍ في المحتوى، إذ لا
+يُقبَل حاملٌ إلّا ببصمةٍ واحدة — فالمقبولان متطابقان بايتةً بايتة.
+"""
+
+
 def corpus_path() -> Path:
+    """عنوانُ الاستقبال المحلّيّ — عنوانٌ لا دليل؛ وقد لا يكون فيه شيء."""
+
     return REPOSITORY / "corpora" / FROZEN_RECORD.name
+
+
+def holder_in(
+    tree: Path = REPOSITORY, record: SealedCorpus = FROZEN_RECORD
+) -> Path | None:
+    """أوّلُ حاملٍ مُعلَنٍ **تطابق بايتاتُه** بصمةَ السجلّ، أو لا شيء.
+
+    ولا يُقبَل حاملٌ بالاسم: ملفٌّ في موضعٍ مُعلَنٍ ببصمةٍ أخرى يُتخطّى
+    كأنّه غائب، إذ المطلوبُ هذه البايتاتُ بعينها لا ملفٌّ يحمل اسمَها.
+    """
+
+    for relative in DECLARED_HOLDERS:
+        candidate = tree / relative
+        if not candidate.is_file():
+            continue
+        if hashlib.sha256(candidate.read_bytes()).hexdigest() == record.sha256_hex:
+            return candidate
+    return None
 
 
 def verify_against_corpus(path: Path | None = None) -> list[str]:
@@ -118,7 +155,7 @@ def verify_against_corpus(path: Path | None = None) -> list[str]:
     ولا يُفحَص الموقَّعُ ههنا: وسمُ المصدر توقيعٌ لا يُشتَقّ من بايتة.
     """
 
-    resolved = corpus_path() if path is None else path
+    resolved = (holder_in() or corpus_path()) if path is None else path
     if not resolved.is_file():
         raise CorpusSealError(f"لا بايتاتِ مدوّنةٍ في {resolved}.")
     data = resolved.read_bytes()

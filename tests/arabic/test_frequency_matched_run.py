@@ -34,17 +34,13 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 
-import pytest
+from frozen_corpus import requires_corpus
 
 from algebra.signified import Prediction, Verdict
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_file(),
-    reason="بايتاتُ المدوّنة المُجمَّدة غيرُ مستقبَلةٍ في هذه الشجرة",
-)
+pytestmark = requires_corpus
 
 MATCHED_SEAL = "5e3656d53a1dceed7a151d1067813087e5b6f14faed6635c51729f8d1e5c4e27"
 

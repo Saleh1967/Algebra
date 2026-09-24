@@ -116,8 +116,8 @@ def test_a_reading_without_outcomes_can_only_be_unreachable() -> None:
 def test_named_residuals_are_deposited() -> None:
     """الباقيان المُسمّيان، ولا مكرَّرَ فيهما."""
 
-    assert len(ATTAINABILITY_NAMED_RESIDUALS) == 2
-    assert len(set(ATTAINABILITY_NAMED_RESIDUALS)) == 2
+    assert len(ATTAINABILITY_NAMED_RESIDUALS) == 3
+    assert len(set(ATTAINABILITY_NAMED_RESIDUALS)) == 3
 
 
 def test_a_reading_may_not_contradict_what_it_was_derived_from() -> None:

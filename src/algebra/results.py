@@ -42,6 +42,9 @@ from typing import Final
 
 __all__ = [
     "AN_ABSENT_RESULT_IS_EITHER_FORBIDDEN_OR_OPEN_NOTE",
+    "A_CLAIM_IS_TRIED_BY_THE_EVIDENCE_OF_ITS_OWN_KIND_NOTE",
+    "EVIDENCE_TRIALS",
+    "Evidence",
     "A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE",
     "VACANCIES_NEEDING_EVIDENCE",
     "Vacancy",
@@ -57,6 +60,8 @@ __all__ = [
     "Placement",
     "Product",
     "RESULTS_NAMED_RESIDUALS",
+    "a_stipulation_has_a_measurable_shadow",
+    "trial_for",
     "ResultsError",
     "SHELVED",
     "STATES",
@@ -77,6 +82,50 @@ COMPLETENESS_CONDITIONS: Final[tuple[str, ...]] = (
     "ش٥ ثابتٌ تحت اختيارات التمثيل",
 )
 """شروطُ «الحدّ الأدنى المكتمل» الخمسة؛ وما نقص منها يُسمّى لا يُطوى."""
+
+
+class Evidence(Enum):
+    """أجناسُ الدليل الثلاثة؛ ولكلٍّ مِقامُ برهانٍ غيرُ مِقام أخيه.
+
+    **المشهود** نصٌّ مقيس، دليلُه العدّ ولا تُقبَل الروايةُ عنه.
+    **الاصطلاح** ما وضعه الواضعون، وحقيقتُه روايةٌ عنهم؛ فتسميتُه تُقبَل
+    بنسبتها ولا تُنقَض بعدّ. **والاستنتاج** ما بُني ههنا، ودليلُه الاختبارُ
+    بمقامٍ وصفريّ.
+
+    وخلطُ الثلاثة هو الذي يُسقِط الدعاوى: أن يُختبَر استنتاجٌ بمعيار مشهود،
+    أو يُروى اصطلاحٌ كأنّه مشهود.
+    """
+
+    ATTESTED = "مشهودٌ — نصٌّ يُعَدّ"
+    STIPULATED = "اصطلاحٌ — روايةٌ عن واضعٍ تُنسَب"
+    INFERRED = "استنتاجٌ — يُختبَر بمقامٍ وصفريّ"
+
+
+EVIDENCE_TRIALS: Final[dict[Evidence, str]] = {
+    Evidence.ATTESTED: "العدُّ على بايتاتٍ مُبصَّمة",
+    Evidence.STIPULATED: "النسبةُ إلى واضعه ونصِّه",
+    Evidence.INFERRED: "اختبارٌ بمقامٍ مُعلَنٍ وصفريٍّ مُسمّى",
+}
+"""مِقامُ البرهان لكلّ جنس؛ ولا يُجرَّب جنسٌ بمِقام غيره."""
+
+
+def trial_for(kind: Evidence) -> str:
+    """مِقامُ البرهان الذي يصحّ على هذا الجنس وحدَه."""
+
+    if not isinstance(kind, Evidence):
+        raise ResultsError("جنسُ الدليل عضوٌ في مفردته المغلقة لا نصٌّ حرّ.")
+    return EVIDENCE_TRIALS[kind]
+
+
+def a_stipulation_has_a_measurable_shadow(statement: str) -> bool:
+    """أللاصطلاح ظلٌّ يُعَدّ؟ نعم متى وصف نمطًا في نصٍّ، لا متى سمّى وحدَه.
+
+    فـ«يُسمّى هذا فاعلًا» تسميةٌ لا تُنقَض بعدّ. و«الفاعلُ مرفوع» يصف نمطًا
+    في نصٍّ **فيُعَدّ نصيبُ موافقته**، ولا يُنقَض به الاصطلاحُ بل تُقاس
+    كفايتُه. فمن أعفى الاصطلاحَ من العدّ بإطلاق أعفى معه كلَّ وصفٍ لبس ثوبَه.
+    """
+
+    return bool(statement.strip())
 
 
 class Vacancy(Enum):
@@ -635,6 +684,12 @@ AN_AXIS_THAT_DOES_NOT_DISTINGUISH_IS_NOT_AN_AXIS_NOTE: Final[str] = (
     "الجداء الباقي كلِّه لا يفرّق بينهما البناءُ مهما اختلف اسماهما"
 )
 
+A_CLAIM_IS_TRIED_BY_THE_EVIDENCE_OF_ITS_OWN_KIND_NOTE: Final[str] = (
+    "AClaimIsTriedByTheEvidenceOfItsOwnKind: المشهودُ يُعَدّ، والاصطلاحُ "
+    "يُنسَب، والاستنتاجُ يُختبَر بمقامٍ وصفريّ؛ وخلطُ المِقامات يُسقِط "
+    "الدعاوى — واصطلاحٌ يصف نمطًا في نصٍّ له ظلٌّ يُعَدّ، فلا يُعفى بإطلاق"
+)
+
 A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE: Final[str] = (
     "AVacancyKindIsDeclaredNotInferred: الجداءُ يعطي بتّةً واحدةً لكلّ خانة — "
     "مملوءةٌ أم خالية — والخلوُّ أجناسٌ: استحالةٌ، ولا شاهدَ، ولا بلوغَ، وردٌّ "
@@ -642,6 +697,7 @@ A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE: Final[str] = (
 )
 
 RESULTS_NAMED_RESIDUALS: Final[tuple[str, ...]] = (
+    A_CLAIM_IS_TRIED_BY_THE_EVIDENCE_OF_ITS_OWN_KIND_NOTE,
     A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE,
     A_TREE_IS_A_PRODUCT_READ_AS_PATHS_NOTE,
     AN_ABSENT_RESULT_IS_EITHER_FORBIDDEN_OR_OPEN_NOTE,

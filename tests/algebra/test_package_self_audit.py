@@ -74,12 +74,16 @@ def test_every_data_class_either_constrains_or_is_named() -> None:
 
 
 def test_the_share_that_constrains_in_its_constructor_is_reported() -> None:
-    """ستّةٌ وثلاثون من واحدٍ وأربعين تقيّد في مُنشئها — والرقمُ يُطبَع لا يُدَّعى."""
+    """ثمانيةٌ وثلاثون من ثلاثةٍ وأربعين تقيّد في مُنشئها — والرقمُ يُطبَع لا يُدَّعى.
+
+    وكانت ستًّا وثلاثين من إحدى وأربعين؛ فزاد `Taught` و`Segment` في `bridge`،
+    وكلاهما يقيّد في مُنشئه. والعدُّ يُعاد عند كلّ زيادةٍ ولا يُترَك مكتوبًا.
+    """
 
     classes = _data_classes()
     guarded = [name for name, node in classes if _has_post_init(node)]
-    assert len(classes) == 41
-    assert len(guarded) == 36
+    assert len(classes) == 43
+    assert len(guarded) == 38
     assert len(classes) - len(guarded) == len(
         COMPOSED_OF_CONSTRAINED_PARTS | RAW_READINGS
     )

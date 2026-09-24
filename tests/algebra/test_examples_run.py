@@ -56,6 +56,10 @@ NEEDS_A_CORPUS: dict[str, str] = {
     "rasm/run_adjacency_null.py": (
         "يحتاج المحاذاةَ الكاملةَ (`--aligned`) وهي متنٌ لم يُودَع؛ " "والشفرةُ وحدَها ههنا"
     ),
+    "shahid/run_shahid.py": (
+        "يحتاج المحاذاةَ ببصمتها (`--aligned` و`--digest` و`--closure`) "
+        "وإسنادَ الأصناف؛ ولا مدوّنةَ مودَعةٌ ههنا"
+    ),
 }
 
 
@@ -76,16 +80,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """ثلاثةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """أربعةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 13
+    assert len(found) == 14
     assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 2
+    assert len(NEEDS_A_CORPUS) == 3
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -116,8 +120,8 @@ def test_seven_examples_still_import_the_ported_package_and_now_run() -> None:
     assert all(name.startswith("arabic/") for name in foreign)
     assert set(foreign) <= set(RUNNABLE)
 
-    # والستّةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 6
+    # والسبعةُ الباقيةُ لا تستوردها ألبتّة
+    assert len(_examples()) - len(foreign) == 7
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

@@ -18,6 +18,13 @@
 تساويهما** ولا يُفصَل بينهما بترتيب الأبجديّة ولا بأيّ حيلة. فالصدارةُ
 لمجموعةٍ لا لواحد، وكسرُ التساوي صمتًا يصنع «أوّلَ» لا وجودَ له.
 
+`A_PLAIN_TEXT_AND_AN_ALIGNMENT_ARE_TWO_DOORS_WITH_ONE_GATE`: وللمدخل بابان
+لا واحد: محاذاةٌ بعمودٍ مُسمًّى (`--aligned`)، ونصٌّ سطرًا لكلّ آية
+(`--text`). وبابُ النصّ لازمٌ لأنّ المدوّنةَ المُجمَّدةَ نصٌّ لا جدول؛ ولولاه
+لاحتاج التشغيلُ **محوّلًا يُكتَب عند وصول البايتات**، وذلك نقضُ «بلا تعديلِ
+سطر». والإغلاقُ في باب النصّ **عددُ الأسطر**، وفي باب المحاذاة عددُ الصفوف،
+ويُسمَّى أيُّهما يُعَدّ.
+
 `THE_INVENTORY_IS_A_DENOMINATOR_AND_IT_IS_DECLARED`: وعددُ الحروف الداخلةِ
 يتبدّل بالسياسة، فيُطبَع مع كلّ جدول، ويُرَدّ التشغيلُ إن خالف ما أُعلِن
 في `--expect-letters`.
@@ -81,8 +88,8 @@ def drawn_letters(text: str, fold: dict[str, str], alphabet: str) -> str:
     return "".join(out)
 
 
-def read_words(path: Path, policy: str, digest: str, closure: int) -> list[str]:
-    """الكلماتُ مرسومةً، بعد فحص البصمة والإغلاق؛ ويُرَدّ ما خالف أيَّهما."""
+def _checked(path: Path, policy: str, digest: str) -> tuple[dict[str, str], str]:
+    """افحص السياسةَ والبصمةَ قبل قراءة حرفٍ واحد؛ وأرجِع أداةَ الرسم."""
 
     if policy not in POLICIES:
         raise TransitionError(
@@ -93,7 +100,20 @@ def read_words(path: Path, policy: str, digest: str, closure: int) -> list[str]:
         raise TransitionError(
             f"بصمةُ الملفّ {seen[:12]}… والمُعلَنةُ {digest[:12]}… — مدوّنتان لا مدوّنة."
         )
-    fold, alphabet = POLICIES[policy]
+    return POLICIES[policy]
+
+
+def _closed(counted: int, closure: int, unit: str) -> None:
+    if counted != closure:
+        raise TransitionError(
+            f"{counted} {unit} في الملفّ و{closure} في الإغلاق المُعلَن؛ والفرقُ يُعلَن."
+        )
+
+
+def read_words(path: Path, policy: str, digest: str, closure: int) -> list[str]:
+    """الكلماتُ من محاذاةٍ بعمود `surface`؛ والإغلاقُ عددُ الصفوف."""
+
+    fold, alphabet = _checked(path, policy, digest)
     rows = 0
     words: list[str] = []
     with path.open(encoding="utf-8") as handle:
@@ -102,12 +122,30 @@ def read_words(path: Path, policy: str, digest: str, closure: int) -> list[str]:
             word = drawn_letters(row["surface"], fold, alphabet)
             if word:
                 words.append(word)
-    if rows != closure:
-        raise TransitionError(
-            f"{rows} صفًّا في الملفّ و{closure} في الإغلاق المُعلَن؛ والفرقُ يُعلَن."
-        )
+    _closed(rows, closure, "صفًّا")
     if not words:
         raise TransitionError("لا كلمةَ واحدةٌ قُرِئت؛ فالعمودُ أو المسارُ خطأ.")
+    return words
+
+
+def read_text_words(path: Path, policy: str, digest: str, closure: int) -> list[str]:
+    """الكلماتُ من نصٍّ سطرًا لكلّ آية؛ والإغلاقُ **عددُ الأسطر** لا الصفوف.
+
+    والسطرُ الفارغُ يُعَدّ سطرًا في الإغلاق ولا يُخرِج كلمة: فالإغلاقُ عن
+    الملفّ كما هو، والعدُّ عن حروفه — ولا يُطوى أحدُهما في الآخر.
+    """
+
+    fold, alphabet = _checked(path, policy, digest)
+    lines = path.read_text(encoding="utf-8").splitlines()
+    words: list[str] = []
+    for line in lines:
+        for token in line.split():
+            drawn = drawn_letters(token, fold, alphabet)
+            if drawn:
+                words.append(drawn)
+    _closed(len(lines), closure, "سطرًا")
+    if not words:
+        raise TransitionError("لا كلمةَ واحدةٌ قُرِئت؛ فالمسارُ أو الترميزُ خطأ.")
     return words
 
 
@@ -165,7 +203,9 @@ def expectation(
 
 def build_argument_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="تعدادُ انتقالات الحروف ببصمته")
-    parser.add_argument("--aligned", type=Path, required=True)
+    doors = parser.add_mutually_exclusive_group(required=True)
+    doors.add_argument("--aligned", type=Path, help="محاذاةٌ بعمود `surface`")
+    doors.add_argument("--text", type=Path, help="نصٌّ سطرًا لكلّ آية")
     parser.add_argument("--digest", required=True)
     parser.add_argument("--closure", type=int, required=True)
     parser.add_argument("--policy", choices=sorted(POLICIES), required=True)
@@ -177,9 +217,9 @@ def build_argument_parser() -> argparse.ArgumentParser:
 def run(arguments: argparse.Namespace) -> list[str]:
     """شغِّل التعدادَ واطبع الجردَ والصدارةَ المتساوية والهامشين."""
 
-    words = read_words(
-        arguments.aligned, arguments.policy, arguments.digest, arguments.closure
-    )
+    door = arguments.aligned if arguments.aligned is not None else arguments.text
+    reader = read_words if arguments.aligned is not None else read_text_words
+    words = reader(door, arguments.policy, arguments.digest, arguments.closure)
     pairs, first, second, places = census(words)
     inventory = sorted(set(first) | set(second))
     if arguments.expect_letters is not None and len(inventory) != (
@@ -193,8 +233,10 @@ def run(arguments: argparse.Namespace) -> list[str]:
     rows = rows_of_probability(pairs, first)
 
     lines = [
-        f"النسبة: {arguments.aligned.name} ({arguments.digest[:8]}…) · "
-        f"السياسة: {arguments.policy} · الإغلاق: {arguments.closure}",
+        f"النسبة: {door.name} ({arguments.digest[:8]}…) · "
+        f"السياسة: {arguments.policy} · "
+        f"الإغلاق: {arguments.closure} "
+        + ("صفًّا" if arguments.aligned is not None else "سطرًا"),
         f"الجرد: {len(inventory)} حرفًا · الخانات: {len(inventory) ** 2}",
         f"المواضع: {places} · الأزواجُ المرصودة: {len(pairs)} · "
         f"الخالية: {len(inventory) ** 2 - len(pairs)}",

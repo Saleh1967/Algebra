@@ -161,3 +161,54 @@ def test_a_full_run_prints_the_inventory_and_the_tie(tmp_path: Path) -> None:
     assert "النسبة:" in joined and "مطويّ" in joined
     assert "الجرد:" in joined and "الصدارة:" in joined
     assert "والتساوي يُعلَن ولا يُكسَر" in joined
+
+
+def _write_text(folder: Path, lines: tuple[str, ...]) -> tuple[Path, str, int]:
+    path = folder / "matn.txt"
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    return path, hashlib.sha256(path.read_bytes()).hexdigest(), len(lines)
+
+
+def test_the_plain_text_door_counts_lines_not_rows(tmp_path: Path) -> None:
+    """بابُ النصّ إغلاقُه **عددُ الأسطر**؛ فمدوّنةٌ نصّيّةٌ لا تحتاج محوّلًا."""
+
+    lines = ("بات باب", "تاب ناب")
+    path, digest, count = _write_text(tmp_path, lines)
+    words = transitions.read_text_words(path, "مطويّ", digest, count)
+    assert words == ["بات", "باب", "تاب", "ناب"]
+
+    with pytest.raises(transitions.TransitionError) as raised:
+        transitions.read_text_words(path, "مطويّ", digest, count + 1)
+    assert "سطرًا" in str(raised.value)
+
+
+def test_an_empty_line_counts_in_the_closure_and_yields_no_word(
+    tmp_path: Path,
+) -> None:
+    """السطرُ الفارغُ يُعَدّ في الإغلاق ولا يُخرِج كلمة — ولا يُطوى أحدُهما."""
+
+    lines = ("بات", "", "ناب")
+    path, digest, count = _write_text(tmp_path, lines)
+    assert count == 3
+    words = transitions.read_text_words(path, "مطويّ", digest, count)
+    assert words == ["بات", "ناب"]
+
+
+def test_the_two_doors_are_mutually_exclusive_and_one_is_required(
+    tmp_path: Path,
+) -> None:
+    """بابان لا يجتمعان ولا يغيبان معًا: المحاذاةُ أو النصّ، ويُسمّى المعدود."""
+
+    path, digest, count = _write_text(tmp_path, ("بات",))
+    parser = transitions.build_argument_parser()
+    common = ["--digest", digest, "--closure", str(count), "--policy", "مطويّ"]
+
+    with pytest.raises(SystemExit):
+        parser.parse_args(common)  # لا بابَ أُعلِن
+    with pytest.raises(SystemExit):
+        parser.parse_args(["--aligned", str(path), "--text", str(path), *common])
+
+    arguments = parser.parse_args(["--text", str(path), *common])
+    lines = transitions.run(arguments)
+    assert "سطرًا" in lines[0]
+    assert path.name in lines[0]

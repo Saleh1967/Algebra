@@ -30,7 +30,9 @@ from __future__ import annotations
 import argparse
 import math
 import statistics
+import unicodedata
 from collections import defaultdict
+from collections.abc import Callable
 from dataclasses import dataclass
 from fractions import Fraction
 from pathlib import Path
@@ -77,6 +79,44 @@ class ImtihanError(ValueError):
 
 
 @dataclass(frozen=True, slots=True)
+class Authority:
+    """الجهةُ الواسمة: كتابٌ مُسمًّى، يُقارَن بمُعلِن الدعوى ولا يُفترَض استقلالُه.
+
+    القانونُ مأخوذٌ من شجرة الغانم بنصّه: **شهادةُ ورودِ اللفظ ليست شهادةَ صحّةِ
+    تفسيره**. فحلُّ موضعٍ في مصدرٍ مُبصَّمٍ يُثبِت الوقوعَ وحدَه، ولا يُثبِت
+    جنسَه ولا محمولَه ولا مضمونَ إفادته؛ وذلك وسمٌ يحتاج **جهةً تُسمّى**.
+    وفصلُ الملفّ عن الشفرة لا يصنع استقلالًا؛ إنّما يجعله مكتوبًا يُقارَن.
+    فيُكتَب مُعلِنُ الدعوى ههنا لتقع المقارنة، ولا يُطوى.
+    """
+
+    authority_id: str
+    authority_note: str
+    declarer_id: str
+
+    def __post_init__(self) -> None:
+        for value, name in (
+            (self.authority_id, "اسمُ الجهة الواسمة"),
+            (self.authority_note, "بيانُ الجهة"),
+            (self.declarer_id, "مُعلِنُ الدعوى"),
+        ):
+            if not value.strip():
+                raise ImtihanError(f"{name} يُكتَب؛ وبدونه لا تقع المقارنة.")
+        if self.authority_id.strip() == self.declarer_id.strip():
+            raise ImtihanError(
+                f"«{self.authority_id}» واسمٌ ومُعلِنٌ معًا — ووسمٌ يكتبه صاحبُ "
+                "الدعوى على دعواه مردودٌ بالبناء، وفصلُ الملفّ لا يُغني."
+            )
+
+
+def _exact(first: str, second: str) -> Fraction:
+    """تطابقٌ تامٌّ بعد التسوية: واحدٌ أو صفرٌ، ولا ثالث."""
+
+    left = unicodedata.normalize("NFC", first.strip())
+    right = unicodedata.normalize("NFC", second.strip())
+    return Fraction(1) if left == right and left else Fraction(0)
+
+
+@dataclass(frozen=True, slots=True)
 class Trial:
     """موضعُ اختبارٍ واحد: لِمّتُه، وجوابُه، وترتيبُ النظام."""
 
@@ -109,6 +149,34 @@ def overlap(first: str, second: str) -> Fraction:
     if not (left | right):
         return Fraction(0)
     return Fraction(len(left & right), len(left | right))
+
+
+MATCH_POLICIES: dict[str, Callable[[str, str], Fraction]] = {
+    "تطابقٌ_تامّ": _exact,
+    "تداخلُ_جاكار": lambda first, second: overlap(first, second),
+}
+"""سياساتُ المقابلة المُعلَنة؛ ومقابلةٌ غيرُ مُسمّاةٍ اختيارٌ يقع بلا إعلان."""
+
+
+def assert_match_policy_is_declared(name: str) -> Callable[[str, str], Fraction]:
+    """سياسةُ المقابلة تُعلَن؛ والتطابقُ التامُّ وجاكار يُعطيان حكمين مختلفين.
+
+    وهذا هو الموضعُ الذي تركته شجرةُ الغانم غيرَ مُعدَّد: بوّابتُها الثالثة
+    تقابل مضمونَ الوسم بمضمون الحالة **تطابقًا حرفيًّا بعد التسوية**، ولا
+    تُسمّي ذلك اختيارًا. فجهةٌ مستقلّةٌ تكتب نثرَها لا تطابقه حرفًا بحرف،
+    فلا تُجاز إلّا أن يُنقَل عنها نصًّا — وحينئذٍ يقيس الفحصُ النقلَ لا الموافقة.
+    """
+
+    if not name.strip():
+        raise ImtihanError(
+            "سياسةُ المقابلة تُعلَن بـ`--match`؛ والتطابقُ التامُّ وجاكار "
+            f"حكمان لا حكمٌ واحد. والمُعلَنُ منها: {'، '.join(MATCH_POLICIES)}."
+        )
+    if name not in MATCH_POLICIES:
+        raise ImtihanError(
+            f"سياسةٌ غيرُ مُعلَنةٍ «{name}»؛ والمُعلَنُ: {'، '.join(MATCH_POLICIES)}."
+        )
+    return MATCH_POLICIES[name]
 
 
 def read_glosses(path: Path) -> dict[str, tuple[str, str]]:
@@ -175,23 +243,29 @@ def gloss_count(glosses: dict[str, tuple[str, str]]) -> dict[str, int]:
     return dict(counts)
 
 
-def score(trial: Trial, glosses: dict[str, tuple[str, str]]) -> Fraction:
-    """تداخلُ أعلى المرشَّحين رتبةً مع الجواب الصحيح."""
+def score(
+    trial: Trial,
+    glosses: dict[str, tuple[str, str]],
+    match: Callable[[str, str], Fraction],
+) -> Fraction:
+    """مقابلةُ أعلى المرشَّحين رتبةً بالجواب الصحيح، بالسياسة المُعلَنة."""
 
     top = trial.ranked[0]
     if top not in glosses or trial.gold not in glosses:
         raise ImtihanError(f"{trial.ref}: شرحٌ غيرُ موجودٍ في الجدول.")
-    return overlap(glosses[top][1], glosses[trial.gold][1])
+    return match(glosses[top][1], glosses[trial.gold][1])
 
 
 def by_lemma(
-    trials: list[Trial], glosses: dict[str, tuple[str, str]]
+    trials: list[Trial],
+    glosses: dict[str, tuple[str, str]],
+    match: Callable[[str, str], Fraction],
 ) -> dict[str, float]:
     """متوسّطُ كلّ لِمّةٍ — وهو وحدةُ المعنويّة، لا الموضع."""
 
     buckets: dict[str, list[float]] = defaultdict(list)
     for trial in trials:
-        buckets[trial.lemma].append(float(score(trial, glosses)))
+        buckets[trial.lemma].append(float(score(trial, glosses, match)))
     return {lemma: statistics.fmean(values) for lemma, values in buckets.items()}
 
 
@@ -254,6 +328,8 @@ def report(
     glosses: dict[str, tuple[str, str]],
     order: tuple[str, ...] = (),
     pooled_only: bool = False,
+    authority: Authority | None = None,
+    match: str = "",
 ) -> None:
     """التقرير؛ ويُرَدّ طلبُ المجمَّع وحدَه لأنّ الصفريَّ يتغيّر عشرةَ أضعافٍ بـk."""
 
@@ -262,11 +338,19 @@ def report(
             "المجمَّعُ وحدَه يُخفي صفريًّا يتغيّر من ٠٫٥٠ إلى ٠٫٠٥ بعدد الشروح؛ "
             "فلا يُطبَع بلا شرائحِ k."
         )
+    if authority is None:
+        raise ImtihanError(
+            "جدولُ شروحٍ بلا جهةٍ واسمةٍ مُسمّاةٍ لا يُقرَأ سندًا: يُكتَب الكتابُ "
+            "ومُعلِنُ الدعوى معًا، فإنّ المقارنةَ بينهما هي الشرط."
+        )
+    scorer = assert_match_policy_is_declared(match)
     counts = gloss_count(glosses)
     grouped: dict[str, list[Trial]] = defaultdict(list)
     for trial in trials:
         grouped[trial.representation].append(trial)
 
+    print(f"الجهةُ الواسمة: {authority.authority_id} — {authority.authority_note}")
+    print(f"مُعلِنُ الدعوى: {authority.declarer_id}  ·  سياسةُ المقابلة: {match}")
     print(f"التمثيلات: {len(grouped)}  ·  المواضع: {len(trials)}")
     print(f"اللِّمَم: {len({trial.lemma for trial in trials})}\n")
 
@@ -274,7 +358,7 @@ def report(
     curve: dict[str, float] = {}
     for representation in sequence:
         rows = grouped[representation]
-        means = by_lemma(rows, glosses)
+        means = by_lemma(rows, glosses, scorer)
         centre, half = clustered_interval(means)
         curve[representation] = centre
         print(f"■ {representation}")
@@ -285,7 +369,9 @@ def report(
         for name in sorted(bands, key=lambda key: len(bands[key]), reverse=True):
             slice_ = bands[name]
             lemmas = {trial.lemma for trial in slice_}
-            value = statistics.fmean(float(score(trial, glosses)) for trial in slice_)
+            value = statistics.fmean(
+                float(score(trial, glosses, scorer)) for trial in slice_
+            )
             null = statistics.fmean(1 / counts[trial.lemma] for trial in slice_)
             print(
                 f"   {name:<9} مواضعُ {len(slice_):>4} · لِمَمٌ {len(lemmas):>3} · "
@@ -310,7 +396,7 @@ g1\tوليّ\tالناصر المعين
 g2\tوليّ\tالقريب في النسب
 g3\tوليّ\tالمتولي للأمر
 g4\tبيّنة\tالحجة الواضحة
-g5\tبيّنة\tالدليل الظاهر
+g5\tبيّنة\tالحجة الظاهرة
 g6\tأسرى\tسير الليل
 g7\tأسرى\tالمشي ليلا
 g8\tكتاب\tالتوراة
@@ -351,6 +437,16 @@ def main(argv: list[str] | None = None) -> int:
         help="التمثيلاتُ من الأفقر إلى الأغنى، مفصولةً بفواصل — تُعلَن ولا تُستنتَج",
     )
     parser.add_argument(
+        "--authority",
+        default="",
+        help="اسمُ الجهة الواسمة، ثمّ بيانُها، ثمّ مُعلِنُ الدعوى — مفصولةً بـ`|`",
+    )
+    parser.add_argument(
+        "--match",
+        default="",
+        help=f"سياسةُ المقابلة المُعلَنة: {'، '.join(MATCH_POLICIES)}",
+    )
+    parser.add_argument(
         "--pooled-only",
         action="store_true",
         help="يُرَدّ: المجمَّعُ بلا شرائحِ k يُخفي صفريًّا متغيّرًا",
@@ -365,6 +461,10 @@ def main(argv: list[str] | None = None) -> int:
         print("=" * 64)
         if not args.order:
             args.order = "الطبقات,+نافذة"
+        if not args.authority:
+            args.authority = "جهةٌ_مُصطنَعة|عيّنةُ فحصٍ للآلة|مُعلِنٌ_مُصطنَع"
+        if not args.match:
+            args.match = "تداخلُ_جاكار"
     elif args.glosses and args.runs:
         glosses = read_glosses(args.glosses)
         trials = read_runs(args.runs)
@@ -374,11 +474,20 @@ def main(argv: list[str] | None = None) -> int:
     lemmas = sorted({trial.lemma for trial in trials})
     half = len(lemmas) // 2
     assert_split_is_by_lemma(frozenset(lemmas[:half]), frozenset(lemmas[half:]))
+    named = tuple(one.strip() for one in args.authority.split("|"))
+    if len(named) != 3:
+        parser.error(
+            "`--authority` ثلاثةُ حقولٍ مفصولةٍ بـ`|`: الكتابُ، وبيانُه، " "ومُعلِنُ الدعوى."
+        )
     report(
         trials,
         glosses,
         order=tuple(one for one in args.order.split(",") if one),
         pooled_only=args.pooled_only,
+        authority=Authority(
+            authority_id=named[0], authority_note=named[1], declarer_id=named[2]
+        ),
+        match=args.match,
     )
     return 0
 

@@ -18,6 +18,19 @@
 `ONE_REPRESENTATION_PRINTS_NUMBERS_AND_WITHHOLDS_THE_VERDICT`: تمثيلٌ واحدٌ
 لا يفصل «تمثيلًا خاطئًا» عن «معنًى من خارج»، فالآلةُ تطبع الأرقامَ وتمتنع
 عن الحكم صراحةً. والامتناعُ مطبوعٌ لا مسكوتٌ عنه.
+
+`AN_OCCURRENCE_CITATION_IS_NOT_A_READING_CERTIFICATE`: قانونٌ مأخوذٌ من شجرة
+الغانم إلى ههنا. فحلُّ موضعٍ في مصدرٍ مُبصَّمٍ يُثبِت الوقوعَ لا الوسم؛ والوسمُ
+يحتاج **جهةً تُسمّى وتُقارَن بمُعلِن الدعوى**. وامتحانُ المعنى كان يجري عندي
+بمقياسٍ وصفريٍّ وحدودٍ وبلا جهةٍ واسمةٍ مُعلَنةٍ ألبتّة — وهو ثقبٌ لم أُسمِّه،
+فصار الآن شرطَ تشغيلٍ: جدولٌ بلا جهةٍ يُرَدّ، وجهةٌ هي المُعلِنُ نفسُه تُرَدّ.
+
+`THE_COMPARISON_UNIT_IS_THE_CHOICE_THAT_WAS_NOT_ENUMERATED`: وفي شجرة الغانم
+نفسِها بوّابةٌ ثالثةٌ تقابل مضمونَ الوسم بمضمون الحالة **تطابقًا حرفيًّا بعد
+التسوية** (`minimal_complete_fiber.gloss_agrees`)، ولا تُسمّي ذلك اختيارًا ولا
+تُعدّه في بقاياها المُسمّاة. وعلى عيّنتي: جاكار يعطي ٢٥٫٠٠٪ والتطابقُ التامُّ
+٢٠٫٨٣٪، والميلُ +٦٢٫٥٠ مقابل +٦٦٫٦٧ — أربعُ نقاطٍ من اختيارٍ لم يُعلَن. وهو
+الجنسُ نفسُه الذي رُدَّ به عليّ عشرَ مرّات: **مجالٌ لم يُعدَّد**.
 """
 
 from __future__ import annotations
@@ -50,6 +63,20 @@ def _material() -> tuple[dict[str, tuple[str, str]], list[object]]:
     return glosses, trials
 
 
+def _authority() -> object:
+    return RUNNER.Authority(  # type: ignore[attr-defined]
+        authority_id="كتابٌ_مُصطنَع",
+        authority_note="عيّنةُ فحصٍ للآلة",
+        declarer_id="مُعلِنٌ_مُصطنَع",
+    )
+
+
+def _report(trials: object, glosses: object, **kwargs: object) -> None:
+    kwargs.setdefault("authority", _authority())
+    kwargs.setdefault("match", "تداخلُ_جاكار")
+    RUNNER.report(trials, glosses, **kwargs)  # type: ignore[attr-defined]
+
+
 def test_a_split_that_shares_a_lemma_is_refused_by_name() -> None:
     """لِمّةٌ في القسمين تُرَدّ باسمها؛ وجردُ شروحها هو المتسرّب."""
 
@@ -72,7 +99,7 @@ def test_the_pooled_report_alone_is_refused() -> None:
 
     glosses, trials = _material()
     with pytest.raises(RUNNER.ImtihanError) as raised:  # type: ignore[attr-defined]
-        RUNNER.report(trials, glosses, pooled_only=True)  # type: ignore[attr-defined]
+        _report(trials, glosses, pooled_only=True)
     assert "٠٫٥٠" in str(raised.value)
     assert "k" in str(raised.value)
 
@@ -82,15 +109,13 @@ def test_the_representation_order_must_be_declared() -> None:
 
     glosses, trials = _material()
     with pytest.raises(RUNNER.ImtihanError) as raised:  # type: ignore[attr-defined]
-        RUNNER.report(trials, glosses, order=())  # type: ignore[attr-defined]
+        _report(trials, glosses, order=())
     assert "--order" in str(raised.value) or "يُعلَن" in str(raised.value)
 
     with pytest.raises(RUNNER.ImtihanError):  # type: ignore[attr-defined]
-        RUNNER.report(trials, glosses, order=("الطبقات",))  # type: ignore[attr-defined]
+        _report(trials, glosses, order=("الطبقات",))
     with pytest.raises(RUNNER.ImtihanError):  # type: ignore[attr-defined]
-        RUNNER.report(  # type: ignore[attr-defined]
-            trials, glosses, order=("الطبقات", "الطبقات", "+نافذة")
-        )
+        _report(trials, glosses, order=("الطبقات", "الطبقات", "+نافذة"))
 
 
 def test_the_alphabetical_order_would_have_flipped_the_slope() -> None:
@@ -114,7 +139,7 @@ def test_one_representation_prints_numbers_and_withholds_the_verdict(
 
     glosses, trials = _material()
     single = [trial for trial in trials if trial.representation == "الطبقات"]
-    RUNNER.report(single, glosses, order=("الطبقات",))  # type: ignore[attr-defined]
+    _report(single, glosses, order=("الطبقات",))
     printed = capsys.readouterr().out
     assert "الحكمُ **يمتنع**" in printed
     assert "الميلُ عبر" not in printed
@@ -141,7 +166,8 @@ def test_the_interval_is_computed_on_lemmas_not_on_positions() -> None:
 
     glosses, trials = _material()
     rich = [trial for trial in trials if trial.representation == "+نافذة"]
-    means = RUNNER.by_lemma(rich, glosses)  # type: ignore[attr-defined]
+    scorer = RUNNER.MATCH_POLICIES["تداخلُ_جاكار"]  # type: ignore[attr-defined]
+    means = RUNNER.by_lemma(rich, glosses, scorer)  # type: ignore[attr-defined]
     assert len(means) == 4  # أربعُ لِمَمٍ من ثمانية مواضع
     assert len(means) < len(rich)
 
@@ -157,7 +183,7 @@ def test_the_overlap_metric_is_jaccard_on_content_words() -> None:
     """تداخلٌ لا مطابقة: «الحجج الواضحات» و«الحجج الواضحة» يشتركان في كلمة."""
 
     assert RUNNER.overlap("الحجة الواضحة", "الحجة الواضحة") == 1  # type: ignore[attr-defined]
-    assert RUNNER.overlap("الحجة الواضحة", "الدليل الظاهر") == 0  # type: ignore[attr-defined]
+    assert RUNNER.overlap("الحجة الواضحة", "الدليل الساطع") == 0  # type: ignore[attr-defined]
 
     partial = RUNNER.overlap("الحجة الواضحة", "الحجة الظاهرة")  # type: ignore[attr-defined]
     assert 0 < partial < 1
@@ -175,5 +201,90 @@ def test_the_smoke_run_completes_and_declares_itself_synthetic(
     printed = capsys.readouterr().out
     assert "مُصطنَعة" in printed
     assert "ولا تقول شيئًا عن العربيّة" in printed
-    assert "+66.67" in printed  # الميلُ موجبٌ بعد إعلان الترتيب
+    assert "+62.50" in printed  # الميلُ موجبٌ بعد إعلان الترتيب
     assert "صفريٌّ" in printed
+    assert "الجهةُ الواسمة" in printed
+
+
+def test_a_gloss_table_without_a_named_authority_is_refused() -> None:
+    """جدولٌ بلا جهةٍ واسمةٍ لا يُقرَأ سندًا — وذلك ما كان ناقصًا عندي."""
+
+    glosses, trials = _material()
+    with pytest.raises(RUNNER.ImtihanError) as raised:  # type: ignore[attr-defined]
+        RUNNER.report(  # type: ignore[attr-defined]
+            trials, glosses, order=("الطبقات", "+نافذة"), match="تداخلُ_جاكار"
+        )
+    assert "جهةٍ واسمة" in str(raised.value)
+
+
+def test_an_authority_that_is_the_declarer_is_refused_by_construction() -> None:
+    """وسمٌ يكتبه صاحبُ الدعوى على دعواه مردودٌ — وفصلُ الملفّ لا يُغني."""
+
+    with pytest.raises(RUNNER.ImtihanError) as raised:  # type: ignore[attr-defined]
+        RUNNER.Authority(  # type: ignore[attr-defined]
+            authority_id="الغانم",
+            authority_note="الشجرةُ نفسُها",
+            declarer_id="الغانم",
+        )
+    assert "صاحبُ الدعوى" in str(raised.value)
+
+    # وثلاثةُ حقولٍ لا حقلان: مُعلِنُ الدعوى يُكتَب وإلّا لم تقع المقارنة
+    for missing in ("authority_id", "authority_note", "declarer_id"):
+        texts = {
+            "authority_id": "كتاب",
+            "authority_note": "بيان",
+            "declarer_id": "مُعلِن",
+        }
+        texts[missing] = "   "
+        with pytest.raises(RUNNER.ImtihanError):  # type: ignore[attr-defined]
+            RUNNER.Authority(**texts)  # type: ignore[attr-defined]
+
+
+def test_the_match_policy_must_be_declared_and_named() -> None:
+    """سياسةُ المقابلة تُعلَن؛ وغيرُ المُعلَنةِ تُرَدّ باسم المُعلَن منها."""
+
+    glosses, trials = _material()
+    with pytest.raises(RUNNER.ImtihanError) as raised:  # type: ignore[attr-defined]
+        _report(trials, glosses, order=("الطبقات", "+نافذة"), match="")
+    assert "--match" in str(raised.value)
+
+    with pytest.raises(RUNNER.ImtihanError):  # type: ignore[attr-defined]
+        _report(trials, glosses, order=("الطبقات", "+نافذة"), match="أقربُ_معنًى")
+
+    assert set(RUNNER.MATCH_POLICIES) == {  # type: ignore[attr-defined]
+        "تطابقٌ_تامّ",
+        "تداخلُ_جاكار",
+    }
+
+
+def test_the_two_declared_policies_give_two_different_numbers() -> None:
+    """٢٥٫٠٠٪ بجاكار و٢٠٫٨٣٪ بالتطابق التامّ — والفرقُ اختيارٌ لا قياس.
+
+    وهو الموضعُ الذي تركته الشجرةُ المقابلةُ غيرَ مُعدَّد: بوّابتُها الثالثة
+    تقابل حرفًا بحرفٍ ولا تُسمّي ذلك اختيارًا؛ فجهةٌ مستقلّةٌ تكتب نثرَها لا
+    تطابق حرفًا بحرف، فلا تُجاز إلّا أن يُنقَل عنها نصًّا — وحينئذٍ يقيس
+    الفحصُ النقلَ لا الموافقة.
+    """
+
+    glosses, trials = _material()
+    poor = [trial for trial in trials if trial.representation == "الطبقات"]
+
+    numbers = {}
+    for name in ("تداخلُ_جاكار", "تطابقٌ_تامّ"):
+        scorer = RUNNER.MATCH_POLICIES[name]  # type: ignore[attr-defined]
+        means = RUNNER.by_lemma(poor, glosses, scorer)  # type: ignore[attr-defined]
+        numbers[name] = round(RUNNER.clustered_interval(means)[0] * 100, 2)  # type: ignore[attr-defined]
+
+    assert numbers["تداخلُ_جاكار"] == 25.00
+    assert numbers["تطابقٌ_تامّ"] == 20.83
+    assert numbers["تداخلُ_جاكار"] > numbers["تطابقٌ_تامّ"]
+
+
+def test_the_exact_policy_refuses_an_empty_text_as_a_match() -> None:
+    """نصّان خاليان لا يتطابقان: الخلوُّ ليس موافقةً، في السياستين معًا."""
+
+    exact = RUNNER.MATCH_POLICIES["تطابقٌ_تامّ"]  # type: ignore[attr-defined]
+    assert exact("الحجة الواضحة", "الحجة الواضحة") == 1
+    assert exact("الحجة الواضحة", "الحجة الظاهرة") == 0
+    assert exact("  ", "") == 0
+    assert RUNNER.overlap("", "") == 0  # type: ignore[attr-defined]

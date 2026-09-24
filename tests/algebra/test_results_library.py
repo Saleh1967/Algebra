@@ -37,6 +37,7 @@ from algebra.results import (
     Placement,
     Product,
     ResultsError,
+    Vacancy,
 )
 
 SH1, SH2, SH3, SH4, SH5 = COMPLETENESS_CONDITIONS
@@ -444,6 +445,11 @@ MAQAYIS_CENSUS = Placement(
     open_test=(
         "حصرُ المحاور غيرِ المفردة وحدَها من مقاييس اللغة، وإعادةُ شرطٍ مختومٍ "
         "عليها؛ فإن بقي الحقلُ ملوَّثًا سقط الحصرُ بعددٍ لا بحكاية"
+    ),
+    absence=Vacancy.UNREACHABLE,
+    absence_evidence=(
+        "ق-ج١ سلامةُ الحقل سقطت، وثلاثةٌ بعدَها باطلةٌ لسقوط أساسها؛ فالحقلُ "
+        "الذي يُحصَر منه ملوَّثٌ بقياسٍ جرى، والحصرُ لا يُبلَغ بما في اليد"
     ),
 )
 

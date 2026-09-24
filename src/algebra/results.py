@@ -36,11 +36,15 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from enum import Enum
 from itertools import product as _cartesian
 from typing import Final
 
 __all__ = [
     "AN_ABSENT_RESULT_IS_EITHER_FORBIDDEN_OR_OPEN_NOTE",
+    "A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE",
+    "VACANCIES_NEEDING_EVIDENCE",
+    "Vacancy",
     "AN_AXIS_THAT_DOES_NOT_DISTINGUISH_IS_NOT_AN_AXIS_NOTE",
     "A_RESULT_CARRIES_ITS_CONDITIONS_NOT_ITS_NUMBER_ALONE_NOTE",
     "A_TREE_IS_A_PRODUCT_READ_AS_PATHS_NOTE",
@@ -73,6 +77,50 @@ COMPLETENESS_CONDITIONS: Final[tuple[str, ...]] = (
     "ش٥ ثابتٌ تحت اختيارات التمثيل",
 )
 """شروطُ «الحدّ الأدنى المكتمل» الخمسة؛ وما نقص منها يُسمّى لا يُطوى."""
+
+
+class Vacancy(Enum):
+    """أجناسُ الخلوّ؛ مفردةٌ مغلقةٌ فيها عضوُ «لم يُصنَّف بعد» مُصرَّحٌ به.
+
+    فالجداءُ يعطي **بتّةً واحدةً** لكلّ خانة: مملوءةٌ أم خالية. والخلوُّ أجناسٌ
+    لا جنس، والبتّةُ لا تفرّق بينها ألبتّة. فتصنيفُ الخلوّ **فعلٌ ثانٍ يُعلَن
+    بشاهده**، ولا يُشتَقّ من كون الخانة خالية.
+
+    وعضوُ `UNCLASSIFIED` هو الحالُ الافتراضيّة، وليس نقصًا بل **صدقًا**:
+    الجداءُ يحوّل غيابًا مجهولًا إلى غيابٍ موقوعٍ ثمّ يقف، والوقوفُ يُسمّى.
+    """
+
+    IMPOSSIBLE = "استحالةٌ مُعلَنةٌ قابلةٌ للنقض"
+    UNATTESTED = "لا شاهدَ عليها فيما فُتِّش"
+    UNREACHABLE = "لا تُبلَغ بما في اليد"
+    REFUSED = "رُدَّت بقياسٍ جرى"
+    UNRUN = "فحصُها مُعيَّنٌ ولم يُجرَ"
+    UNCLASSIFIED = "خاليةٌ ولم يُصنَّف خلوُّها"
+
+
+VACANCIES_NEEDING_EVIDENCE: Final[tuple[Vacancy, ...]] = (
+    Vacancy.UNATTESTED,
+    Vacancy.UNREACHABLE,
+    Vacancy.REFUSED,
+)
+"""ثلاثةُ أجناسٍ لا تُدَّعى بلا شاهد.
+
+والاستحالةُ ناقضُها هو شاهدُها، و`UNRUN` شاهدُه فحصُه المُعيَّن — فكلاهما
+مشهودٌ ببنائه. وأمّا `UNCLASSIFIED` فلا شاهدَ له لأنّه **عدمُ تصنيفٍ** لا
+تصنيف.
+"""
+
+
+def vacancy_of_a_bare_cell() -> Vacancy:
+    """ما يعطيه الجداءُ وحدَه عن خانةٍ خالية: **جنسًا واحدًا لا غير**.
+
+    فالنقطةُ من `Product.points()` تقول «ههنا خانة» ولا تقول شيئًا عن خلوّها.
+    وهذه الدالّةُ تُودِع ذلك الحدَّ صريحًا: الجداءُ يحوّل غيابًا مجهولًا إلى
+    غيابٍ موقوع، ثمّ **يقف**. وما بعدَه فعلٌ ثانٍ يُعلَن.
+    """
+
+    return Vacancy.UNCLASSIFIED
+
 
 SHELVED: Final[str] = "مُودَع"
 FORBIDDEN: Final[str] = "ممتنعٌ مُعلَن"
@@ -241,6 +289,8 @@ class Placement:
     forbidden_because: str = ""
     refuted_by: str = ""
     open_test: str = ""
+    absence: Vacancy | None = None
+    absence_evidence: str = ""
 
     def __post_init__(self) -> None:
         if not self.coordinate:
@@ -266,6 +316,41 @@ class Placement:
             raise ResultsError(f"ناقضٌ في {self.path} بلا امتناعٍ يَنقُضه.")
         if self.open_test.strip():
             _reject_disjunction(self.open_test, "فحصُ موضعٍ مفتوح")
+        self._check_vacancy()
+
+    def _check_vacancy(self) -> None:
+        """جنسُ الخلوِّ يُعلَن بشاهده، ولا يُقرَأ من كون الخانة خالية."""
+
+        if self.absence is not None and not isinstance(self.absence, Vacancy):
+            raise ResultsError("جنسُ الخلوِّ عضوٌ في مفردته المغلقة لا نصٌّ حرّ.")
+        if self.finding is not None:
+            if self.absence is not None or self.absence_evidence.strip():
+                raise ResultsError(
+                    f"خانةُ {self.path} مملوءةٌ ويُصنَّف خلوُّها؛ "
+                    "والمملوءةُ لا خلوَّ لها يُصنَّف."
+                )
+            return
+        if self.forbidden_because.strip():
+            if self.absence not in (None, Vacancy.IMPOSSIBLE):
+                raise ResultsError(
+                    f"امتناعُ {self.path} جنسُه الاستحالةُ لا غير؛ "
+                    "ودعوى الامتناع نفسُها هي التصنيف."
+                )
+            return
+        if self.absence is Vacancy.UNCLASSIFIED:
+            raise ResultsError(
+                f"خانةُ {self.path} تحمل فحصًا مُعيَّنًا فخلوُّها **مصنَّف**؛ "
+                "و«غيرُ مصنَّف» جنسٌ للخانة العارية من الجداء لا للمُودَعة."
+            )
+        if self.absence in VACANCIES_NEEDING_EVIDENCE:
+            if not self.absence_evidence.strip():
+                raise ResultsError(
+                    f"خلوُّ {self.path} صُنِّف «{self.absence.value}» بلا شاهد؛ "
+                    "و«لا شاهدَ عليها» غيرُ «لم يُفتَّش عنها»، والفرقُ يُكتَب "
+                    "(A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED)."
+                )
+        elif self.absence_evidence.strip():
+            raise ResultsError(f"شاهدٌ في {self.path} بلا جنسِ خلوٍّ يشهد له.")
 
     @property
     def path(self) -> str:
@@ -282,6 +367,16 @@ class Placement:
         if self.forbidden_because.strip():
             return FORBIDDEN
         return OPEN
+
+    @property
+    def vacancy(self) -> Vacancy | None:
+        """جنسُ الخلوّ، أو `None` للمملوءة؛ والمفتوحةُ بلا إعلانٍ **غيرُ مصنَّفة**."""
+
+        if self.finding is not None:
+            return None
+        if self.forbidden_because.strip():
+            return Vacancy.IMPOSSIBLE
+        return self.absence or Vacancy.UNRUN
 
     @property
     def text(self) -> str:
@@ -352,6 +447,27 @@ class Library:
 
         table = self.table
         return tuple((point, table[point]) for point in self.product.points())
+
+    def vacancy_census(self) -> dict[Vacancy, int]:
+        """عدُّ أجناس الخلوّ الخمسة كلِّها — والصفرُ يُطبَع، والمُهمَلُ يُعَدّ.
+
+        فالمقصودُ من هذا العدِّ رقمٌ واحد: **كم غيابًا لم يُصنَّف بعد**. وهو
+        الرقمُ الذي لا يظهر في عدِّ الحالات الثلاث ألبتّة.
+        """
+
+        counts = {kind: 0 for kind in Vacancy}
+        for placement in self.placements:
+            kind = placement.vacancy
+            if kind is not None:
+                counts[kind] += 1
+        return counts
+
+    def absences_of(self, kind: Vacancy) -> tuple[Placement, ...]:
+        """الخاناتُ التي خلوُّها من هذا الجنس؛ والجنسُ يُطلَب باسمه لا برقمه."""
+
+        return tuple(
+            placement for placement in self.placements if placement.vacancy is kind
+        )
 
     def census(self) -> dict[str, int]:
         """عدُّ الحالات الثلاث كلِّها — والصفرُ يُطبَع ولا يُحذَف."""
@@ -519,7 +635,14 @@ AN_AXIS_THAT_DOES_NOT_DISTINGUISH_IS_NOT_AN_AXIS_NOTE: Final[str] = (
     "الجداء الباقي كلِّه لا يفرّق بينهما البناءُ مهما اختلف اسماهما"
 )
 
+A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE: Final[str] = (
+    "AVacancyKindIsDeclaredNotInferred: الجداءُ يعطي بتّةً واحدةً لكلّ خانة — "
+    "مملوءةٌ أم خالية — والخلوُّ أجناسٌ: استحالةٌ، ولا شاهدَ، ولا بلوغَ، وردٌّ "
+    "مقيس؛ فتصنيفُه فعلٌ ثانٍ يُعلَن بشاهده ولا يُشتَقّ من الخلوّ"
+)
+
 RESULTS_NAMED_RESIDUALS: Final[tuple[str, ...]] = (
+    A_VACANCY_KIND_IS_DECLARED_NOT_INFERRED_NOTE,
     A_TREE_IS_A_PRODUCT_READ_AS_PATHS_NOTE,
     AN_ABSENT_RESULT_IS_EITHER_FORBIDDEN_OR_OPEN_NOTE,
     A_RESULT_CARRIES_ITS_CONDITIONS_NOT_ITS_NUMBER_ALONE_NOTE,

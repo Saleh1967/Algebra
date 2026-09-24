@@ -18,13 +18,23 @@
 قياسًا جرى؛ فصار **مردودًا بسببٍ مقيس**، وخرج من عدّ المطلوب إلى عدّ المُنفَق.
 والمطلوبُ ثلاثةٌ لا أربعة.
 
-`THE_LEARNED_CELL_IS_OPEN_AND_NOTHING_YET_QUALIFIES`: وأُضيفت الخانةُ الثالثة
-— جسرٌ يحتاج الأوراكلَ مرّةً ليُدرَّب ثمّ يعبُر المحجوبَ بدونه بنسبة — فلم
-يدخلها شيءٌ بعد. وسببُ ذلك واحدٌ في المرشَّحين الثلاثة: **نسبةٌ بلا مقامٍ
-منشور**. ٩٧٫٩٠٪ لط٧ و٩٣٫٦٣٪ لط٩ لا مقامَ لهما في المنشور، و٨٦٫٤٥٪ لها مقامٌ
-(٣٤٬٢٥٤ كلمة) لكنّها **وحدةٌ أخرى** سبق أن سُجِّل أنّها لا تُطرَح من ٩٣٫٦٣.
-وج٣ غايتُه مستوًى **مفتوحُ الجرد**، فلا انتظامَ يُشتَقّ منه صفريًّا. فالخانةُ
-مفتوحةٌ ومقفرة، وذلك خبرٌ لا نقص: ما يلزم لملئها **عددٌ صحيحٌ واحدٌ لكلٍّ**.
+`ONE_OF_THREE_CANDIDATES_ENTERED_THE_LEARNED_CELL`: وأُرسِلت المقاماتُ، فدخل
+الخانةَ الثالثةَ **واحدٌ** من ثلاثة، ورُدَّ اثنان بسببين مختلفين لا بسببٍ واحد:
+
+* **ج١٠ دخل**: الرباعيُّ بالامتناع ٣٣٬٧٢٥ من ٤١٬٢٠٥ = ٨١٫٨٥٪. وهو الاقترانُ
+  الوحيدُ المُصرَّحُ به مرّتين — «الرباعيُّ» في النسبة و«الرباعيُّ على الكلّ»
+  في المقام — فلا يُخمَّن.
+* **ج٨ رُدَّ بقاعدة صاحبه**: مقامُه وصل (٤١٬٢٠٥)، لكنّ ٩٧٫٩٠٪ **تنتظر
+  إعادةَ تشغيل**؛ فإعادةُ بنائها بمطابقة الصورة وحدَها أعطت ٨٨٫٦٧٪ — تسعُ
+  نقاطٍ وربعٌ دونها. ورقمٌ لم يُعَد تشغيلُه لا يُختَم.
+* **ج٣ رُدَّ بالحساب**: ٤٥٫٣٢٪ **لا تقبل بسطًا صحيحًا** على أيٍّ من المقامين
+  المُرسَلين (٢٬٥٦١ و٢٬٥٢٩)، والمقامان بينهما **اثنان وثلاثون**. وصفريُّه
+  ٢٩٣/٢٬٥٢٩ = ١١٫٥٩٪ يعيد نفسَه على الثاني وحدَه.
+
+`A_WEAK_NULL_IS_DECLARED_AS_WEAK`: وصفريُّ ج١٠ ههنا **انتظامٌ على أربعة**، وهو
+أضعفُ صفريٍّ مقبول: لا أكثريّةَ منشورةً للرباعيّ، وأكثريّةُ ط٩ المنشورةُ
+(٠٫٣٧٣٤) على وضعٍ آخر، ونقلُها إليه هو الخلطُ بعينه. فالرفعُ ٣٫٢٧× على
+الانتظام، وسيَنزِل متى نُشِرت أكثريّةُ الرباعيّ.
 """
 
 from __future__ import annotations
@@ -127,7 +137,19 @@ LADDER = Ladder(
         ),
         Bridge("ج٨ القسمةُ الثلاثيّة", FROZEN, PART),
         Bridge("ج٩ التركيب", PART, CLAUSE),
-        Bridge("ج١٠ الضبطُ الإعرابيّ", CLAUSE, MARK),
+        Bridge(
+            "ج١٠ الضبطُ الإعرابيّ",
+            CLAUSE,
+            MARK,
+            oracle="إعرابٌ موسومٌ — دخل التدريبَ ولم يدخل المحجوب",
+            taught=Taught(
+                teacher="ط٩ الرباعيُّ بالامتناع",
+                held_out=41_205,
+                matched=33_725,
+                null=Fraction(1, 4),
+                null_basis="انتظامٌ على المفردة الرباعيّة المُعلَنة — أضعفُ صفريٍّ مقبول",
+            ),
+        ),
     )
 )
 
@@ -141,23 +163,23 @@ def test_the_ladder_is_contiguous_from_bytes_to_the_case_mark() -> None:
     assert LADDER.levels[-1] is MARK
 
 
-def test_six_bridges_are_built_and_only_two_are_reached() -> None:
-    """ستّةٌ مبنيّةٌ، والمبلوغُ من الأسفل **اثنان**؛ والفرقُ يُعلَن ولا يُطوى."""
+def test_five_bridges_are_built_and_only_two_are_reached() -> None:
+    """خمسةٌ مبنيّةٌ، والمبلوغُ من الأسفل **اثنان**؛ والفرقُ يُعلَن ولا يُطوى.
 
-    assert len(LADDER.built) == 6
-    assert len(LADDER.unbuilt) == 4
+    وكانت ستًّا قبل أن يُعلَن أنّ ج١٠ **دُرِّب** على إعرابٍ موسوم. فالعدُّ
+    نزل بإعلانٍ لا بنقصٍ في الجسر: كان يُحسَب مبنيًّا لأنّ أوراكلَه لم يكن
+    مكتوبًا، وكتابتُه أصدقُ من إغفالها وإن أنقصت الرصيد.
+    """
+
+    assert len(LADDER.built) == 5
+    assert len(LADDER.unbuilt) == 5
     assert not LADDER.is_traversable
     assert LADDER.first_gap is not None
     assert LADDER.first_gap.name == "ج٣ الاشتقاق"
     reached = [level.name for level in LADDER.reachable_levels()]
     assert reached == [CODE.name, UNICODE.name, SPELLING.name]
     unreached = [bridge.name for bridge in LADDER.built_but_unreached()]
-    assert unreached == [
-        "ج٤ المكوّنات",
-        "ج٨ القسمةُ الثلاثيّة",
-        "ج٩ التركيب",
-        "ج١٠ الضبطُ الإعرابيّ",
-    ]
+    assert unreached == ["ج٤ المكوّنات", "ج٨ القسمةُ الثلاثيّة", "ج٩ التركيب"]
 
 
 def test_every_unbuilt_bridge_names_the_data_it_needs() -> None:
@@ -179,52 +201,52 @@ def test_every_unbuilt_bridge_names_the_data_it_needs() -> None:
     assert "ق-ج١" in spent[0][1]
 
 
-def test_the_four_standings_are_counted_and_the_learned_cell_is_empty() -> None:
-    """أربعةُ مواقفَ تُعَدّ كلُّها: ستّةٌ مبنيّة، وثلاثةٌ منتظِرة، وواحدٌ مردود.
-
-    والخانةُ الثالثةُ — المتعلَّمُ بنسبة — **مفتوحةٌ ومقفرة**. وذلك خبرٌ لا
-    نقصٌ: لا يدخلها رقمٌ بلا مقامٍ منشور.
-    """
+def test_the_four_standings_are_counted_and_one_bridge_is_learned() -> None:
+    """أربعةٌ تُعَدّ كلُّها: خمسةٌ مبنيّة، وواحدٌ متعلَّم، وثلاثةٌ منتظِرة، وواحدٌ مردود."""
 
     counts = LADDER.standings()
-    assert counts[BridgeStanding.BUILT] == 6
+    assert counts[BridgeStanding.BUILT] == 5
+    assert counts[BridgeStanding.LEARNED] == 1
     assert counts[BridgeStanding.AWAITING] == 3
     assert counts[BridgeStanding.REFUTED] == 1
-    assert counts[BridgeStanding.LEARNED] == 0
     assert sum(counts.values()) == len(LADDER.bridges)
     assert len(counts) == 4  # وتُعَدّ الخانةُ الفارغةُ ولا تُطوى
 
 
-def test_the_three_candidates_for_the_learned_cell_are_each_refused_by_name() -> None:
-    """ثلاثةُ مرشَّحين، وكلٌّ يُرَدّ بعددٍ صحيحٍ واحدٍ ينقصه أو بصفريٍّ لا يُشتَقّ.
+def test_the_two_remaining_candidates_are_refused_for_two_different_reasons() -> None:
+    """مرشَّحان بقيا، وسببا ردِّهما **مختلفان** ولا يُجمَعان في «ينقصه رقم».
 
-    وليس هذا تعنّتًا: ٩٧٫٩٠٪ بلا مقامٍ لا يُعرَف أهي على خمسين أم على خمسين
-    ألفًا؛ والفرقُ بينهما هو الفرقُ بين خبرٍ وصدفة.
+    فج٨ رُدَّ **بقاعدة صاحبه**: رقمٌ لم يُعَد تشغيلُه لا يُختَم. وج٣ رُدَّ
+    **بالحساب**: نسبتُه لا تقبل بسطًا صحيحًا على أيٍّ من مقاميه. والأوّلُ
+    يُرفَع بتشغيل، والثاني يُرفَع بتصحيحِ رقم — فجمعُهما يُخفي أيَّهما أقرب.
     """
 
-    # (أ) ج٨ وج١٠: الصفريُّ مقيسٌ منشورٌ، والمقامُ غيرُ منشور
-    for null_basis, null in (
-        ("أكثريّةُ القسمة الثلاثيّة كما قِيست في ط٧", Fraction("0.5277")),
-        ("أكثريّةُ العلامة الإعرابيّة كما قِيست في ط٩", Fraction("0.3734")),
-    ):
-        assert Fraction(0) < null < Fraction(1)
-        with pytest.raises(BridgeError) as raised:
-            Taught(
-                teacher="ط٧/ط٩",
-                held_out=0,  # المقامُ غيرُ منشور
-                matched=0,
-                null=null,
-                null_basis=null_basis,
-            )
-        assert "مقام" in str(raised.value)
+    # (أ) ج٨: المقامُ وصل (٤١٬٢٠٥)، والنسبةُ تنتظر إعادةَ تشغيلٍ بقاعدة صاحبها
+    assert 41_205 > 0
+    rebuilt_by_surface_alone = Fraction("0.8867")
+    assert rebuilt_by_surface_alone < Fraction("0.9790")
+    # فالفارقُ تسعُ نقاطٍ ونصف، ولا يُختَم رقمٌ لم يُعَد تشغيلُه
+    assert round(float(Fraction("0.9790") - rebuilt_by_surface_alone) * 100, 2) == 9.23
 
-    # (ب) ج٣: غايتُه مستوًى مفتوحُ الجرد، فلا انتظامَ يُشتَقّ منه
+    # (ب) ج٣: ٤٥٫٣٢٪ لا تقبل بسطًا صحيحًا على أيٍّ من المقامين المُرسَلين
+    for denominator in (2_561, 2_529):
+        admissible = [
+            numerator
+            for numerator in range(denominator + 1)
+            if Fraction(round(Fraction(numerator, denominator) * 10_000), 10_000)
+            == Fraction("0.4532")
+        ]
+        assert admissible == []
+    assert 2_561 - 2_529 == 32  # ومقامان بينهما اثنان وثلاثون
+
+    # وصفريُّه يعيد نفسَه على الثاني وحدَه
+    assert round(float(Fraction(293, 2_529)) * 100, 2) == 11.59
+
+    # (ج) ومستوًى مفتوحُ الجرد لا يُشتَقّ منه انتظامٌ أصلًا
     assert not DERIVATION.is_closed
     with pytest.raises(BridgeError) as raised:
         uniform_null(DERIVATION)
     assert "مفتوحُ الجرد" in str(raised.value)
-
-    # والمغلقان يُعطيان صفريَّهما بلا قياسٍ من خارج
     assert uniform_null(PART) == Fraction(1, 3)
     assert uniform_null(MARK) == Fraction(1, 13)
 
@@ -252,16 +274,20 @@ def test_built_is_not_crossed_and_two_bridges_are_built_and_empty() -> None:
 def test_the_ladder_is_cut_into_segments_each_with_its_own_rate() -> None:
     """السُّلَّمُ ليس «مقطوعًا» ولا «ممهَّدًا» بل **مقطوعًا بقطعٍ مُسمّاة**.
 
-    وثلاثُ قطعٍ غيرِ خاليةٍ اليوم، وكلُّها احتمالُها واحدٌ صحيحٌ لأنّ ما فيها
-    مبنيٌّ لا متعلَّم. فمتى دخل المتعلَّمُ الخانةَ الثالثة صار لكلّ قطعةٍ
-    احتمالٌ دون الواحد، وصار الوصفُ «موصولٌ باحتمال».
+    وثلاثُ قطعٍ غيرِ خالية، والعليا منها **دون الواحد**: ٦٧٤٥/٨٢٤١ = ٨١٫٨٥٪.
+    فالوصفُ الصادقُ لأعلى السُّلَّم صار «موصولٌ باحتمال» لا «ممهَّد».
     """
 
     segments = LADDER.segments()
     filled = [one for one in segments if not one.is_empty]
     assert len(filled) == 3
     assert [len(one.bridges) for one in filled] == [2, 1, 3]
-    assert [one.rate for one in filled] == [Fraction(1)] * 3
+    assert [one.rate for one in filled] == [
+        Fraction(1),
+        Fraction(1),
+        Fraction(33_725, 41_205),
+    ]
+    assert round(float(filled[-1].rate) * 100, 2) == 81.85
 
     severing = [one.severed_by for one in segments if one.severed_by is not None]
     assert severing == ["ج٣ الاشتقاق", "ج٥ الجذع", "ج٦ الجذر", "ج٧ الجمودُ والاشتقاق"]

@@ -28,6 +28,15 @@
 توقيعٌ. فيبقى خ٢ **باطلَ الأساس بعلّةٍ ثانية**، ويُنشَر المؤشّرُ على
 الثلاثيّ المُودَع **خارجَ الختم** مُسمًّى بما هو، لا تحت اسم خ٢.
 
+`THE_READING_IS_IDENTIFIED_FROM_THE_BYTES_NOT_SIGNED_BY_ME`: والروايةُ لا
+تُكتَب توقيعًا. تُسمّى **فوارقُ مُعلَنةٌ قبل النظر**، ثمّ تُقرَأ من البايتات:
+فإن وافقتها كلُّها نُسِبت الروايةُ **استدلالًا** (`Evidence.INFERRED`)، وإن
+خالف واحدٌ منها بقيت الخانةُ صفرًا. فالاسمُ مخرَجُ قياسٍ لا إقرارُ جلسة.
+
+`AND_ITS_SCOPE_IS_THE_DISCRIMINATORS_NAMED_NOT_EVERY_READING`: ونسبةٌ
+بثلاثة فوارقَ تفصل عمّن سُمِّي فيها، لا عن كلّ راوٍ. فيُطبَع عددُ الفوارق
+مع الاسم، ويُقرَأ الاسمُ بمداه لا مطلقًا.
+
 `THE_EXTRACTION_IS_A_RATE_NOT_A_COUNT`: واستخراجُ التقسيم من **نصيب** كلّ
 حرفٍ: كم مرّةً وقع بعد نونٍ موسومةٍ بالسكون، مقسومًا على وقوعه لاحقًا في
 النصّ كلِّه. فالحرفُ الشائعُ لا يعلو بشيوعه، والنادرُ لا يهبط بندرته.
@@ -137,8 +146,45 @@ def permuted_null(
 NAMED_SOURCES: tuple[str, ...] = ("tanzil",)
 """مصدرُ الضبط، مُسمًّى بتوقيع صاحب المستودع لا باستنباطٍ من خارج الشجرة."""
 
-NAMED_READINGS: tuple[str, ...] = ()
-"""الرواياتُ المُسمّاة؛ ولا واحدةَ بعدُ — والمصدرُ غيرُ الرواية."""
+# فوارقُ مُعلَنةٌ قبل النظر: (الموضع، قراءةُ حفص، قراءةٌ تخالفها، صاحبُها)
+READING_DISCRIMINATORS: tuple[tuple[int, str, str, str], ...] = (
+    (4, "مالك", "ملك", "نافع — ورش وقالون"),
+    (6, "الصراط", "السراط", "قنبل"),
+    (266, "ننشزها", "ننشرها", "قراءةُ الراء"),
+)
+"""ثلاثةُ مواضعَ بأسطرها؛ ولكلٍّ وجهان: وجهُ حفصٍ ووجهٌ يخالفه بصاحبه."""
+
+CANDIDATE_READING: str = "حفص عن عاصم"
+"""الاسمُ المرشَّح؛ ولا يُنسَب حتّى توافقَه الفوارقُ الثلاثةُ كلُّها."""
+
+
+def _bare(line: str) -> str:
+    import unicodedata
+
+    text = unicodedata.normalize("NFC", line)
+    return "".join(
+        one
+        for one in text
+        if not (MARKS_RANGE[0] <= ord(one) <= MARKS_RANGE[1] or ord(one) in OTHER_MARKS)
+    )
+
+
+def identify_reading(lines: list[str]) -> tuple[tuple[str, ...], int]:
+    """(الرواياتُ المنسوبةُ استدلالًا، عددُ الفوارق الموافقة).
+
+    ولا يُنسَب اسمٌ إلّا بموافقة الفوارق **كلِّها**: فموافقةُ اثنين من ثلاثةٍ
+    تُبقي الخانةَ صفرًا ويُطبَع العددُ — إذ النسبةُ بأغلبيّةٍ ليست نسبة.
+    """
+
+    agreed = 0
+    for number, expected, other, _ in READING_DISCRIMINATORS:
+        if number > len(lines):
+            continue
+        stripped = _bare(lines[number - 1])
+        if expected in stripped and other not in stripped:
+            agreed += 1
+    named = (CANDIDATE_READING,) if agreed == len(READING_DISCRIMINATORS) else ()
+    return named, agreed
 
 
 SUKUN = "\u0652"
@@ -311,7 +357,9 @@ def run(arguments: argparse.Namespace) -> list[str]:
     share = headroom(inside, outside)
     reached, highest = permuted_null(rows, usable, arguments.replicates, arguments.seed)
     p_value = Fraction(reached + 1, arguments.replicates + 1)
-    readings = NAMED_READINGS
+    readings, agreed = identify_reading(
+        arguments.text.read_text(encoding="utf-8").splitlines()
+    )
 
     seen = hashlib.sha256(arguments.text.read_bytes()).hexdigest()
     return [
@@ -332,8 +380,11 @@ def run(arguments: argparse.Namespace) -> list[str]:
         f"· أعلى صفريّ {highest:.4f}",
         f"خ٤ أصغرُ مجموعةٍ داخلة: {smallest} — " + ("متحقّق" if smallest >= 2 else "ساقط"),
         f"خ٥ المصادرُ المُسمّاة: {len(NAMED_SOURCES)} "
-        f"({'، '.join(NAMED_SOURCES)}) · الرواياتُ المُسمّاة: {len(readings)} — "
-        + ("متحقّق بالمصدر" if NAMED_SOURCES else "ساقط"),
+        f"({'، '.join(NAMED_SOURCES)}) · الرواياتُ المنسوبةُ استدلالًا: "
+        f"{len(readings)}"
+        + (f" ({'، '.join(readings)})" if readings else "")
+        + f" بـ{agreed}/{len(READING_DISCRIMINATORS)} فوارقَ مُعلَنة — "
+        + ("متحقّق" if NAMED_SOURCES else "ساقط"),
         "— قراءةٌ مُعلَنةٌ خارجَ الختم (ليست خ٢) —",
         f"ملتقى النون الموسومةِ بالسكون: {junction} موضعًا",
         f"التقسيمُ المُودَعُ ثلاثيٌّ: {dict(sorted(deposited_sizes.items()))} "

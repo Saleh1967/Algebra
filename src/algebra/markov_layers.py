@@ -65,6 +65,7 @@ __all__ = [
     "identity_layer",
     "induced_map",
     "lumpability",
+    "merge_information",
     "mutual_information",
     "project_census",
     "refines",
@@ -385,6 +386,27 @@ def lumpability(
         floor=floor,
         compared_states=compared,
         excluded_states=excluded,
+    )
+
+
+def merge_information(census: Mapping[tuple[str, str], int], layer: Layer) -> float:
+    """`Δ = I(الخليفةُ المُسقَط ؛ الحالة | الكتلة)` بالبتّات — **محسوبٌ لا مقدَّر**.
+
+    والكتلةُ دالّةٌ في الحالة، فقاعدةُ السلسلة تعطي بالضبط
+    `I(Y;X) = I(Y;B) + I(Y;X|B)`، أي `Δ = I(Y;X) − I(Y;B)`.
+
+    وهذا يُغني عن تقدير `Δ` بمتباينة بنسكر من مسافة التغاير. **والحدُّ
+    المنشورُ `2δ²/ln2` ليس حدًّا أدنى أصلًا**: يخسر عاملين — بُعدُ الليف عن
+    الخليط نصفُ بُعده عن الليف الآخر على الأقلّ (عاملُ أربعة)، والمتوسّطُ
+    موزونٌ بوزن الليف (عامل `1/w`) — فيخرج **فوق** الكمّيّة التي يزعم أنّه
+    دونها. والصحيحُ `Δ ≥ w·δ²/(2 ln2)`، والأصحُّ أن يُحسَب ولا يُقدَّر.
+    """
+
+    with_target: Counter[tuple[str, str]] = Counter()
+    for (first, second), number in census.items():
+        with_target[(first, layer.of(second))] += number
+    return mutual_information(with_target) - mutual_information(
+        project_census(census, layer)
     )
 
 

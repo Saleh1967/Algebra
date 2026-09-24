@@ -111,6 +111,14 @@ TOKEN_INFORMATION = Fraction(78_041, 10_000)
 TOKEN_MEAN_COUNT = Fraction(453, 100)
 
 VACANT = ("الوظيفيّ", "الصرفيّ", "النحويّ", "الاشتقاقيّ", "الدلاليّ")
+
+# `Δ = I(Y;X) − I(Y;B)` محسوبًا لا مقدَّرًا — بالبتّات × ١٠⁴
+MERGE_INFORMATION: dict[str, int] = {
+    "الإملائيّ": 5_316,
+    "الحركيّ": 3_123,
+    "الصوتيّ": 4_394,
+    "العضويّ": 2_266,
+}
 WORST_BLOCK = ("7", "جشيض")
 JIM_BARE, DAD_SUKUN = (43, Fraction(1)), (234, Fraction(0))
 
@@ -206,3 +214,25 @@ def test_five_layers_are_vacant_for_want_of_a_projection_not_of_material() -> No
     assert {"الاشتقاقيّ", "الدلاليّ"} <= set(VACANT)
     reason = "الطبقةُ إسقاطٌ لا تسمية"
     assert "إسقاط" in reason
+
+
+def test_the_merge_information_is_computed_and_the_published_bound_is_false() -> None:
+    """`Δ` بين ٠٫٢٢٧ و٠٫٥٣٢ بت؛ و«حدُّ» `2δ²/ln2` فوقها جميعًا — فليس حدًّا.
+
+    بل يجاوز `I` للذرّة كلِّها (١٫٦٩٩٤)، وهي سقفُ القناة. فالصيغةُ تُكذَّب
+    عدديًّا لا تُوصَف بالخشونة. والصحيحُ `Δ ≥ w·δ²/(2 ln2)` — والأصحُّ أن
+    يُحسَب `Δ` من الجداول نفسِها، فقاعدةُ السلسلة تعطيه بالضبط.
+    """
+
+    import math
+
+    ceiling = _row("الترميزيّ")[2]
+    for name, scaled in MERGE_INFORMATION.items():
+        delta = Fraction(scaled, 10_000)
+        defect = _row(name)[4]
+        published = 2 * float(defect) ** 2 / math.log(2)
+        assert delta > 0
+        assert published > float(delta)  # «حدٌّ أدنى» فوق كمّيّته
+        assert published > float(ceiling)  # بل فوق سقف القناة كلِّه
+    assert max(MERGE_INFORMATION.values()) == 5_316
+    assert min(MERGE_INFORMATION.values()) == 2_266

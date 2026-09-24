@@ -20,13 +20,13 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["algebra*", "hawk_dove*"]
+include = ["algebra*", "hawk_dove*", "alghanem*"]
 
 # `tests/arabic` تختبر وحداتِ إيداعِ النقل في `src/alghanem`، وهي غيرُ قابلة
 # للاستيراد في هذا المستودع (انظر `src/alghanem/TRANSFER_NOTICE.md`). ومكانُ
 # تشغيلها نسخةٌ كاملةٌ من Saleh1967/Alghanem، لا هنا.
 [tool.pytest.ini_options]
-testpaths = ["tests/algebra", "tests/hawk_dove"]
+testpaths = ["tests/algebra", "tests/hawk_dove", "tests/arabic"]
 
 [tool.ruff]
 line-length = 88
@@ -43,6 +43,6 @@ select = ["E", "F", "I", "UP"]
 
 [tool.mypy]
 strict = true
-packages = ["algebra", "hawk_dove"]
+packages = ["algebra", "hawk_dove", "alghanem"]
 mypy_path = "src"
 

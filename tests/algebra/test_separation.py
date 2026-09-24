@@ -15,6 +15,8 @@ from __future__ import annotations
 
 import ast
 import re
+import subprocess
+import sys
 from pathlib import Path
 
 REPOSITORY = Path(__file__).resolve().parents[2]
@@ -72,18 +74,33 @@ def test_the_tests_import_nothing_from_the_other_tree() -> None:
 
 
 def test_the_package_imports_on_its_own() -> None:
-    """تُستورَد الحزمةُ ووحداتُها بلا اسمٍ من تلك الشجرة في المسار."""
+    """تُستورَد الحزمةُ ووحداتُها بلا اسمٍ من تلك الشجرة في المسار.
 
-    import sys
+    **ويُفحَص في عمليّةٍ مستقلّة**: كان الفحصُ يقرأ `sys.modules` في عمليّة
+    الاختبار نفسِها، فكان يمرّ لأنّ `tests/arabic` **لم تكن تُجمَع أصلًا**.
+    فلمّا جُمِعت صار اسمُ تلك الشجرة في `sys.modules` قبل أن يبدأ هذا الفحص،
+    وسقط. والدعوى المقصودةُ «استيرادُ `algebra` لا يجرّ تلك الشجرة» لا
+    «لا أحدَ في هذه الجلسة استوردها»، وبينهما فرق. فصارت تُفحَص حيث تصدق:
+    عمليّةٌ لا تستورد إلّا `algebra`.
+    """
 
-    import algebra
-    import algebra.attainability
-    import algebra.decisions
-    import algebra.simplicial
-
-    assert algebra.__file__ is not None
-    assert Path(algebra.__file__).resolve().parent == PACKAGE
-    assert not [name for name in sys.modules if name.split(".")[0] == FOREIGN]
+    probe = (
+        "import sys, algebra, algebra.attainability, algebra.decisions, "
+        "algebra.simplicial;"
+        "print(algebra.__file__);"
+        f"print([n for n in sys.modules if n.split('.')[0] == {FOREIGN!r}])"
+    )
+    finished = subprocess.run(  # noqa: S603
+        [sys.executable, "-c", probe],
+        capture_output=True,
+        text=True,
+        timeout=120,
+        cwd=REPOSITORY,
+    )
+    assert finished.returncode == 0, finished.stderr[-600:]
+    where, foreign = finished.stdout.strip().splitlines()
+    assert Path(where).resolve().parent == PACKAGE
+    assert foreign == "[]"
 
 
 def test_the_distribution_is_no_longer_named_after_the_other_project() -> None:

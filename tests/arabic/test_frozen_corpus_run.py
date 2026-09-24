@@ -72,7 +72,9 @@ def test_three_of_four_counting_rules_return_zero_on_this_file() -> None:
 
     from alghanem.arabic.quran_corpus_word_total import WordCountingRule, word_total
 
-    totals = {rule.name: word_total(rule) for rule in WordCountingRule}
+    # والمسارُ يُصرَّح به: بابُ «تصريحِ المستدعي» في ذلك القارئ، إذ لا
+    # يعرف من الحوامل إلّا `corpora/…`، والبايتاتُ قد تكون في غيره
+    totals = {rule.name: word_total(rule, CORPUS) for rule in WordCountingRule}
     zeros = [name for name, value in totals.items() if value == 0]
     assert len(zeros) == 3
     assert totals["WHITESPACE_TOKENS_IN_WHOLE_LINE"] == WHOLE_LINE_TOKENS
@@ -84,7 +86,7 @@ def test_the_survey_verdict_is_about_the_reader_not_about_the_quoted_total() -> 
 
     from alghanem.arabic.quran_corpus_word_total import run_quoted_total_survey
 
-    reading = run_quoted_total_survey()
+    reading = run_quoted_total_survey(CORPUS)
     assert reading.quoted_total == QUOTED_TOTAL
     assert reading.bytes_are_resolvable is True
     assert reading.mirror_invariant_total == MIRROR_INVARIANT

@@ -36,6 +36,16 @@
 المفردات **خارج القياس**، والرقمُ خبرٌ عمّن له شاهدُ إحلالٍ لا عن العربيّة
 كلِّها. فيُطبَع نصيبُهم مع كلّ رقم.
 
+`ONE_ESTIMATOR_FOR_BOTH_CLAIMS`: ويُشغَّل **المقدِّرُ نفسُه** على الدعويين:
+فرقُ ت٢ وكسبُ ش٥ كلاهما يُعاد بمعاودةٍ مجمَّعةٍ على العقد، ويُطبَع مجالُه
+ومعه **عددُ معاوداته**. فمجالٌ بلا `B` لا تُعرَف أرضيّتُه، ومكيالان لدعويين
+عيبٌ في الحكم لا في البيانات.
+
+`THE_BOUND_SAYS_UNESTABLISHED_NOT_REFUTED`: والقسمةُ على جذر أثر التصميم
+حدٌّ محافظٌ يكافئ `ρ = 1`؛ فمن بلغه ثبت، ومن لم يبلغه **لم يُثبَت** ولم
+يُرَدّ. و`algebra.design_effect` هي التي تُصدِر المنزلة، فلا تُكتَب بيد.
+والمتوسّطُ الداخلُ في الأثر متوسّطُ **ذوي الشاهد** لا الكلّ.
+
 `NO_Z_IS_PRINTED_UNDIVIDED`: ولا يُطبَع `z` إلّا مقسومًا على جذر «الحوافِّ
 للعقدة»، ويُطبَع الخامُ بجانبه ليُرى مقدارُ ما طُرِح. فالحافّةُ ليست مشاهدةً
 مستقلّة، والعقدةُ الواحدةُ تدخل حوافَّ كثيرة.
@@ -51,6 +61,8 @@ import random
 from collections import Counter, defaultdict
 from fractions import Fraction
 from pathlib import Path
+
+from algebra.design_effect import ClusterProfile
 
 SEAL = "df8fe34a88bbf641e554f2ca923ac17f8c4c355691a109261bbe3a9b8c06ba07"
 
@@ -389,6 +401,49 @@ def _group_sizes(edges: set[frozenset[str]]) -> list[int]:
     return sorted(groups.values())
 
 
+def gain_by_node(
+    built: list[tuple[str, str, str]],
+    learned: dict[str, Counter[tuple[str, str]]],
+    classes: dict[str, str],
+) -> dict[str, float]:
+    """كسبُ ش٥ لكلّ عقدة: إصابةُ الجدول المشترَك ناقصًا إصابةَ الهامش.
+
+    ووحدةُ الاستقلال العقدةُ ههنا كما هي في ت٢ — فالمقدِّرُ واحدٌ للدعويين.
+    """
+
+    per_node: dict[str, list[tuple[bool, bool]]] = defaultdict(list)
+    for before, centre, after in built:
+        if after == EDGE or centre not in learned:
+            continue
+        truth = classes.get(after, CATCH_ALL)
+        joint = _guess(learned[centre], classes.get(before, CATCH_ALL))
+        marginal = _guess(learned[centre], None)
+        if joint is None or marginal is None:
+            continue
+        per_node[centre].append((joint == truth, marginal == truth))
+    return {
+        node: sum(1 for one, _ in seen if one) / len(seen)
+        - sum(1 for _, two in seen if two) / len(seen)
+        for node, seen in per_node.items()
+        if seen
+    }
+
+
+def _guess(cells: Counter[tuple[str, str]], before_class: str | None) -> str | None:
+    """أرجحُ صنفٍ لاحقٍ: بالجدول المشترَك إن سُمّي السابقُ، وبالهامش إن لم يُسمَّ."""
+
+    chosen = cells
+    if before_class is not None:
+        narrowed = Counter(
+            {cell: count for cell, count in cells.items() if cell[0] == before_class}
+        )
+        chosen = narrowed or cells
+    tally: Counter[str] = Counter()
+    for (_, next_class), count in chosen.items():
+        tally[next_class] += count
+    return tally.most_common(1)[0][0] if tally else None
+
+
 def _smallest_group(edges: set[frozenset[str]]) -> int:
     """أصغرُ فرقةٍ (مركّبةٍ متّصلة) تدخل القراءة."""
 
@@ -445,7 +500,16 @@ def run(arguments: argparse.Namespace) -> list[str]:
     mean, low, high = clustered_interval(
         differences, arguments.seed, arguments.bootstrap
     )
+    gains = gain_by_node(built_second, learned, classes)
+    gain_mean, gain_low, gain_high = clustered_interval(
+        gains, arguments.seed, arguments.bootstrap
+    )
     median, average, witnessed, highest = degree_profile(edges, names)
+    profile = ClusterProfile(
+        observations=2 * len(edges),
+        clusters=max(nodes, 1),
+        isolated=Fraction(round((1 - witnessed) * 1_000), 1_000),
+    )
 
     seen = column_digest([one for _, one in rows])
     stamp = (
@@ -465,16 +529,23 @@ def run(arguments: argparse.Namespace) -> list[str]:
         f"ش٤ أصغرُ فرقة: {_smallest_group(edges)}",
         f"ش٥ المشترَك − الهامش: {float(gain):.4f} "
         f"(مشترَك {float(joint):.4f} · هامش {float(marginal):.4f})",
-        "ت٣: " + ("قائمةٌ بش٥" if gain >= Fraction(1, 100) else "ساقطةٌ بش٥"),
+        "ت٣ بش٥: "
+        + ("قائمةٌ" if gain >= Fraction(1, 100) else "لم تُثبَت — ولم تُرَدّ")
+        + f" · مجالُ كسبها [{gain_low:.4f}، {gain_high:.4f}] "
+        f"بـ{arguments.bootstrap} معاودةً مجمَّعةً على العقد",
         "— مقاماتٌ وأوصافٌ مُعلَنةٌ لا شروط —",
         f"العقد: {nodes} · الحوافّ: {len(edges)}",
         f"نصيبُ العقد التي لها شاهدُ إحلالٍ أصلًا: {witnessed:.4f}",
         f"الدرجة: وسيطًا {median:.2f} · متوسّطًا {average:.4f} · أقصى {highest}",
-        f"الفرقُ المقترنُ للعقدة: {mean:.4f} "
-        f"[{low:.4f}، {high:.4f}] بمعاودةٍ مجمَّعةٍ على العقد",
+        f"الفرقُ المقترنُ للعقدة: {mean:.4f} [{low:.4f}، {high:.4f}] "
+        f"بـ{arguments.bootstrap} معاودةً مجمَّعةً على العقد",
+        f"متوسّطُ الدرجة على ذوي الشاهد: {float(profile.mean_over_active):.4f} "
+        f"(وعلى الكلّ {float(profile.mean_over_all):.4f})",
+        "ومنزلةُ أيّ z بالحدّ المحافظ (ρ = ١) تُقرَأ بـ`read_effect`، "
+        "فلا يُكتَب «مردود» حيث يصحّ «لم يُثبَت».",
         f"إنتروبيا أحجام الفرق: {group_entropy(edges):.4f} بتّ",
         f"نصيبُ أكثر الإطارات تكرارًا: {float(top_frame_share(built_first)):.4f}",
-        "ولا يُطبَع z إلّا مقسومًا على جذر الحوافِّ للعقدة، والمقترنُ بجانبه.",
+        "ولا يُطبَع z إلّا مقسومًا على جذر أثر التصميم، والمقترنُ بجانبه.",
     ]
     return lines
 

@@ -1,30 +1,33 @@
-"""استطلاعا النثر مقروءَين: ت٢ تنجو بالمعاودة، وت٣ تسقط على مخطّط النثر نفسِه.
+"""استطلاعا النثر مقروءَين ثانيةً: ت٢ قائمة، وت٣ **غيرُ مُثبَتةٍ لا ساقطة**.
 
-**ما ههنا**: أرقامٌ منقولةٌ عن تشغيلٍ جرى على نثرٍ حديثٍ لمؤلّفٍ واحد، لم
-تُعَد في هذه الشجرة. ولا يُقاس عليها شيءٌ عن العربيّة؛ يُقاس **ما يلزم عنها**.
+**تصويبُ ما كتبتُه في الجولة السابقة**: قلتُ «ت٣ ساقطةٌ بقاعدة ش٢». وذلك
+تجاوزٌ في اللفظ وفي الحساب معًا، وأصحّحه ههنا بثلاثة أشياء:
 
-`THE_PAIRED_ESTIMATE_ANSWERS_THE_CLUSTER_OBJECTION_PROPERLY`: كان اعتراضي
-«القسمةُ على جذر الحوافِّ للعقدة»، وهو **حدٌّ محافظٌ** لا تقدير. والمعاودةُ
-المجمَّعةُ على الكلمات جوابُه الصحيح: فرقٌ مقترنٌ ٠٫١٣٤٢ بمجالٍ [٠٫١٢٢،
-٠٫١٤٧]، ولا يقترب طرفُه الأدنى من الصفر. فت٢ **قائمةٌ بعد التصحيحين معًا**،
-ولا يُذيبها التعالُق.
+`THE_SQUARE_ROOT_RULE_IS_THE_EXTREME_NOT_A_NEUTRAL_CORRECTION`: القسمةُ على
+`√m̄` تكافئ `ρ = 1` في `DEFF = 1 + (m̄ − 1)ρ`. و`ρ` **لم يُقَس**. وعند قيمٍ
+أدنى يبلغ ت٣ الحدَّ: عند ٠٫٥ يعطي ٢٫٣٨٨، وعند ٠٫٢ يعطي ٢٫٩٦٢، وعند ٠٫٠٥
+يعطي ٣٫٤٦٥. فالحكمُ السابقُ كان قائمًا على معاملٍ مفروضٍ عند أقصاه.
 
-`THE_SAME_SURVEY_SINKS_THE_THIRD_FINDING_ON_ITS_OWN_GRAPH`: ومتوسّطُ الحوافِّ
-للعقدة في مخطّط النثر **٣٫٨**. وقسمةُ ت٣ عليه: `3.7 ÷ √3.8 = 1.898` — **دون
-١٫٩٦**. فليست ت٣ «هشّةً إن كثُفت مدوّنةٌ يومًا»: هي ساقطةٌ بقاعدة ش٢ على
-المخطّط الذي خرجت منه. وت٢ بالقسمة نفسِها `19.6 ÷ √3.8 = 10.05` فتنجو خامًا
-قبل المعاودة.
+`A_CONSERVATIVE_BOUND_CANNOT_REFUTE`: ومن لم يبلغ حدًّا محافظًا فهو **غيرُ
+مُثبَت**، لا مردود. والحدُّ المحافظ يضخّم الخطأ عمدًا، فمن بلغه ثبت رغم
+التضخيم، ومن لم يبلغه لم يُقَل فيه شيء. و«ساقطة» تمنح الحدَّ سلطةَ نفيٍ لا
+يملكها.
 
-`A_MEDIAN_DEGREE_OF_ZERO_IS_THE_DENOMINATOR_NOBODY_NAMED`: ووسيطُ الدرجة
-**صفر**. ومعناه أنّ نصفَ المفردات فأكثرَ **لا شاهدَ إحلالٍ لها ألبتّة**،
-فلا تدخل ش١ ولا تخرج منها. فكلُّ رقمٍ في هذا الباب خبرٌ عمّن له جارٌ
-مرصود، لا عن المعجم. وهذا مقامٌ ثالثٌ لم يُسمِّه أحدُنا، وقد صار يُطبَع مع
-كلّ تشغيل.
+`THE_ZERO_MEDIAN_INVALIDATES_THE_VERY_MEAN_IT_WAS_READ_WITH`: وأشدُّها: إن
+كان نصفُ العقد بلا حافّةٍ فمتوسّطُ **ذوي الحافّة** ٧٫٦٠ لا ٣٫٨٠. فالعددُ
+الذي قسمتُ به مأخوذٌ على جمهورٍ نصفُه لا يُسهم. والاتّجاهُ لا ينقلب —
+ت٣ تصير ١٫٣٤٢ وت٢ ٧٫١١ — لكنّ **حدَّ التعادل ٣٫٥٦ يفقد معناه**، إذ قِيس
+على مقامٍ غيرِ الذي يُقارَن به.
 
-`THE_CATCH_ALL_SHARE_IS_ALREADY_A_SEALED_CONDITION_NOT_A_DESCRIPTION`:
-وتصويبٌ في التقسيم: «نصيبُ سواه» ليس مقامًا وصفيًّا — هو **ش٣** في الختم
-بحدٍّ ٥٠٪ واتّجاه «لا يجاوز». فالوصفيُّ منهما عددُ العقد وحدَه، ومعه نصيبُ
-ذوي الشاهد. والفرقُ ليس لفظيًّا: ما كان شرطًا يُسقِط، وما كان وصفًا يُقرَأ.
+`THE_BREAK_EVEN_WAS_NEVER_AN_INDEPENDENT_PATH`: وقلتُ «التقديرُ والقياسُ
+التقيا من طريقين»، وذلك غيرُ صحيح. فـ`(3.7/1.96)² = 3.5636` مشتقٌّ جبريًّا
+من ٣٫٧ و١٫٩٦، و«٣٫٨ > ٣٫٥٦» هي **نفسُها** «٣٫٧/√٣٫٨ < ١٫٩٦» مرتَّبةً. طريقٌ
+واحدٌ كُتِب مرّتين، لا طريقان التقيا.
+
+`ONE_ESTIMATOR_FOR_BOTH_CLAIMS_OR_NEITHER`: وبقي أعدلُ ما في النقد: حُكِم
+لـت٢ **بالمعاودة المجمَّعة** وعلى ت٣ **بالحدّ المحافظ** — مكيالان. والأداةُ
+مبنيّةٌ سلفًا، فصارت تُشغَّل على كسب ش٥ كما تُشغَّل على فرق ت٢، ويُطبَع مع
+كلّ مجالٍ **عددُ معاوداته**؛ فمجالٌ بلا `B` لا تُعرَف أرضيّتُه.
 """
 
 from __future__ import annotations
@@ -32,76 +35,127 @@ from __future__ import annotations
 import math
 from fractions import Fraction
 
+from algebra.attainability import permutation_floor
+from algebra.design_effect import (
+    ClusterProfile,
+    EffectStanding,
+    design_effect,
+    read_effect,
+    refuted_against,
+)
 from algebra.reconciliation import rounds_to
 from algebra.results import Vacancy
 
 # منقولةٌ عن النثر: (المرصودُ المقترن، أدنى المجال، أعلاه، z)
 PAIRED = (Fraction("0.1342"), Fraction("0.122"), Fraction("0.147"), 21.1)
 
-# مخطّطُ الإطارات على النثر: وسيطٌ، و`p90`، ومتوسّطٌ، وأقصى
-DEGREE_MEDIAN, DEGREE_P90, DEGREE_MEAN, DEGREE_MAX = 0, 8, 3.8, 341
+DEGREE_MEDIAN, DEGREE_P90, DEGREE_MEAN, DEGREE_MAX = 0, 8, Fraction(19, 5), 341
+ISOLATED = Fraction(1, 2)
+"""حدٌّ أدنى يلزم عن وسيطٍ صفر؛ والنصيبُ الحقيقيُّ يُعلَن ولا يُقدَّر."""
 
 RAW_Z = {"ت٢": 19.6, "ت٣": 3.7}
-CONVENTIONAL = 1.96
+CONVENTIONAL = Fraction(49, 25)
 
 
-def test_the_paired_interval_excludes_zero_and_contains_its_estimate() -> None:
-    """٠٫١٣٤٢ داخلَ [٠٫١٢٢، ٠٫١٤٧]، وأدنى المجال بعيدٌ عن الصفر."""
-
-    mean, low, high = PAIRED[0], PAIRED[1], PAIRED[2]
-    assert low < mean < high
-    assert low > 0
-    assert rounds_to((high - low) * 1_000, 0) == 25  # اتّساعُ المجال ٠٫٠٢٥
+def _profile(isolated: Fraction) -> ClusterProfile:
+    return ClusterProfile(observations=19, clusters=5, isolated=isolated)
 
 
-def test_the_mean_degree_sinks_the_third_finding_under_the_sealed_rule() -> None:
-    """٣٫٧ ÷ √٣٫٨ = ١٫٨٩٨ — دون ١٫٩٦، فت٣ ساقطةٌ على مخطّطها هي."""
+def test_the_square_root_rule_is_the_correlation_fixed_at_one() -> None:
+    """القسمةُ على √٣٫٨ هي `DEFF` عند `ρ = 1` — لا تصحيحٌ محايد."""
 
-    divided = {name: z / math.sqrt(DEGREE_MEAN) for name, z in RAW_Z.items()}
-    assert round(divided["ت٣"], 3) == 1.898
-    assert divided["ت٣"] < CONVENTIONAL
+    assert design_effect(DEGREE_MEAN, Fraction(1)) == DEGREE_MEAN
+    assert math.isclose(
+        RAW_Z["ت٣"] / math.sqrt(float(DEGREE_MEAN)), 1.8981, abs_tol=1e-4
+    )
 
-    assert round(divided["ت٢"], 2) == 10.05
-    assert divided["ت٢"] > CONVENTIONAL
+    table = {
+        Fraction(1): Fraction(19, 5),
+        Fraction(1, 2): Fraction(12, 5),
+        Fraction(1, 5): Fraction(39, 25),
+        Fraction(1, 20): Fraction(57, 50),
+    }
+    for correlation, effect in table.items():
+        assert design_effect(DEGREE_MEAN, correlation) == effect
 
-    # وحدُّ التعادل الذي حُسِب قبل الاستطلاع كان ٣٫٥٦، والمتوسّطُ جاء فوقه
-    assert (RAW_Z["ت٣"] / CONVENTIONAL) ** 2 < DEGREE_MEAN
+
+def test_at_lower_correlations_the_third_finding_reaches_the_threshold() -> None:
+    """٢٫٣٨٨ و٢٫٩٦٢ و٣٫٤٦٥ — ثلاثُ قيمٍ تبلغ الحدَّ، والحكمُ السابقُ فرض أقصاها."""
+
+    outcomes = {}
+    for correlation in (Fraction(1), Fraction(1, 2), Fraction(1, 5), Fraction(1, 20)):
+        reading = read_effect(
+            RAW_Z["ت٣"], _profile(Fraction(0)), correlation=correlation
+        )
+        outcomes[correlation] = (round(reading.deflated, 3), reading.standing)
+
+    assert outcomes[Fraction(1)] == (1.898, EffectStanding.UNESTABLISHED)
+    assert outcomes[Fraction(1, 2)] == (2.388, EffectStanding.ESTABLISHED)
+    assert outcomes[Fraction(1, 5)] == (2.962, EffectStanding.ESTABLISHED)
+    assert outcomes[Fraction(1, 20)] == (3.465, EffectStanding.ESTABLISHED)
 
 
-def test_a_zero_median_means_half_the_vocabulary_never_enters_the_reading() -> None:
-    """وسيطُ الدرجة صفرٌ: نصفُ المفردات بلا شاهدِ إحلال، فهي خارج المقام."""
+def test_not_reaching_a_conservative_bound_is_not_a_refutation() -> None:
+    """«لم يُثبَت» منزلةٌ، و«مردود» بابُه هامشٌ مُعلَنٌ ومجالٌ مقيس."""
+
+    bound = read_effect(RAW_Z["ت٣"], _profile(Fraction(0)))
+    assert bound.standing is EffectStanding.UNESTABLISHED
+    assert bound.standing is not EffectStanding.REFUTED
+    assert bound.is_a_bound_not_an_estimate
+
+    # والردُّ لا يُبلَغ إلّا بمجالٍ أعلاه دون هامشٍ كُتِب قبل النظر
+    margin = Fraction(5, 100)
+    assert refuted_against((Fraction(1, 100), Fraction(2, 100)), margin) is (
+        EffectStanding.REFUTED
+    )
+    assert refuted_against((Fraction(1, 100), Fraction(9, 100)), margin) is (
+        EffectStanding.UNESTABLISHED
+    )
+
+    # ومنزلةُ ت٣ الآن `UNRUN` لا `REFUSED`: فحصُها مُعيَّنٌ ولم يُجرَ بعدُ
+    assert Vacancy.UNRUN.value == "فحصُها مُعيَّنٌ ولم يُجرَ"
+    assert Vacancy.UNRUN is not Vacancy.REFUSED
+
+
+def test_a_zero_median_moves_the_mean_that_the_rule_divides_by() -> None:
+    """٣٫٨ على الكلّ و٧٫٦٠ على ذوي الشاهد — والقسمةُ تكون بالثاني."""
+
+    profile = _profile(ISOLATED)
+    assert profile.mean_over_all == DEGREE_MEAN
+    assert profile.mean_over_active == Fraction(38, 5)
+
+    third = read_effect(RAW_Z["ت٣"], profile)
+    second = read_effect(RAW_Z["ت٢"], profile)
+    assert round(third.deflated, 3) == 1.342
+    assert round(second.deflated, 2) == 7.11
+    assert second.standing is EffectStanding.ESTABLISHED
+    assert third.standing is EffectStanding.UNESTABLISHED
 
     assert DEGREE_MEDIAN == 0
-    assert DEGREE_MEAN > DEGREE_P90 / 4  # ذيلٌ ثقيلٌ لا توزيعٌ متماثل
     assert DEGREE_MAX > DEGREE_P90 * 40
 
-    # ومنزلةُ هؤلاء ليست «لا جوار لهم» بل «لم يُبلَغوا بما في اليد»
-    assert Vacancy.UNREACHABLE.value == "لا تُبلَغ بما في اليد"
-    assert Vacancy.UNREACHABLE is not Vacancy.UNATTESTED
+
+def test_the_break_even_is_the_same_inequality_rearranged() -> None:
+    """`(z/c)² < m̄` و`z/√m̄ < c` قولٌ واحد — فلا طريقين التقيا."""
+
+    z, threshold = RAW_Z["ت٣"], float(CONVENTIONAL)
+    break_even = (z / threshold) ** 2
+    assert round(break_even, 4) == 3.5636
+    same = z / math.sqrt(float(DEGREE_MEAN)) < threshold
+    assert (break_even < float(DEGREE_MEAN)) is same
+
+    # وليس ٣٫٥٦ قياسًا مستقلًّا: مقامُه ٣٫٧ و١٫٩٦ لا بياناتٌ أخرى
+    assert break_even != float(DEGREE_MEAN)
 
 
-def test_the_catch_all_share_is_a_condition_not_a_description() -> None:
-    """«سواه» ش٣ بحدٍّ ٥٠٪، والوصفيُّ عددُ العقد ونصيبُ ذوي الشاهد."""
+def test_an_interval_without_its_replicate_count_has_no_floor() -> None:
+    """مجالٌ بلا `B` لا تُعرَف أرضيّتُه، كما لا تُقرأ `p` بلا عدد التباديل."""
 
-    sealed = {"ش٣ نصيبُ «سواه»"}
-    described = {"عددُ العقد", "نصيبُ العقد التي لها شاهدُ إحلال"}
-    assert not (sealed & described)
+    mean, low, high, _ = PAIRED
+    assert low < mean < high and low > 0
+    assert rounds_to((high - low) * 1_000, 0) == 25
 
-    # وما كان شرطًا يُسقِط، وما كان وصفًا يُقرَأ — والخلطُ بينهما بابٌ بعديّ
-    assert len(sealed) == 1 and len(described) == 2
-
-
-def test_the_road_after_the_five_is_ordered_with_its_material_named() -> None:
-    """ثلاثةُ أبوابٍ بالترتيب، ولكلٍّ منزلةُ مادّته — ولا بابَ بلا مادّةٍ مُسمّاة."""
-
-    road = (
-        ("النظمُ المعنويُّ بالفرق", "يتبع تشغيلَ الشاهد نفسِه"),
-        ("أوسمةُ اللسان معلَّقةً", "روايةٌ عن مدوّنة استعمال، بالعزل المفحوص"),
-        ("إعرابُ H(الحركة الأخيرة | اللفظ، الدور)", "محاذاةٌ مشكولةٌ لم تُودَع ههنا"),
-    )
-    assert len(road) == 3
-    assert len({name for name, _ in road}) == 3
-
-    # والثالثُ وحدَه مشروطٌ بمادّةٍ غيرِ موجودةٍ في هذه الشجرة، وذلك يُقال لا يُطوى
-    needs_material = [name for name, note in road if "لم تُودَع" in note]
-    assert needs_material == ["إعرابُ H(الحركة الأخيرة | اللفظ، الدور)"]
+    declared = 1_000
+    assert permutation_floor(declared) == Fraction(1, 1_001)
+    # والمنشورُ في الجولة السابقة كان بلا `B`؛ وقد صار يُطبَع مع كلّ مجال
+    assert permutation_floor(declared) > 0

@@ -253,14 +253,20 @@ def test_the_run_prints_declared_descriptions_apart_from_the_conditions(
         "نصيبُ العقد التي لها شاهدُ إحلالٍ أصلًا",
         "الدرجة: وسيطًا",
         "الفرقُ المقترنُ للعقدة",
+        "متوسّطُ الدرجة على ذوي الشاهد",
         "إنتروبيا أحجام الفرق",
         "نصيبُ أكثر الإطارات تكرارًا",
     ):
         assert description in joined
 
-    # وحكمُ ت٣ يُطبَع بش٥ لا وحدَه
-    assert "ت٣: " in joined
-    assert "بش٥" in joined
+    # وحكمُ ت٣ يُطبَع بش٥ ومعه مجالُه وعددُ معاوداته
+    assert "ت٣ بش٥: " in joined
+    assert "معاودةً مجمَّعةً على العقد" in joined
+    assert "متوسّطُ الدرجة على ذوي الشاهد" in joined
+    # ولا يُكتَب «مردود» في سطر الحكم حيث يصحّ «لم تُثبَت»
+    verdict = next(one for one in lines if one.startswith("ت٣ بش٥"))
+    assert "مردود" not in verdict
+    assert "قائمةٌ" in verdict or "لم تُثبَت" in verdict
 
 
 def test_the_paired_difference_is_measured_per_node_not_per_edge(

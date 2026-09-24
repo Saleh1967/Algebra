@@ -20,6 +20,22 @@
 وشرطُ ش٣ هو فحصُ هذا المُدخَل نفسِه: إن ابتلع «سواه» أكثرَ من النصف فالتوقيعُ
 بتّةٌ واحدةٌ اسمُها «ليس من الأربعة».
 
+`ONE_KEY_AND_TWO_SEALED_SURFACES`: ويُسمّى **العمودُ** بـ`--column`، وتُطبَع
+بصمتُه وحدَه إلى جانب بصمة الملفّ. فرسمٌ خامٌ ينضمّ بايتًا ببايتٍ إلى وسمٍ
+خارجيّ، ومخرَجُ تطبيعٍ مشتقٌّ منه، **يسكنان ملفًّا واحدًا بمفتاحٍ واحد**
+ولكلٍّ بصمة. وبذلك لا يكون عمودٌ واحدٌ نقطةَ سقوطٍ لبندين.
+
+`WHAT_IS_DESCRIBED_AFTER_THE_FACT_IS_NOT_A_CONDITION`: وتُطبَع في صدر
+النتيجة **مقاماتٌ وأوصافٌ مُعلَنةٌ لا شروط**: عددُ العقد، ونصيبُ العقد التي
+لها حافّةٌ أصلًا، ووسيطُ الدرجة ومتوسّطُها، وأعلى إطارٍ تركُّزًا، وإنتروبيا
+أحجام الفرق، ومجالُ ثقةٍ بمعاودةٍ مجمَّعةٍ على العقد. ولا يدخل شيءٌ منها
+الختمَ: الوصفُ البعديُّ جائزٌ مُعلَن، والشرطُ البعديُّ محرَّم.
+
+`THE_HALF_THAT_HAS_NO_WITNESS_AT_ALL_IS_A_DENOMINATOR`: وأخفى المقامات:
+عقدةٌ بلا حافّةٍ لا تدخل ش١ ألبتّة. فإن كان وسيطُ الدرجة صفرًا فنصفُ
+المفردات **خارج القياس**، والرقمُ خبرٌ عمّن له شاهدُ إحلالٍ لا عن العربيّة
+كلِّها. فيُطبَع نصيبُهم مع كلّ رقم.
+
 `NO_Z_IS_PRINTED_UNDIVIDED`: ولا يُطبَع `z` إلّا مقسومًا على جذر «الحوافِّ
 للعقدة»، ويُطبَع الخامُ بجانبه ليُرى مقدارُ ما طُرِح. فالحافّةُ ليست مشاهدةً
 مستقلّة، والعقدةُ الواحدةُ تدخل حوافَّ كثيرة.
@@ -51,8 +67,17 @@ class ShahidError(ValueError):
     """رُدَّ تشغيلٌ لنقصٍ في إعلانٍ أو لمخالفة إغلاق."""
 
 
-def read_alignment(path: Path, closure: int, digest: str) -> list[tuple[str, str]]:
-    """اقرأ (loc، surface) بعد فحص البصمة والإغلاق؛ ويُرَدّ أيُّهما خالف."""
+def column_digest(values: list[str]) -> str:
+    """بصمةُ العمود وحدَه: فالعمودان في ملفٍّ واحدٍ لهما بصمتان."""
+
+    joined = "\n".join(values).encode("utf-8")
+    return hashlib.sha256(joined).hexdigest()
+
+
+def read_alignment(
+    path: Path, closure: int, digest: str, column: str = "surface"
+) -> list[tuple[str, str]]:
+    """اقرأ (loc، العمودَ المُسمّى) بعد فحص البصمة والإغلاق؛ ويُرَدّ ما خالف."""
 
     seen = hashlib.sha256(path.read_bytes()).hexdigest()
     if seen != digest:
@@ -61,10 +86,12 @@ def read_alignment(path: Path, closure: int, digest: str) -> list[tuple[str, str
             "مدوّنتان لا مدوّنة، ولا يُبنى على المخالفة."
         )
     with path.open(encoding="utf-8", newline="") as handle:
-        rows = [
-            (row["loc"].strip(), row["surface"].strip())
-            for row in csv.DictReader(handle, delimiter="\t")
-        ]
+        reader = csv.DictReader(handle, delimiter="\t")
+        if reader.fieldnames is None or column not in reader.fieldnames:
+            raise ShahidError(
+                f"لا عمودَ باسم «{column}» في الملفّ؛ والعمودُ يُسمّى ولا يُخمَّن."
+            )
+        rows = [(row["loc"].strip(), (row[column] or "").strip()) for row in reader]
     if len(rows) != closure:
         raise ShahidError(
             f"{len(rows)} صفًّا في الملفّ و{closure} في الإغلاق المُعلَن؛ "
@@ -180,6 +207,111 @@ def transfer(
     return observed, null / draws, len(pairs)
 
 
+def paired_differences(
+    edges: set[frozenset[str]],
+    held_out: dict[str, Counter[tuple[str, str]]],
+    seed: int,
+    draws: int,
+) -> dict[str, float]:
+    """فرقُ كلّ عقدة: تشابهُ جيرانها ناقصًا تشابهَ عشوائيّيها.
+
+    والمقترنُ يُسقِط قاعدةَ الربع الموجب دفعةً واحدة: كلُّ عقدةٍ تُقارَن
+    بنفسها لا بمدًى مطلق. ووحدةُ الاستقلال ههنا **العقدة** لا الحافّة.
+    """
+
+    linked: dict[str, set[str]] = defaultdict(set)
+    for edge in edges:
+        one, two = sorted(edge)
+        if one in held_out and two in held_out:
+            linked[one].add(two)
+            linked[two].add(one)
+    names = sorted(held_out)
+    rng = random.Random(seed)
+    differences: dict[str, float] = {}
+    for node, others in linked.items():
+        near = sum(_cosine(held_out[node], held_out[one]) for one in others)
+        near /= len(others)
+        far = 0.0
+        for _ in range(draws):
+            picked = rng.choice(names)
+            far += _cosine(held_out[node], held_out[picked])
+        differences[node] = near - far / draws
+    return differences
+
+
+def clustered_interval(
+    differences: dict[str, float], seed: int, replicates: int
+) -> tuple[float, float, float]:
+    """(المتوسّطُ، الحدُّ الأدنى، الأعلى) بمعاودةٍ مجمَّعةٍ **على العقد**."""
+
+    values = list(differences.values())
+    if not values:
+        raise ShahidError("لا عقدةَ لها جارٌ في النصف المحجوب؛ فلا فرقَ يُقاس.")
+    mean = sum(values) / len(values)
+    if replicates < 1:
+        return mean, mean, mean
+    rng = random.Random(seed)
+    drawn = []
+    for _ in range(replicates):
+        sample = [values[rng.randrange(len(values))] for _ in values]
+        drawn.append(sum(sample) / len(sample))
+    drawn.sort()
+    low = drawn[int(0.025 * (len(drawn) - 1))]
+    high = drawn[int(0.975 * (len(drawn) - 1))]
+    return mean, low, high
+
+
+def degree_profile(
+    edges: set[frozenset[str]], nodes: set[str]
+) -> tuple[float, float, float, int]:
+    """(الوسيطُ، المتوسّطُ، نصيبُ ذوي الحافّة، الأقصى) — والصفرُ يُعَدّ عقدةً."""
+
+    degrees: Counter[str] = Counter()
+    for edge in edges:
+        for one in edge:
+            degrees[one] += 1
+    ordered = sorted(degrees.get(one, 0) for one in nodes)
+    if not ordered:
+        return 0.0, 0.0, 0.0, 0
+    half = len(ordered) // 2
+    middle = (
+        float(ordered[half])
+        if len(ordered) % 2
+        else (ordered[half - 1] + ordered[half]) / 2
+    )
+    mean = sum(ordered) / len(ordered)
+    witnessed = sum(1 for one in ordered if one) / len(ordered)
+    return middle, mean, witnessed, ordered[-1]
+
+
+def group_entropy(edges: set[frozenset[str]]) -> float:
+    """إنتروبيا أحجام الفرق بالبتّ: فرقةٌ واحدةٌ تبتلع الكلَّ تعطي صفرًا."""
+
+    sizes = _group_sizes(edges)
+    total = sum(sizes)
+    if total <= 0:
+        return 0.0
+    entropy = 0.0
+    for size in sizes:
+        share = size / total
+        if share > 0:
+            entropy -= share * math.log2(share)
+    return entropy
+
+
+def top_frame_share(built: list[tuple[str, str, str]]) -> Fraction:
+    """نصيبُ أكثر الإطارات تكرارًا من الإطارات كلِّها: حارسُ تنكُّر الصيغة."""
+
+    frames_seen: Counter[tuple[str, str]] = Counter()
+    for before, _, after in built:
+        if before != EDGE and after != EDGE:
+            frames_seen[(before, after)] += 1
+    total = sum(frames_seen.values())
+    if not total:
+        return Fraction(0)
+    return Fraction(frames_seen.most_common(1)[0][1], total)
+
+
 def catch_all_share(
     built: list[tuple[str, str, str]], classes: dict[str, str]
 ) -> Fraction:
@@ -238,8 +370,8 @@ def _predict(
     return Fraction(hits, tried)
 
 
-def _smallest_group(edges: set[frozenset[str]]) -> int:
-    """أصغرُ فرقةٍ (مركّبةٍ متّصلة) تدخل القراءة."""
+def _group_sizes(edges: set[frozenset[str]]) -> list[int]:
+    """أحجامُ الفرق: المركّباتُ المتّصلةُ في مخطّط الجيرة."""
 
     parent: dict[str, str] = {}
 
@@ -254,7 +386,14 @@ def _smallest_group(edges: set[frozenset[str]]) -> int:
         one, two = sorted(edge)
         parent[find(one)] = find(two)
     groups: Counter[str] = Counter(find(node) for node in list(parent))
-    return min(groups.values()) if groups else 0
+    return sorted(groups.values())
+
+
+def _smallest_group(edges: set[frozenset[str]]) -> int:
+    """أصغرُ فرقةٍ (مركّبةٍ متّصلة) تدخل القراءة."""
+
+    sizes = _group_sizes(edges)
+    return sizes[0] if sizes else 0
 
 
 def build_argument_parser() -> argparse.ArgumentParser:
@@ -264,8 +403,10 @@ def build_argument_parser() -> argparse.ArgumentParser:
     parser.add_argument("--digest", required=True)
     parser.add_argument("--classes", type=Path, required=True)
     parser.add_argument("--surface-kind", choices=SURFACE_KINDS, required=True)
+    parser.add_argument("--column", default="surface")
     parser.add_argument("--seed", type=int, required=True)
     parser.add_argument("--draws", type=int, default=2_000)
+    parser.add_argument("--bootstrap", type=int, default=1_000)
     return parser
 
 
@@ -274,7 +415,9 @@ def run(arguments: argparse.Namespace) -> list[str]:
 
     if len(arguments.digest) != 64 or set(arguments.digest) - set("0123456789abcdef"):
         raise ShahidError("البصمةُ أربعٌ وستّون خانةً ستّةَ عشريّة.")
-    rows = read_alignment(arguments.aligned, arguments.closure, arguments.digest)
+    rows = read_alignment(
+        arguments.aligned, arguments.closure, arguments.digest, arguments.column
+    )
     classes = read_classes(arguments.classes)
 
     middle = len(rows) // 2
@@ -284,7 +427,8 @@ def run(arguments: argparse.Namespace) -> list[str]:
     held_out = signatures(built_second, classes)
     learned = signatures(built_first, classes)
 
-    nodes = len({centre for _, centre, _ in built_first})
+    names = {centre for _, centre, _ in built_first}
+    nodes = len(names)
     per_node = Fraction(len(edges), nodes) if nodes else Fraction(0)
     observed, null, measured = transfer(
         edges, held_out, arguments.seed, arguments.draws
@@ -293,28 +437,45 @@ def run(arguments: argparse.Namespace) -> list[str]:
     share = catch_all_share(built_first, classes)
     joint = _predict(built_second, learned, classes, joint=True)
     marginal = _predict(built_second, learned, classes, joint=False)
+    gain = joint - marginal
 
+    differences = paired_differences(
+        edges, held_out, arguments.seed, min(arguments.draws, 200)
+    )
+    mean, low, high = clustered_interval(
+        differences, arguments.seed, arguments.bootstrap
+    )
+    median, average, witnessed, highest = degree_profile(edges, names)
+
+    seen = column_digest([one for _, one in rows])
     stamp = (
         f"المدوّنة: {arguments.aligned.name} ({arguments.digest[:8]}…) · "
+        f"العمود: {arguments.column} ({seen[:8]}…) · "
         f"السطح: {arguments.surface_kind} · الإغلاق: {arguments.closure}"
     )
     lines = [
         f"الختم: {SEAL[:12]}…",
         f"النسبة: {stamp}",
-        f"العقد: {nodes} · الحوافّ: {len(edges)} · للعقدة: {float(per_node):.4f}",
+        "— الشروطُ الخمسةُ المختومة —",
         f"ش١ نصيبُ المتاح: {headroom:.4f} "
         f"(مرصود {observed:.4f} · صفريّ {null:.4f} · أزواج {measured})",
-        f"ش٢ الحوافُّ للعقدة مُعلَنة: {float(per_node):.4f}",
+        f"ش٢ الحوافُّ للعقدة: {float(per_node):.4f} "
+        f"(القسمةُ على {math.sqrt(float(per_node)) if per_node else 0:.4f})",
         f"ش٣ نصيبُ «{CATCH_ALL}»: {float(share):.4f}",
         f"ش٤ أصغرُ فرقة: {_smallest_group(edges)}",
-        f"ش٥ المشترَك − الهامش: {float(joint - marginal):.4f} "
+        f"ش٥ المشترَك − الهامش: {float(gain):.4f} "
         f"(مشترَك {float(joint):.4f} · هامش {float(marginal):.4f})",
+        "ت٣: " + ("قائمةٌ بش٥" if gain >= Fraction(1, 100) else "ساقطةٌ بش٥"),
+        "— مقاماتٌ وأوصافٌ مُعلَنةٌ لا شروط —",
+        f"العقد: {nodes} · الحوافّ: {len(edges)}",
+        f"نصيبُ العقد التي لها شاهدُ إحلالٍ أصلًا: {witnessed:.4f}",
+        f"الدرجة: وسيطًا {median:.2f} · متوسّطًا {average:.4f} · أقصى {highest}",
+        f"الفرقُ المقترنُ للعقدة: {mean:.4f} "
+        f"[{low:.4f}، {high:.4f}] بمعاودةٍ مجمَّعةٍ على العقد",
+        f"إنتروبيا أحجام الفرق: {group_entropy(edges):.4f} بتّ",
+        f"نصيبُ أكثر الإطارات تكرارًا: {float(top_frame_share(built_first)):.4f}",
+        "ولا يُطبَع z إلّا مقسومًا على جذر الحوافِّ للعقدة، والمقترنُ بجانبه.",
     ]
-    if per_node > 0:
-        lines.append(
-            "ولا يُطبَع z إلّا مقسومًا على "
-            f"{math.sqrt(float(per_node)):.4f} — جذرِ الحوافِّ للعقدة."
-        )
     return lines
 
 

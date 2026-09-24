@@ -212,3 +212,87 @@ def test_a_full_run_prints_the_five_conditions_with_its_stamp(tmp_path: Path) ->
 
     # ولا يُطبَع z إلّا مقسومًا على جذر الحوافّ للعقدة
     assert "ولا يُطبَع z إلّا مقسومًا" in joined
+
+
+def test_the_column_is_named_and_carries_its_own_digest(tmp_path: Path) -> None:
+    """عمودان في ملفٍّ واحدٍ بمفتاحٍ واحد، ولكلٍّ بصمة — فلا نقطةَ سقوطٍ واحدة."""
+
+    lines = ["loc\tsurface\tsurface_phon"]
+    for verse_index, verse in enumerate(VERSES, start=1):
+        for word_index, one in enumerate(verse, start=1):
+            lines.append(f"1:{verse_index}:{word_index}\t{one}\t{one}ـ")
+    path = tmp_path / "two.tsv"
+    path.write_text("\n".join(lines) + "\n", encoding="utf-8")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    rows = sum(len(one) for one in VERSES)
+
+    raw = shahid.read_alignment(path, rows, digest, "surface")
+    normalised = shahid.read_alignment(path, rows, digest, "surface_phon")
+    assert [one for _, one in raw] != [one for _, one in normalised]
+    assert shahid.column_digest([one for _, one in raw]) != shahid.column_digest(
+        [one for _, one in normalised]
+    )
+
+    # وعمودٌ لا يوجد يُرَدّ باسمه ولا يُخمَّن
+    with pytest.raises(shahid.ShahidError) as raised:
+        shahid.read_alignment(path, rows, digest, "سطح")
+    assert "لا عمودَ باسم" in str(raised.value)
+
+
+def test_the_run_prints_declared_descriptions_apart_from_the_conditions(
+    tmp_path: Path,
+) -> None:
+    """صدرٌ للشروط المختومة وصدرٌ للأوصاف — والوصفُ البعديُّ لا يصير شرطًا."""
+
+    lines = shahid.run(_arguments(tmp_path))
+    joined = "\n".join(lines)
+    assert "— الشروطُ الخمسةُ المختومة —" in joined
+    assert "— مقاماتٌ وأوصافٌ مُعلَنةٌ لا شروط —" in joined
+
+    for description in (
+        "نصيبُ العقد التي لها شاهدُ إحلالٍ أصلًا",
+        "الدرجة: وسيطًا",
+        "الفرقُ المقترنُ للعقدة",
+        "إنتروبيا أحجام الفرق",
+        "نصيبُ أكثر الإطارات تكرارًا",
+    ):
+        assert description in joined
+
+    # وحكمُ ت٣ يُطبَع بش٥ لا وحدَه
+    assert "ت٣: " in joined
+    assert "بش٥" in joined
+
+
+def test_the_paired_difference_is_measured_per_node_not_per_edge(
+    tmp_path: Path,
+) -> None:
+    """وحدةُ الاستقلال العقدة: الفرقُ يُحسَب لكلّ عقدةٍ ثمّ تُعاود العقدُ لا الحوافّ."""
+
+    rows = [
+        (f"1:{verse}:{word}", surface)
+        for verse, text in enumerate(VERSES, start=1)
+        for word, surface in enumerate(text, start=1)
+    ]
+    built = shahid.frames(rows)
+    edges = shahid.neighbours(built)
+    held = shahid.signatures(built, dict(CLASS_ROWS))
+
+    differences = shahid.paired_differences(edges, held, 1, 50)
+    assert set(differences) <= set(held)
+    assert len(differences) <= len(held)
+
+    mean, low, high = shahid.clustered_interval(differences, 1, 200)
+    assert low <= mean <= high
+
+
+def test_the_degree_profile_counts_nodes_without_any_witness(tmp_path: Path) -> None:
+    """عقدةٌ بلا حافّةٍ تُعَدّ في المقام: وسيطُ صفرٍ يعني نصفَ المفردات خارج القياس."""
+
+    edges = {frozenset(("أ", "ب"))}
+    median, mean, witnessed, highest = shahid.degree_profile(
+        edges, {"أ", "ب", "ج", "د"}
+    )
+    assert median == 0.5  # اثنتان من أربعٍ بلا شاهد، فالوسيطُ بينهما
+    assert mean == 0.5
+    assert witnessed == 0.5
+    assert highest == 1

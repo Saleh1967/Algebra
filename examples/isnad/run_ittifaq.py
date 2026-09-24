@@ -25,6 +25,13 @@
 `RAW_AGREEMENT_WITHOUT_CHANCE_IS_NOT_A_READING`: ومفردتان مائلتا الحوافّ
 يتّفقان بالصدفة كثيرًا. فيُطبَع الخامُ ومعه كابّا، ونموذجُ الصدفة يُسمّى؛
 وطلبُ الخامِ وحدَه يُرَدّ.
+
+`ONE_NUMERATOR_AND_THREE_DENOMINATORS`: و«على المشمول» عبارةٌ تحتمل مقامين لا
+مقامًا واحدًا: أن يكون وسمُ الطرفين داخلَ الجردين، أو أن يكون وسمُ **الأوّل**
+وحدَه داخلَ جرده. والبسطُ في الثلاثة **واحد**، والمقاماتُ ثلاثةٌ فالنسبُ ثلاث.
+ووقع ذلك فعلًا: ٣٬٣٩٥ على ٤٬٢٧٢ و٤٬٩٦٥ و٦٬٦٢٠ يعطي ٧٩٫٤٧٪ و٦٨٫٣٨٪ و٥١٫٢٨٪،
+وكابّا +٠٫٧٣٤٥ و+٠٫٦١٠٢ و+٠٫٤٤٢٥ — **وحكمُ تنبّؤٍ مسجَّلٍ انقلب بينها**.
+فتُطبَع الثلاثةُ معًا، ويُرَدّ نشرُ واحدٍ وحدَه.
 """
 
 from __future__ import annotations
@@ -42,6 +49,13 @@ UNITS: tuple[str, ...] = ("وسمٌ على رمز", "حافّةٌ بين رمز�
 
 CHANCE_MODELS: tuple[str, ...] = ("كوهين — حوافُّ كلِّ ممتحِنٍ على حدة",)
 """نماذجُ الصدفة المُعلَنة؛ واحدٌ اليوم، ويُزاد بالإعلان لا بالاستعمال."""
+
+DENOMINATOR_POLICIES: tuple[str, ...] = (
+    "الجردان معًا",
+    "جردُ الأوّل وحدَه",
+    "الوصلُ كلُّه والخارجُ خلاف",
+)
+"""المقاماتُ الثلاثة؛ بسطُها واحدٌ ونسبُها ثلاث، فتُطبَع معًا أو لا تُطبَع."""
 
 
 class IttifaqError(ValueError):
@@ -137,35 +151,62 @@ class Correspondence:
         return self.mapped.get(left_label) == right_label
 
 
-def raw_agreement(rows: tuple[tuple[str, str], ...], table: Correspondence) -> Fraction:
-    """نسبةُ الاتّفاق الخام على المُقابَل وحدَه؛ ومقامُها يُحسَب لا يُفترَض."""
+def under(
+    rows: tuple[tuple[str, str], ...], table: Correspondence, policy: str
+) -> tuple[tuple[str, str], ...]:
+    """الصفوفُ الداخلةُ في المقام بمقتضى سياسةٍ **مُسمّاة** من الثلاث."""
 
-    scored = [
-        (one, other)
-        for one, other in rows
-        if one in table.mapped and other in set(table.mapped.values())
-    ]
+    if policy not in DENOMINATOR_POLICIES:
+        raise IttifaqError(
+            f"مقامٌ غيرُ مُعلَنٍ «{policy}»؛ والمُعلَنُ: " f"{'، '.join(DENOMINATOR_POLICIES)}."
+        )
+    right_side = set(table.mapped.values())
+    if policy == DENOMINATOR_POLICIES[0]:
+        return tuple(
+            (one, other)
+            for one, other in rows
+            if one in table.mapped and other in right_side
+        )
+    if policy == DENOMINATOR_POLICIES[1]:
+        return tuple((one, other) for one, other in rows if one in table.mapped)
+    return tuple(rows)
+
+
+def _project(table: Correspondence, label: str) -> str:
+    """وسمُ الأوّل مُسقَطًا؛ والخارجُ يبقى مميَّزًا فيُعَدّ خلافًا لا اتّفاقًا."""
+
+    return table.mapped.get(label, f"خارج:{label}")
+
+
+def raw_agreement(
+    rows: tuple[tuple[str, str], ...],
+    table: Correspondence,
+    policy: str = DENOMINATOR_POLICIES[0],
+) -> Fraction:
+    """نسبةُ الاتّفاق الخام تحت مقامٍ **مُسمًّى**؛ ولا مقامَ ضمنيّ."""
+
+    scored = under(rows, table, policy)
     if not scored:
-        raise IttifaqError("لا صفَّ واحدٌ يقع داخلَ الجدول المُعلَن، فلا نسبة.")
-    hits = sum(1 for one, other in scored if table.agree(one, other))
+        raise IttifaqError("لا صفَّ واحدٌ يقع تحت هذا المقام، فلا نسبة.")
+    hits = sum(1 for one, other in scored if _project(table, one) == other)
     return Fraction(hits, len(scored))
 
 
-def cohen_kappa(rows: tuple[tuple[str, str], ...], table: Correspondence) -> Fraction:
-    """كابّا كوهين: الاتّفاقُ فوق الصدفة، بحوافِّ كلِّ ممتحِنٍ على حدة."""
+def cohen_kappa(
+    rows: tuple[tuple[str, str], ...],
+    table: Correspondence,
+    policy: str = DENOMINATOR_POLICIES[0],
+) -> Fraction:
+    """كابّا كوهين تحت مقامٍ مُسمًّى، بحوافِّ كلِّ ممتحِنٍ على حدة."""
 
-    scored = [
-        (one, other)
-        for one, other in rows
-        if one in table.mapped and other in set(table.mapped.values())
-    ]
+    scored = under(rows, table, policy)
     total = len(scored)
     if total < 2:
         raise IttifaqError("صفٌّ واحدٌ لا تُحسَب منه صدفة.")
     observed = Fraction(
-        sum(1 for one, other in scored if table.agree(one, other)), total
+        sum(1 for one, other in scored if _project(table, one) == other), total
     )
-    left = Counter(table.mapped[one] for one, _ in scored)
+    left = Counter(_project(table, one) for one, _ in scored)
     right = Counter(other for _, other in scored)
     expected = sum(
         Fraction(left[label], total) * Fraction(right[label], total)
@@ -174,6 +215,28 @@ def cohen_kappa(rows: tuple[tuple[str, str], ...], table: Correspondence) -> Fra
     if expected == 1:
         raise IttifaqError("صدفةٌ تامّةٌ: لا مجالَ فوقها تُقاس فيه كابّا.")
     return (observed - expected) / (1 - expected)
+
+
+def three_readings(
+    rows: tuple[tuple[str, str], ...], table: Correspondence
+) -> dict[str, tuple[int, int, Fraction, Fraction]]:
+    """المقاماتُ الثلاثةُ ببسطٍ واحد: (مقام، بسط، خام، كابّا) لكلٍّ.
+
+    والبسطُ واحدٌ **بالبناء**: إصابةٌ تحت مقامٍ أضيقَ إصابةٌ تحت أوسعَ منه.
+    فالذي يتغيّر المقامُ وحدَه، والنسبُ تتباعد بعشرين نقطةً فأكثر.
+    """
+
+    out: dict[str, tuple[int, int, Fraction, Fraction]] = {}
+    for policy in DENOMINATOR_POLICIES:
+        scored = under(rows, table, policy)
+        hits = sum(1 for one, other in scored if _project(table, one) == other)
+        out[policy] = (
+            len(scored),
+            hits,
+            raw_agreement(rows, table, policy),
+            cohen_kappa(rows, table, policy),
+        )
+    return out
 
 
 def assert_gold_is_named(claim: str, gold: str) -> None:
@@ -203,16 +266,23 @@ def report(
     if chance_model not in CHANCE_MODELS:
         raise IttifaqError(f"نموذجُ صدفةٍ غيرُ مُعلَنٍ «{chance_model}».")
 
-    observed = raw_agreement(rows, table)
-    kappa = cohen_kappa(rows, table)
+    readings = three_readings(rows, table)
     print(f"المقابلةُ: {table.left} × {table.right}")
     print(
         f"وسومٌ مقابَلة: {len(table.mapped)}  ·  مُعلَنةٌ بلا مقابل: "
         f"{len(table.declared_without_counterpart)}"
     )
-    print(f"صفوفٌ داخلَ الجدول: {len(rows)}")
-    print(f"الاتّفاقُ الخام: {float(observed) * 100:6.2f}٪")
-    print(f"كابّا ({chance_model}): {float(kappa):+.4f}")
+    print(f"الوصلُ: {len(rows)}")
+    numerators = {hits for _, hits, _, _ in readings.values()}
+    if len(numerators) != 1:
+        raise IttifaqError("بسطٌ مختلفٌ بين المقامات؛ وذلك عيبٌ في الحساب لا خبر.")
+    print(f"البسطُ واحدٌ في الثلاثة: {numerators.pop()}\n")
+    for policy, (denominator, _, observed, kappa) in readings.items():
+        print(
+            f"  {policy:26} مقام {denominator:5} · خام "
+            f"{float(observed) * 100:6.2f}٪ · كابّا {float(kappa):+.4f}"
+        )
+    print(f"\nنموذجُ الصدفة: {chance_model}")
     assert_gold_is_named("هذا سقفٌ", gold)
     print(f"والحَكَمُ المُسمّى: {gold}")
 
@@ -240,6 +310,8 @@ SMOKE_ROWS: tuple[tuple[str, str], ...] = (
     ("مضاف إليه", "gen"),
     ("مضاف إليه", "subj"),
     ("مفعول به", "subj"),
+    ("حال", "subj"),  # وسمُ الأوّل خارجَ جرده
+    ("فاعل", "poss"),  # وسمُ الثاني خارجَ جرده
 )
 
 

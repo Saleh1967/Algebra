@@ -160,3 +160,32 @@ def test_the_smoke_run_declares_itself_synthetic(
     assert "62.50" in printed
     assert "+0.4146" in printed
     assert "الحَكَمُ المُسمّى" in printed
+
+
+def test_the_three_denominators_are_printed_together_never_one_alone() -> None:
+    """ثلاثةُ مقاماتٍ ببسطٍ واحد؛ والعيّنةُ تُخرِج ثلاثتَها متمايزة."""
+
+    assert len(RUNNER.DENOMINATOR_POLICIES) == 3  # type: ignore[attr-defined]
+    readings = RUNNER.three_readings(RUNNER.SMOKE_ROWS, RUNNER.SMOKE_TABLE)  # type: ignore[attr-defined]
+    assert set(readings) == set(RUNNER.DENOMINATOR_POLICIES)  # type: ignore[attr-defined]
+
+    numerators = {hits for _, hits, _, _ in readings.values()}
+    assert len(numerators) == 1  # البسطُ واحدٌ بالبناء
+    denominators = [denominator for denominator, _, _, _ in readings.values()]
+    assert denominators == sorted(denominators)
+    assert len(set(denominators)) == 3  # والمقاماتُ ثلاثةٌ متمايزة
+
+    rates = [float(rate) for _, _, rate, _ in readings.values()]
+    assert rates == sorted(rates, reverse=True)  # فالنسبةُ تنزل باتّساع المقام
+    assert round(rates[0] * 100, 2) == 62.50
+    assert round(rates[-1] * 100, 2) == 50.00
+
+
+def test_an_undeclared_denominator_policy_is_refused() -> None:
+    """المقامُ يُسمّى من ثلاثةٍ مُعلَنة؛ و«على المشمول» ليست منها لأنّها تحتمل اثنين."""
+
+    with pytest.raises(RUNNER.IttifaqError, match="مقامٌ غيرُ مُعلَن"):  # type: ignore[attr-defined]
+        RUNNER.under(RUNNER.SMOKE_ROWS, RUNNER.SMOKE_TABLE, "على المشمول")  # type: ignore[attr-defined]
+
+    for policy in RUNNER.DENOMINATOR_POLICIES:  # type: ignore[attr-defined]
+        assert RUNNER.under(RUNNER.SMOKE_ROWS, RUNNER.SMOKE_TABLE, policy)  # type: ignore[attr-defined]

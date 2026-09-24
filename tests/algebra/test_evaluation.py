@@ -103,8 +103,12 @@ def test_the_baseline_moves_with_the_set_it_is_computed_on() -> None:
         majority_baseline([])
 
 
-def test_the_named_residuals_are_five_and_distinct() -> None:
-    """البواقي المُسمّاةُ خمسٌ، ولا تكرارَ فيها."""
+def test_the_named_residuals_are_seven_and_distinct() -> None:
+    """البواقي المُسمّاةُ سبعٌ، ولا تكرارَ فيها — وكانت خمسًا.
 
-    assert len(EVALUATION_NAMED_RESIDUALS) == 5
-    assert len(set(EVALUATION_NAMED_RESIDUALS)) == 5
+    والزائدتان: أنّ ألفَ وقوعٍ من أربعة أنواعٍ أربعُ مشاهدات، وأنّ مقياسًا
+    برتبةٍ لا يقيس شيئًا على وحدةٍ أقصرَ منها.
+    """
+
+    assert len(EVALUATION_NAMED_RESIDUALS) == 7
+    assert len(set(EVALUATION_NAMED_RESIDUALS)) == 7

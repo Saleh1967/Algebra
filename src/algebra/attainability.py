@@ -18,12 +18,20 @@
 الاختبار وعائلته، والتكرارُ ميزانيّةُ حساب. فتخفيضُ الحدّ ليوافق ميزانيّةً هو
 تفصيلُ المقياس على مقاس الآلة بعد أن عُرف ضيقُها؛ ورفعُ التكرار لا يمسّ دعوًى.
 
+`THE_MATERIAL_HAS_A_FLOOR_THE_REPLICATES_CANNOT_LOWER`: وللأرضيّة وجهٌ ثانٍ
+أخفى. فإن كان الصفريُّ **تبديلَ وسومٍ على مادّةٍ منتهية** — `n` وحدةً منها
+`k` موسومةً — فقيمُ `p` المتاحةُ مضروبةٌ في `1/C(n, k)` مهما بلغ التكرار،
+إذ التكرارُ يعيد زيارةَ التراتيب نفسِها. فأرضيّتان لا واحدة: أرضيّةُ الآلة
+`1/(B+1)` وأرضيّةُ المادّة `1/C(n, k)`، **والحاكمةُ أعلاهما**. ورفعُ التكرار
+يُصلِح الأولى ولا يمسّ الثانية؛ ولا يُصلِحها إلّا مادّةٌ أكثر.
+
 `THIS_MODULE_CLAIMS_NOTHING_ABOUT_ANY_DOMAIN`: ما هنا حسابٌ على `(α, B)` وعددِ
 العائلة، لا حكمٌ على فرضيّةٍ بعينها.
 """
 
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from enum import Enum
 from fractions import Fraction
@@ -36,11 +44,15 @@ __all__ = [
     "AttainabilityError",
     "AttainabilityReading",
     "RAISE_THE_REPLICATES_DO_NOT_LOWER_THE_THRESHOLD_NOTE",
+    "THE_MATERIAL_HAS_A_FLOOR_THE_REPLICATES_CANNOT_LOWER_NOTE",
     "attainable_rejection_outcomes",
     "bonferroni_threshold",
+    "governing_floor",
+    "label_permutation_floor",
     "minimum_replicates_for",
     "permutation_floor",
     "read_attainability",
+    "smallest_material_for",
 ]
 
 
@@ -72,6 +84,43 @@ def bonferroni_threshold(alpha: Fraction, family_size: int) -> Fraction:
     if family_size < 1:
         raise AttainabilityError("عددُ العائلة واحدٌ فأكثر.")
     return alpha / family_size
+
+
+def label_permutation_floor(marked: int, total: int) -> Fraction:
+    """أرضيّةُ المادّة: `1/C(total, marked)` حين يبدّل الصفريُّ وسومًا على منتهٍ.
+
+    وكفّةٌ خالية — `marked` صفرٌ أو كلُّ المادّة — ليست اختبارًا بأرضيّةٍ
+    عالية، بل **لا اختبارَ أصلًا**: فتُرَدّ ولا تُعطى رقمًا.
+    """
+
+    if total < 2:
+        raise AttainabilityError("المادّةُ وحدتان فأكثر.")
+    if not 0 < marked < total:
+        raise AttainabilityError(
+            "كفّةٌ خالية: لا تقابلَ فلا اختبار — والصفرُ ههنا خلوُّ تصميمٍ لا رقم."
+        )
+    return Fraction(1, math.comb(total, marked))
+
+
+def governing_floor(marked: int, total: int, replicates: int) -> Fraction:
+    """الحاكمةُ من الأرضيّتين: أعلى `1/(B+1)` و`1/C(n, k)`، لا أدناهما."""
+
+    return max(permutation_floor(replicates), label_permutation_floor(marked, total))
+
+
+def smallest_material_for(target: Fraction) -> int:
+    """أصغرُ مادّةٍ تبلغ أرضيّتُها بأحسن قسمةٍ حدًّا مطلوبًا `target`.
+
+    و«أحسن قسمة» هي المتوازنةُ، إذ `C(n, k)` أكبرُ ما يكون عند `k = n // 2`.
+    فالمردودُ **حدٌّ أدنى للمادّة**، لا وعدٌ بأنّ القسمةَ ستقع متوازنة.
+    """
+
+    if not 0 < target <= 1:
+        raise AttainabilityError("الحدُّ بين الصفر والواحد، والطرفُ الأدنى مفتوح.")
+    total = 2
+    while label_permutation_floor(total // 2, total) > target:
+        total += 1
+    return total
 
 
 def attainable_rejection_outcomes(threshold: Fraction, replicates: int) -> int:
@@ -179,8 +228,15 @@ RAISE_THE_REPLICATES_DO_NOT_LOWER_THE_THRESHOLD_NOTE: Final[str] = (
     "على مقاس الآلة، ورفعُ التكرار لا يمسّ دعوًى"
 )
 
+THE_MATERIAL_HAS_A_FLOOR_THE_REPLICATES_CANNOT_LOWER_NOTE: Final[str] = (
+    "TheMaterialHasAFloorTheReplicatesCannotLower: صفريٌّ يبدّل الوسومَ على "
+    "مادّةٍ منتهيةٍ أرضيّتُه `1/C(n, k)` مهما بلغ التكرار؛ فالأرضيّتان اثنتان "
+    "والحاكمةُ أعلاهما، ولا يُصلِح الثانيةَ إلّا مادّةٌ أكثر"
+)
+
 ATTAINABILITY_NAMED_RESIDUALS: Final[tuple[str, ...]] = (
     A_THRESHOLD_ITS_OWN_MACHINE_CANNOT_REACH_IS_NOT_A_THRESHOLD_NOTE,
     RAISE_THE_REPLICATES_DO_NOT_LOWER_THE_THRESHOLD_NOTE,
+    THE_MATERIAL_HAS_A_FLOOR_THE_REPLICATES_CANNOT_LOWER_NOTE,
 )
 """البواقي المُسمّاةُ لهذه الوحدة."""

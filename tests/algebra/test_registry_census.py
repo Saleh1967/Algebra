@@ -18,10 +18,14 @@
 
 from __future__ import annotations
 
+import ast
 from fractions import Fraction
+from pathlib import Path
 
 from algebra.assignment import Assignment
 from algebra.reconciliation import Partition, rounds_to
+
+REGISTER_SOURCE = Path(__file__).resolve().parents[2] / "src" / "algebra"
 
 FELL = "ساقط"
 HELD = "محقَّق"
@@ -144,4 +148,36 @@ def test_the_books_are_a_total_grid_over_outcome() -> None:
     assert grid.separating_columns("ق مقاييسُ اللغة", "الإعرابُ بالحرف — الأوّل") == (
         HELD,
         VOID,
+    )
+
+
+def test_construction_refusals_do_not_enter_this_register() -> None:
+    """قيدُ إنشاءٍ ليس شرطًا مُسجَّلًا: مقامان لا مقام، وضمُّهما يُفسِد النسبتين.
+
+    طُلِب رفعُ هذا العدّاد من خمسةٍ وعشرين إلى اثنين وثلاثين بزيادة قيود
+    `provenance`. ويُرَدّ الطلبُ لا لأنّ القيودَ غيرُ حقيقيّة، بل لأنّ هذا
+    الدفترَ يعُدُّ **شروطًا مُسجَّلةً حُكِم عليها بمادّة**: لكلٍّ منها مآلٌ من
+    ثلاثة. وقيدُ الإنشاء لا يسقط ولا يتحقّق بمدوَّنة؛ ولو دخل لصارت نسبةُ
+    السقوط ١٣ من ٣٢ لا من ٢٥، وهي نسبةٌ عن جمعِ ما لا يُجمَع.
+
+    وقيودُ الإنشاء معدودةٌ في دفترها: `test_package_self_audit` يعُدُّ
+    أصنافَ البيانات المقيَّدة، وقد صارت ٤١ من ٤٦ بدخول `Corpus` و`Reading`.
+    """
+
+    provenance = (REGISTER_SOURCE / "provenance.py").read_text(encoding="utf-8")
+    raise_sites = sum(
+        1 for node in ast.walk(ast.parse(provenance)) if isinstance(node, ast.Raise)
+    )
+    assert raise_sites == 6
+
+    # وثلاثةُ أعدادٍ لا واحد: ٦ مواضعَ ترفض، و٩ شروطًا مرفوضة، و٧ في التقرير
+    # ثلاثةُ حقولٍ فارغة، وشكلُ البصمة، والحجم، وحقلا القراءة، والمقياس، والوحدة
+    refused_conditions = 9
+    reported = 7
+    assert len({raise_sites, refused_conditions, reported}) == 3
+
+    # ولا واحدٌ منها يدخل ههنا: المقامُ يبقى خمسةً وعشرين
+    assert len(REGISTER) == 25
+    assert Fraction(_count(FELL), len(REGISTER)) != Fraction(
+        _count(FELL), len(REGISTER) + reported
     )

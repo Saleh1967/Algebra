@@ -74,16 +74,18 @@ def test_every_data_class_either_constrains_or_is_named() -> None:
 
 
 def test_the_share_that_constrains_in_its_constructor_is_reported() -> None:
-    """تسعةٌ وثلاثون من أربعةٍ وأربعين تقيّد في مُنشئها — والرقمُ يُطبَع لا يُدَّعى.
+    """ثلاثةٌ وأربعون من ثمانيةٍ وأربعين تقيّد في مُنشئها — والرقمُ يُطبَع لا يُدَّعى.
 
     وكانت ستًّا وثلاثين من إحدى وأربعين، ثمّ زاد `Taught` و`Segment`، ثمّ
-    `ClusteredSample`. وكلُّها تقيّد في مُنشئها، والعدُّ يُعاد عند كلّ زيادة.
+    `ClusteredSample`، ثمّ `Corpus` و`Reading`، ثمّ `ClusterProfile`
+    و`EffectReading`. وكلُّها تقيّد في مُنشئها،
+    والعدُّ يُعاد عند كلّ زيادة.
     """
 
     classes = _data_classes()
     guarded = [name for name, node in classes if _has_post_init(node)]
-    assert len(classes) == 44
-    assert len(guarded) == 39
+    assert len(classes) == 48
+    assert len(guarded) == 43
     assert len(classes) - len(guarded) == len(
         COMPOSED_OF_CONSTRAINED_PARTS | RAW_READINGS
     )

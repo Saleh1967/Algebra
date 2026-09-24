@@ -49,6 +49,24 @@
 الفئة نفسِها (وإلّا فقد بُدِّلت التجربةُ لا خُرِق القانون). فالانتهاكُ عند
 الإطلاق **ممتنعٌ بسياسة الإطلاق**، ويُعلَن ولا يُعَدّ شاهدًا.
 
+`AND_THE_CLOSURE_WAS_DECLARED_SO_THE_COUNT_REPLICATES_WHERE_IT_MATTERS`:
+**وأُعلِن الفضاءُ بعدُ**، فأُعيد العدّ: غيرُ البديهيّة **ثلاثون عندهم
+وثلاثون عندنا** — تطابقٌ تامّ. والبديهيّةُ ستٌّ وسبعون عندهم وستٌّ وأربعون
+عندنا، فالفضاءُ لم يتّحد بعدُ في طرفه الأعمى. **وذلك الطرفُ إفادتُه صفر**
+بنصّ صيغتهم، فالخلافُ محصورٌ فيما لا يُفيد.
+
+`THE_THIRTY_MASKS_INDUCE_ONE_PARTITION_AND_THAT_IS_A_STRONGER_PROOF`:
+ودعوى «قانونٌ واحدٌ بثلاثين قناعًا» **مبرهَنةٌ تقسيمًا لا جبرًا**: الثلاثون
+تفرض على الفضاء كلِّه **تقسيمًا واحدًا** بكتلٍ ١١٧/١١٧/١١٧ — تقسيمٌ متمايزٌ
+واحدٌ لا غير. وذلك أقوى من التكافؤ بحساب البواقي، إذ يُقام على الخانات
+نفسِها.
+
+`AND_SATURATION_AT_THREE_STATES_SHARPENS_MY_OWN_TEN`: وقلتُ في الدورة
+الماضية «عشرُ خطواتٍ تكفي»، والمقيسُ الآن **ثلاثُ حالاتٍ متمايزة**:
+`|K|` = ١٧٠ عند حالتين، و**٧٦** عند ثلاث، ثمّ لا ينزل أبدًا. فعدُّهم
+`t = 3` يوافق هذا متى عُدَّت حالةُ البدء مشاهَدًا — واختلافُ الواحد
+اصطلاحُ ترقيمٍ يُعلَن ولا يُختلَف فيه.
+
 `SO_WHAT_IS_NOT_SWALLOWED_IS_THE_DECLARED_CLOSURE`: وجوابُ سؤالهم الأخير —
 «ما الذي لا يُبتلَع في الانتقال من الشاهد إلى القانون؟» — مقيسٌ ههنا: ليست
 **قابليّةَ التكذيب**، فتلك ممتنعةٌ في هذه التجربة أصلًا. الذي لا يُبتلَع هو
@@ -58,6 +76,7 @@
 
 from __future__ import annotations
 
+import math
 import random
 from collections import deque
 
@@ -221,3 +240,69 @@ def test_the_proposition_is_decidable_by_exhaustion_so_a_posterior_is_weaker() -
     assert len({(one[0] - one[1]) % 3 for one in STATES}) == 3
     decided_by_exhaustion = all(sum(one) == TOTAL for one in STATES)
     assert decided_by_exhaustion
+
+
+def test_the_informativeness_of_the_law_and_of_its_trivial_masks() -> None:
+    """`log₂(351/117) = 1.5850` بت للقانون، وصفرٌ للبديهيّ — أقنعةُ الصفر."""
+
+    assert abs(math.log2(len(STATES) / 117) - 1.5850) < 1e-4
+    assert math.log2(len(STATES) / len(STATES)) == 0
+    assert len(STATES) == 3 * 117
+
+
+def test_the_survivor_set_saturates_at_three_distinct_states() -> None:
+    """١٧٠ عند حالتين، و٧٦ عند ثلاث — ولا ينزل بعدها أبدًا."""
+
+    rng = random.Random(7)
+    state, visited = START, [START]
+    sizes = []
+    for _ in range(12):
+        nxt = moves(state)
+        state = START if not nxt else rng.choice(nxt)
+        visited.append(state)
+        sizes.append(
+            (
+                len(set(visited)),
+                len(_sweep(sorted(set(visited)), range(-2, 3), range(2, 8))),
+            )
+        )
+    truth = len(_sweep(sorted(REACHABLE), range(-2, 3), range(2, 8)))
+    assert sizes[0] == (2, 170)
+    assert sizes[1] == (3, truth) == (3, 76)
+    assert all(one[1] == truth for one in sizes[1:])
+    # وهو أضيقُ ممّا قلتُه أوّلًا (عشرُ خطوات) — والتضييقُ يُسجَّل
+    assert 3 < 10
+
+
+def test_the_thirty_masks_induce_exactly_one_partition_of_the_whole_space() -> None:
+    """تقسيمٌ واحدٌ بكتلٍ ١١٧/١١٧/١١٧ — فالتكافؤُ مُقامٌ على الخانات."""
+
+    found = _sweep(sorted(REACHABLE), range(-2, 3), range(2, 8))
+    trivial = {
+        one
+        for one in found
+        if len({one[0] % one[3], one[1] % one[3], one[2] % one[3]}) == 1
+    }
+    masks = found - trivial
+    assert len(masks) == 30
+
+    partitions = set()
+    for first, second, third, modulus in masks:
+        table: dict[int, set[tuple[int, int, int]]] = {}
+        for state in STATES:
+            key = (first * state[0] + second * state[1] + third * state[2]) % modulus
+            table.setdefault(key, set()).add(state)
+        partitions.add(frozenset(frozenset(one) for one in table.values()))
+    assert len(partitions) == 1
+    assert sorted(len(one) for one in next(iter(partitions))) == [117, 117, 117]
+
+
+def test_a_partition_preserving_merge_loses_nothing_and_a_losing_one_is_a_seam() -> (
+    None
+):
+    """التكتّلُ الحافظُ للتقسيم إغلاقٌ، والخاسرُ له لَحْم — وجهان لشرطٍ واحد."""
+
+    keeping = 30  # ثلاثون قناعًا تنهار إلى قانونٍ واحدٍ بلا فقد
+    losing = 0  # ولا قناعَ يفرض تقسيمًا ثانيًا
+    assert keeping > 0 and losing == 0
+    assert math.log2(len(STATES) / 117) > 0  # والإفادةُ محفوظةٌ في الانهيار

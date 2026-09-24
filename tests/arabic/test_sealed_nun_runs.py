@@ -28,17 +28,13 @@ from __future__ import annotations
 from fractions import Fraction
 from pathlib import Path
 
-import pytest
+from frozen_corpus import requires_corpus
 
 from algebra.signified import Verdict
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_file(),
-    reason="بايتاتُ المدوّنة المُجمَّدة غيرُ مستقبَلةٍ في هذه الشجرة",
-)
+pytestmark = requires_corpus
 
 NUN_SEAL = "85f59f23c39d3ded9d459a332c7df7587f13891d7e54d4fdad40f63dfb51a160"
 IZHAR_SEAL = "57ac0f3852debdaff5164c78add3e623f982025b2ee6239d046f41e723ecc499"

@@ -29,18 +29,14 @@ import sys
 from pathlib import Path
 from types import ModuleType
 
-import pytest
+from frozen_corpus import CORPUS, requires_corpus
 
 from algebra.results import Evidence, trial_for
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 RUNNER = REPOSITORY / "examples" / "rasm" / "run_schema_transition_audit.py"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_file(),
-    reason="بايتاتُ المدوّنة المُجمَّدة غيرُ مستقبَلةٍ في هذه الشجرة",
-)
+pytestmark = requires_corpus
 
 
 def _audit() -> ModuleType:

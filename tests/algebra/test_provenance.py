@@ -224,11 +224,12 @@ def test_no_corpus_bytes_are_deposited_so_the_digests_are_stand_ins() -> None:
     """
 
     stand_ins = {MUSHAF.digest, PROSE.digest}
-    deposited = {
-        hashlib.sha256(path.read_bytes()).hexdigest()
-        for path in (REPOSITORY / "corpora").rglob("*")
-        if path.is_file()
-    }
+    holders = [
+        *(one for one in (REPOSITORY / "corpora").rglob("*") if one.is_file()),
+        # وأُودِعت بايتاتُ المصحف في جذر الشجرة أيضًا، فيُفحَص النفيُ عليها
+        *(one for one in REPOSITORY.glob("*.txt") if one.is_file()),
+    ]
+    deposited = {hashlib.sha256(one.read_bytes()).hexdigest() for one in holders}
     assert not (stand_ins & deposited)
     assert MUSHAF.digest != PROSE.digest
 

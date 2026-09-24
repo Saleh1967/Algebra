@@ -45,18 +45,14 @@ import sys
 from fractions import Fraction
 from pathlib import Path
 
-import pytest
+from frozen_corpus import requires_corpus
 
 from algebra.attainability import governing_floor, label_permutation_floor
 from algebra.signified import Prediction, Verdict
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_file(),
-    reason="بايتاتُ المدوّنة المُجمَّدة غيرُ مستقبَلةٍ في هذه الشجرة",
-)
+pytestmark = requires_corpus
 
 REJECTION_SEAL = "9fc6749883423f6751c65a78ccc8959888a63bfcd781bfad77624051bc23e5ee"
 FIFTH_SEAL = "5e3656d53a1dceed7a151d1067813087e5b6f14faed6635c51729f8d1e5c4e27"

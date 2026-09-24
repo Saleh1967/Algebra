@@ -26,17 +26,13 @@ from __future__ import annotations
 from collections import Counter
 from pathlib import Path
 
-import pytest
+from frozen_corpus import CORPUS, requires_corpus
 
 from alghanem.arabic.compression_model_preregistration import FROZEN_CORPUS
 
 REPOSITORY = Path(__file__).resolve().parents[2]
-CORPUS = REPOSITORY / "corpora" / "quran-simple-enhanced.txt"
 
-pytestmark = pytest.mark.skipif(
-    not CORPUS.is_file(),
-    reason="بايتاتُ المدوّنة المُجمَّدة غيرُ مستقبَلةٍ في هذه الشجرة",
-)
+pytestmark = requires_corpus
 
 AYAH_LINES = 6_236
 WHOLE_LINE_TOKENS = 82_532

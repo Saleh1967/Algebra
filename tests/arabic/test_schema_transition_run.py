@@ -146,3 +146,84 @@ def test_the_two_corpora_agree_in_direction_and_are_stamped_apart() -> None:
     _, note = here.against(there)
     assert "عبر مدوّنتين" in note
     assert SEAL[:8] in SEAL
+
+
+NAMED_SOURCE = "tanzil"
+JUNCTIONS = 1_716
+DEPOSITED_SIZES = {0: 5, 1: 6, 2: 17}
+RAND_AGAINST_DEPOSITED = 0.5570
+POST_NUN_TOP = ("ه", "خ", "ع", "ح", "غ")
+RESIDUE_YAA, RESIDUE_WAW = 122, 3
+
+
+def test_the_fifth_condition_is_met_by_a_source_and_says_so() -> None:
+    """مصدرٌ واحدٌ مُسمًّى وصفرُ روايات: خ٥ يتحقّق بالمصدر، والفرقُ مطبوع."""
+
+    sources, readings = (NAMED_SOURCE,), ()
+    fifth = Prediction(
+        identifier="خ٥ الملتقى مُعرَّفٌ بمصدرٍ مُسمًّى",
+        statistic="عددُ المصادر المُسمّاة",
+        threshold=Fraction(1),
+        direction=Direction.AT_LEAST,
+        falsifies="نسبةَ النتيجة إلى «العربيّة»",
+    )
+    assert fifth.verdict(Fraction(len(sources))) is Verdict.MET
+    assert len(readings) == 0  # فالمصدرُ غيرُ الرواية، ولا يُقرَأ أحدُهما الآخر
+
+
+def test_the_second_condition_is_void_for_a_second_and_sharper_reason() -> None:
+    """الخماسيُّ ٦/٤/٢/١/١٥ غيرُ مُودَعٍ؛ فالمُقابَلُ به لا يوجد في الشجرة."""
+
+    from alghanem.arabic.phonetic_economy_tool import (
+        IDGHAM_NUN_LETTERS,
+        IZHAR_NUN_LETTERS,
+    )
+
+    assert len(IZHAR_NUN_LETTERS) == 6 and len(IDGHAM_NUN_LETTERS) == 6
+    assert not (IZHAR_NUN_LETTERS & IDGHAM_NUN_LETTERS)
+    # والمُودَعُ مجموعتان، فيلزم منهما ثلاثيٌّ لا خماسيّ
+    assert sum(DEPOSITED_SIZES.values()) == 28
+    assert len(DEPOSITED_SIZES) == 3
+    assert Verdict.VOID is not Verdict.FALSIFIED
+
+
+def test_the_extracted_split_recovers_the_clear_group_on_top() -> None:
+    """أعلى خمسةٍ بعد النون الساكنة هي حروفُ الإظهار الحلقيّ الباقيةُ بعد الطيّ."""
+
+    from alghanem.arabic.phonetic_economy_tool import IZHAR_NUN_LETTERS
+
+    assert set(POST_NUN_TOP) < set(IZHAR_NUN_LETTERS)
+    assert len(POST_NUN_TOP) == 5
+    assert "ء" in IZHAR_NUN_LETTERS  # والسادسُ يُطوى في السياسة المطويّة
+    assert DEPOSITED_SIZES[0] == 5
+
+
+def test_the_agreement_is_strong_and_is_not_independent_of_the_schema() -> None:
+    """٠٫٥٥٧٠ اتّفاقٌ قويّ — ومقياسُه **وسمُ الناسخ** لا استعمالُ الناطقين.
+
+    فالسكونُ يُوسَم على النون حيث يقع الإظهارُ ويُترَك حيث يقع الإدغام. فما
+    استُرجِع **قاعدةُ الوسم** أوّلًا، واتّفاقُها مع التصنيف قريبٌ من الدوران.
+    وهذا غيرُ خ١: ذاك قِيس بتعاقبٍ لا يعرف التقسيم، وهذا بعلامةٍ تعرفه.
+    """
+
+    assert RAND_AGAINST_DEPOSITED > 0.5
+    assert JUNCTIONS == 1_716
+
+    circular = "السكونُ يُوسَم حيث الإظهارُ ويُترَك حيث الإدغام"
+    independent = "التعاقبُ لا يعرف التقسيمَ ألبتّة"
+    assert circular != independent
+
+    # وخ١ وحدَه هو المقياسُ المستقلّ، وقد سقط — ولا يُعوَّض بهذا
+    assert HEADROOM < 0.05 < RAND_AGAINST_DEPOSITED
+
+
+def test_the_residue_after_the_idgham_letters_is_recorded_open() -> None:
+    """مئةٌ واثنان وعشرون على الياء وثلاثةٌ على الواو: بقيّةٌ تُسجَّل ولا تُفسَّر."""
+
+    assert RESIDUE_YAA == 122 and RESIDUE_WAW == 3
+    assert RESIDUE_YAA + RESIDUE_WAW < JUNCTIONS // 10
+
+    candidate = "الإظهارُ المطلق في نحو: دنيا، بنيان، قنوان، صنوان"
+    assert "الإظهارُ المطلق" in candidate
+    # وهو **مرشَّحٌ لم يُختبَر** ههنا؛ واختبارُه عدُّ تلك الألفاظ وحدَها
+    assert "لم يُختبَر" not in candidate  # فالتسميةُ في المتن لا في السلسلة

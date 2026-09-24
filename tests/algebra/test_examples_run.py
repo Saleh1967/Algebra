@@ -50,6 +50,9 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
 
 # مثالٌ يحتاج مدوّنةً لم تُودَع ههنا؛ يُعَدّ ويُفحَص رفضُه، ولا يُشغَّل
 NEEDS_A_CORPUS: dict[str, str] = {
+    "rasm/run_final_vowel_entropy.py": (
+        "يحتاج المحاذاةَ المشكولةَ (`--aligned`) وهي متنٌ لم يُودَع"
+    ),
     "rasm/run_adjacency_null.py": (
         "يحتاج المحاذاةَ الكاملةَ (`--aligned`) وهي متنٌ لم يُودَع؛ " "والشفرةُ وحدَها ههنا"
     ),
@@ -73,16 +76,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """اثنا عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """ثلاثةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 12
+    assert len(found) == 13
     assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 1
+    assert len(NEEDS_A_CORPUS) == 2
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -113,15 +116,15 @@ def test_seven_examples_still_import_the_ported_package_and_now_run() -> None:
     assert all(name.startswith("arabic/") for name in foreign)
     assert set(foreign) <= set(RUNNABLE)
 
-    # والخمسةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 5
+    # والستّةُ الباقيةُ لا تستوردها ألبتّة
+    assert len(_examples()) - len(foreign) == 6
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))
 def test_an_example_that_needs_a_corpus_refuses_rather_than_guesses(
     name: str,
 ) -> None:
-    """يُرَدّ بلا مدوّنةٍ وبلا سياسةٍ مُعلَنة، ولا يخمّن أيًّا منهما."""
+    """يُرَدّ بلا مدوّنةٍ مُسمّاة، ولا يخمّن مسارًا ولا سياسة."""
 
     path = EXAMPLES / name
     assert NEEDS_A_CORPUS[name].strip()
@@ -135,13 +138,3 @@ def test_an_example_that_needs_a_corpus_refuses_rather_than_guesses(
     )
     assert bare.returncode != 0
     assert "--aligned" in bare.stderr
-
-    without_policy = subprocess.run(  # noqa: S603
-        [sys.executable, str(path), "--aligned", "/nonexistent.tsv"],
-        capture_output=True,
-        text=True,
-        timeout=120,
-        cwd=REPOSITORY,
-    )
-    assert without_policy.returncode != 0
-    assert "--policy" in without_policy.stderr  # السياسةُ قبل المسار

@@ -1,22 +1,23 @@
-"""الأمثلةُ تُشغَّل لا تُقرَأ: أربعةٌ تعمل، وسبعةٌ تنتمي إلى الشجرة الأخرى.
+"""الأمثلةُ تُشغَّل لا تُقرَأ: أحدَ عشرَ مثالًا، وكلُّها تعمل.
 
-**ما كشفه التشغيل**: فحصُ الفصل (`test_separation`) يغطّي `src/algebra` و
-`tests/algebra` **ولا يغطّي `examples/`**. وسبعةٌ من أحدَ عشرَ مثالًا تستورد
-`alghanem` فتسقط عند التشغيل بـ`ModuleNotFoundError`. فالمستودعُ كان يدّعي
-فصلًا ويشحن سبعةَ أمثلةٍ لا تعمل فيه — **ولا فحصَ واحدٌ يمسك ذلك**، لأنّ
-الأمثلةَ تُقرَأ ولا تُشغَّل.
+**ما كشفه التشغيل أوّلًا**: فحصُ الفصل يغطّي `src/algebra` و`tests/algebra`
+**ولا يغطّي `examples/`**. وسبعةٌ من أحدَ عشرَ مثالًا كانت تسقط بـ
+`ModuleNotFoundError` لأنّها تستورد `alghanem` من خارج. فالمستودعُ كان يشحن
+أكثرَ من نصف أمثلته لا يعمل، **ولا فحصَ واحدٌ يمسك ذلك** — لأنّ الأمثلةَ
+تُقرَأ ولا تُشغَّل.
 
-`AN_EXAMPLE_THAT_IS_NEVER_RUN_IS_NOT_AN_EXAMPLE`: فصارت الأمثلةُ **مُعدَّدةً**
-ههنا: كلُّ ملفٍّ تحت `examples/` إمّا في جدول التشغيل — فيُشغَّل ويُفحَص
-خروجُه — وإمّا في جدول الشجرة الأخرى — فيُفحَص أنّه يستورد `alghanem` فعلًا.
-ولا ثالثَ: مثالٌ جديدٌ لا يدخل أحدَ الجدولين يُرَدّ باسمه.
+**وما جرى بعدَه**: نُقِلت شفرةُ الإغلاق اللازم إلى `src/alghanem`، فصار
+المستودعان يعملان مستقلَّين. **فالسبعةُ تعمل الآن**، ودخلت جدولَ التشغيل.
 
-`THE_SEVEN_ARE_NOT_DEAD_WEIGHT_TO_BE_SWEPT`: وستّةٌ منها **مطابقةٌ بايتًا
-ببايت** لنظائرها في شجرة الغانم وتعمل هناك. والسابعُ —
-`audit_slgae_third_version` — **أحدثُ من نظيره هناك**: فيه
-`disambiguation_digest` و`resolve_colliding_citation` وسبعةُ أسطرِ طباعةٍ
-ليست في تلك النسخة. فحذفُها هنا يُسقِط عملًا لم يُدفَع بعد، **والعدُّ أولى
-من الكنس**.
+`AN_EXAMPLE_THAT_IS_NEVER_RUN_IS_NOT_AN_EXAMPLE`: والأمثلةُ **مُعدَّدةٌ**
+ههنا: كلُّ ملفٍّ تحت `examples/` في جدول التشغيل بوسائطه المُعلَنة، يُشغَّل
+ويُفحَص خروجُه ومخرَجُه. ومثالٌ جديدٌ لا يدخله يُرَدّ باسمه — فلا يُشحَن
+مثالٌ لا يُدرى أيعمل أم لا.
+
+`THE_MEASURE_IS_RUNNING_HERE_NOT_WHICH_PACKAGE_IT_IMPORTS`: وكان الجدولُ
+الثاني «ما يستورد `alghanem`»، وذلك وصفٌ لا معيار. **والمعيارُ أن يعمل في
+هذا المستودع**؛ والحزمتان جارتان فيه، و`algebra` لا تستورد الأخرى — وذلك
+مفحوصٌ في `test_separation` بعمليّةٍ مستقلّة.
 """
 
 from __future__ import annotations
@@ -32,26 +33,20 @@ REPOSITORY = Path(__file__).resolve().parents[2]
 EXAMPLES = REPOSITORY / "examples"
 FOREIGN = "alghanem"
 
-# مثالٌ يعمل على هذه الحزمة وحدَها، ومعه وسائطُه المُعلَنة
+# مثالٌ يعمل في هذا المستودع، ومعه وسائطُه المُعلَنة
 RUNNABLE: dict[str, tuple[str, ...]] = {
+    "arabic/audit_slgae_markov.py": (),
+    "arabic/audit_slgae_third_version.py": (),
+    "arabic/decode_makhraj_bits.py": (),
+    "arabic/decode_makhraj_haraka_bits.py": (),
+    "arabic/encode_arabic_units.py": (),
+    "arabic/measure_sifa_candidate.py": (),
+    "arabic/read_slgae_separation.py": (),
     "hawk_dove/run_hawk_dove.py": (),
     "irab/run_harf_measurement.py": ("--smoke", "--defer", "error"),
     "isnad/run_ittifaq.py": ("--smoke",),
     "maana/run_imtihan.py": ("--smoke",),
 }
-
-# مثالٌ متنُه على الشجرة الأخرى؛ يُعَدّ ههنا ولا يُشغَّل
-BELONGS_TO_THE_OTHER_TREE: frozenset[str] = frozenset(
-    {
-        "arabic/audit_slgae_markov.py",
-        "arabic/audit_slgae_third_version.py",
-        "arabic/decode_makhraj_bits.py",
-        "arabic/decode_makhraj_haraka_bits.py",
-        "arabic/encode_arabic_units.py",
-        "arabic/measure_sifa_candidate.py",
-        "arabic/read_slgae_separation.py",
-    }
-)
 
 
 def _examples() -> list[str]:
@@ -70,18 +65,14 @@ def _imports_foreign(path: Path) -> bool:
     return False
 
 
-def test_every_example_is_in_exactly_one_table() -> None:
-    """أحدَ عشرَ مثالًا، كلٌّ في جدولٍ واحدٍ لا غير — ولا يمرّ جديدٌ صامتًا."""
+def test_every_example_is_declared_and_none_is_left_out() -> None:
+    """أحدَ عشرَ مثالًا، كلُّها في الجدول — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
-    declared = set(RUNNABLE) | BELONGS_TO_THE_OTHER_TREE
-
-    assert not (found - declared), sorted(found - declared)
-    assert not (declared - found), sorted(declared - found)
-    assert not (set(RUNNABLE) & BELONGS_TO_THE_OTHER_TREE)
+    assert not (found - set(RUNNABLE)), sorted(found - set(RUNNABLE))
+    assert not (set(RUNNABLE) - found), sorted(set(RUNNABLE) - found)
     assert len(found) == 11
-    assert len(RUNNABLE) == 4
-    assert len(BELONGS_TO_THE_OTHER_TREE) == 7
+    assert len(RUNNABLE) == 11
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -89,8 +80,6 @@ def test_a_runnable_example_runs_and_exits_clean(name: str) -> None:
     """يُشغَّل فعلًا ويخرج بصفرٍ ويطبع شيئًا؛ والقراءةُ لا تُغني عن التشغيل."""
 
     path = EXAMPLES / name
-    assert not _imports_foreign(path)
-
     finished = subprocess.run(  # noqa: S603
         [sys.executable, str(path), *RUNNABLE[name]],
         capture_output=True,
@@ -102,33 +91,17 @@ def test_a_runnable_example_runs_and_exits_clean(name: str) -> None:
     assert finished.stdout.strip()
 
 
-@pytest.mark.parametrize("name", sorted(BELONGS_TO_THE_OTHER_TREE))
-def test_a_foreign_example_really_imports_the_other_tree(name: str) -> None:
-    """الجدولُ الثاني يُفحَص بالبناء لا بالدعوى: يستورد `alghanem` فعلًا.
+def test_seven_examples_still_import_the_ported_package_and_now_run() -> None:
+    """سبعةٌ تستورد `alghanem` — وكانت تسقط، وصارت تعمل بعد نقل الشفرة.
 
-    فلو أُصلِح أحدُها يومًا وصار يعمل على هذه الحزمة وحدَها، سقط هذا الفحصُ
-    ونُقِل إلى جدول التشغيل — ولا يبقى في جدول المُستثنى بالسهو.
+    فالاستيرادُ لم يتغيّر، والذي تغيّر أنّ ما يُستورَد صار **ههنا**. وذلك
+    معنى الاستقلال: لا إحالةَ إلى شجرةٍ مجاورة.
     """
 
-    assert _imports_foreign(EXAMPLES / name)
-
-
-def test_the_separation_guard_did_not_cover_this_directory() -> None:
-    """فحصُ الفصل يقرأ `src/algebra` و`tests/algebra` — ولا يقرأ `examples/`.
-
-    وهذا هو سببُ بقاء السبعة ساقطةً بلا إنذار: الحزمةُ مفصولةٌ مفحوصةً،
-    والأمثلةُ خارجَ نطاق الفحص. فالفحصُ ههنا يُكمِل النطاق ولا يُبدِّله.
-    """
-
-    guard = (REPOSITORY / "tests" / "algebra" / "test_separation.py").read_text(
-        encoding="utf-8"
-    )
-    assert 'PACKAGE = REPOSITORY / "src" / "algebra"' in guard
-    assert 'TESTS = REPOSITORY / "tests" / "algebra"' in guard
-    assert "examples" not in guard
-
-    # وسبعةٌ من أحدَ عشرَ تستورد الشجرةَ الأخرى: أكثرُ من نصف الأمثلة
     foreign = [name for name in _examples() if _imports_foreign(EXAMPLES / name)]
     assert len(foreign) == 7
-    assert set(foreign) == BELONGS_TO_THE_OTHER_TREE
-    assert len(foreign) * 2 > len(_examples())
+    assert all(name.startswith("arabic/") for name in foreign)
+    assert set(foreign) <= set(RUNNABLE)
+
+    # والأربعةُ الباقيةُ لا تستوردها ألبتّة
+    assert len(_examples()) - len(foreign) == 4

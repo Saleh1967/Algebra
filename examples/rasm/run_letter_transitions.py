@@ -83,7 +83,7 @@ def drawn_letters(text: str, fold: dict[str, str], alphabet: str) -> str:
         if ord(character) in MARKS:
             continue
         folded = fold.get(character, character)
-        if folded in alphabet:
+        if folded and folded in alphabet:
             out.append(folded)
     return "".join(out)
 

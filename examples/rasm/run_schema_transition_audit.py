@@ -208,7 +208,7 @@ def letters_with_sukun(
     index = 0
     while index < len(stream):
         folded = fold.get(stream[index], stream[index])
-        if folded in alphabet:
+        if folded and folded in alphabet:
             step = index + 1
             marks = ""
             while step < len(stream) and (

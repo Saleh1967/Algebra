@@ -59,6 +59,9 @@ NEEDS_A_CORPUS: dict[str, str] = {
     "rasm/run_letter_transitions.py": (
         "يحتاج المحاذاةَ ببصمتها وإغلاقها وسياستها؛ ولا مدوّنةَ مودَعةٌ ههنا"
     ),
+    "rasm/run_pan_difference.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس الاتّجاهين وفرقَ الكفّتين بصفريّيهما"
+    ),
     "rasm/run_marked_contrast.py": (
         "يحتاج المدوّنةَ المُقفَلة؛ ويقيس تباينَ الوسم وكفّتَي الرسم والضبط"
     ),
@@ -89,16 +92,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """سبعةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """ثمانيةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 17
+    assert len(found) == 18
     assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 6
+    assert len(NEEDS_A_CORPUS) == 7
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -117,20 +120,21 @@ def test_a_runnable_example_runs_and_exits_clean(name: str) -> None:
     assert finished.stdout.strip()
 
 
-def test_nine_examples_import_the_ported_package_and_all_of_them_run() -> None:
-    """تسعةٌ تستورد `alghanem`: سبعٌ كانت تسقط فصارت تعمل، واثنتان جديدتان.
+def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
+    """عشرةٌ تستورد `alghanem`: سبعٌ كانت تسقط فصارت تعمل، وثلاثٌ جديدة.
 
     فالاستيرادُ في السبع لم يتغيّر، والذي تغيّر أنّ ما يُستورَد صار **ههنا**.
-    والجديدتان تحت `rasm/` تستوردان **الجداولَ المُودَعة** (المخارجَ
+    والجديداتُ تحت `rasm/` تستورد **الجداولَ المُودَعة** (المخارجَ
     وأحكامَ النون) لتعرضاها على قياسٍ من خارجها — وهو استعمالُ الإيداع في
     موضعه: يُقرَأ ولا يُقاس بنفسه.
     """
 
     foreign = [name for name in _examples() if _imports_foreign(EXAMPLES / name)]
-    assert len(foreign) == 9
+    assert len(foreign) == 10
     reading_deposits = sorted(one for one in foreign if not one.startswith("arabic/"))
     assert reading_deposits == [
         "rasm/run_marked_contrast.py",
+        "rasm/run_pan_difference.py",
         "rasm/run_schema_transition_audit.py",
     ]
     assert set(foreign) - set(reading_deposits) <= set(RUNNABLE)

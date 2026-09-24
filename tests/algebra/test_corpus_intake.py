@@ -172,3 +172,56 @@ def test_every_destination_is_excluded_from_the_code_tree() -> None:
     entries = {line.strip() for line in ignored if line.strip()}
     for one in intake_corpus.INTAKES:
         assert one.destination_relative in entries, one.destination_relative
+
+
+def test_the_copy_is_atomic_so_an_interruption_leaves_no_half_corpus(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """انقطاعٌ في المنتصف لا يمسّ المقصد، ولا يترك مؤقَّتًا يُلتبَس به."""
+
+    root, into = tmp_path / "من", tmp_path / "إلى"
+    _a_source(root)
+    destination = into / "corpora" / "one.txt"
+    destination.parent.mkdir(parents=True)
+    destination.write_bytes(OTHER)
+
+    def _break(source: str, target: str) -> None:
+        Path(target).write_bytes(CONTENT[:3])  # نصفُ بايتات، ثمّ انقطاع
+        raise OSError("انقطع النقل")
+
+    monkeypatch.setattr(intake_corpus.shutil, "copyfile", _break)
+    with pytest.raises(OSError):
+        intake_corpus.receive(_an_intake(), root, into=into, replace=True)
+
+    assert destination.read_bytes() == OTHER  # لم يُمَسّ المقصد
+    staged = list(destination.parent.glob("*.جارٍ"))
+    assert staged == []  # ولا مؤقَّتَ باقٍ يُلتبَس به
+
+
+def test_one_content_under_two_names_is_refused_in_the_table() -> None:
+    """بصمةٌ واحدةٌ باسمين تُرَدّ: المحتوى الواحدُ مستقبَلٌ واحدٌ لا اثنان."""
+
+    intake_corpus.refuse_duplicate_digests(intake_corpus.INTAKES)  # الجدولُ سليم
+
+    twin = intake_corpus.Intake(
+        name="اسمٌ ثانٍ للمتن نفسِه",
+        source_relative="corpora/two.txt",
+        destination_relative="corpora/two.txt",
+        byte_length=intake_corpus.INTAKES[0].byte_length,
+        sha256_hex=intake_corpus.INTAKES[0].sha256_hex,
+    )
+    with pytest.raises(intake_corpus.IntakeError) as raised:
+        intake_corpus.refuse_duplicate_digests((*intake_corpus.INTAKES, twin))
+    assert "اسمٌ مرادفٌ لا مستقبَلٌ ثانٍ" in str(raised.value)
+
+
+def test_a_destination_holding_another_declared_content_is_named(
+    tmp_path: Path,
+) -> None:
+    """مقصدٌ فيه بايتاتُ مستقبَلٍ آخرَ يُقال فيه «حاضرٌ باسم آخر» ويُسمّى صاحبُه."""
+
+    known = intake_corpus.INTAKES[0]
+    assert intake_corpus.holder_of(known.sha256_hex, intake_corpus.INTAKES) == (
+        known.name
+    )
+    assert intake_corpus.holder_of("0" * 64, intake_corpus.INTAKES) is None

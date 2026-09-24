@@ -121,8 +121,13 @@ def test_a_level_is_closed_only_by_a_listed_inventory() -> None:
         Level("  ")
 
 
-def test_the_named_residuals_are_five_and_distinct() -> None:
-    """البواقي المُسمّاةُ خمسٌ، ولا تكرارَ فيها."""
+def test_the_named_residuals_are_nine_and_distinct() -> None:
+    """البواقي المُسمّاةُ تسعٌ، ولا تكرارَ فيها — وكانت خمسًا قبل الخانتين.
 
-    assert len(BRIDGE_NAMED_RESIDUALS) == 5
-    assert len(set(BRIDGE_NAMED_RESIDUALS)) == 5
+    فأُضيفت أربعٌ حين صارت المواقفُ أربعةً: أنّ الثنائيّةَ لا خانةَ فيها
+    للعبور المتعلَّم، وأنّ الردَّ نتيجةٌ لا انتظار، وأنّ النسبةَ بلا صفريٍّ
+    مُسمّى الأساس ليست نتيجة، وأنّ «مبنيّ» غيرُ «عُبِر».
+    """
+
+    assert len(BRIDGE_NAMED_RESIDUALS) == 9
+    assert len(set(BRIDGE_NAMED_RESIDUALS)) == 9

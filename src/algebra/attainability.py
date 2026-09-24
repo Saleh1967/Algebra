@@ -116,6 +116,22 @@ class AttainabilityReading:
     def __post_init__(self) -> None:
         if self.outcomes == 0 and self.standing is not Attainability.UNREACHABLE:
             raise AttainabilityError("حدٌّ بلا مخرجٍ واحدٍ منزلتُه «لا يُبلَغ» لا غير.")
+        if self.outcomes > 0 and self.standing is Attainability.UNREACHABLE:
+            raise AttainabilityError("«لا يُبلَغ» مع مخارجَ مُعلَنةٍ تناقضٌ في القراءة.")
+        derived_floor = permutation_floor(self.replicates)
+        if self.floor != derived_floor:
+            raise AttainabilityError(
+                f"الأرضيّةُ المُعلَنةُ {self.floor} وتكرارُ {self.replicates} "
+                f"يقتضي {derived_floor}؛ والقراءةُ لا تُخالف ما اشتُقّت منه."
+            )
+        derived_outcomes = attainable_rejection_outcomes(
+            self.threshold, self.replicates
+        )
+        if self.outcomes != derived_outcomes:
+            raise AttainabilityError(
+                f"المخارجُ المُعلَنةُ {self.outcomes} والمشتقّةُ {derived_outcomes}؛ "
+                "وحقلٌ مُشتَقٌّ يُخالف اشتقاقَه ليس قراءةً بل دعوًى ثانية."
+            )
 
     @property
     def suggested_replicates(self) -> int:

@@ -26,6 +26,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from fractions import Fraction
 from itertools import combinations
+from math import comb
 from typing import Final
 
 __all__ = [
@@ -40,6 +41,7 @@ __all__ = [
     "boundary_matrix",
     "closure_of",
     "enumerate_complexes",
+    "enumeration_passes",
     "euler_characteristic",
     "euler_witness_holds",
     "matrix_rank",
@@ -115,15 +117,38 @@ def closure_of(generators: tuple[Face, ...], name: str = "") -> Complex:
     return Complex(faces=frozenset(faces), name=name)
 
 
-def enumerate_complexes(vertices: int) -> tuple[Complex, ...]:
-    """عدِّد المركّباتِ على `n` رأسًا التي تحوي كلَّ رؤوسها، تعدادًا شاملًا.
+def enumeration_passes(vertices: int) -> int:
+    """كم دورةً يقتضي التعدادُ الشامل على `n` رأسًا: `2 ** (2**n − n − 1)`.
 
-    ويُعدُّ الوجهُ الأعلى بأوجهه كلِّها: إضافةُ وجهٍ تقتضي أوجهَه الأدنى، فلا
-    يدخل مثلّثٌ بلا أضلاعه الثلاثة.
+    ويُحسَب **قبل** التعداد لا بعده، لأنّ الرقمَ هو القرار: ١ و٢ و١٦ و٢٬٠٤٨
+    للأربعة الأولى، ثمّ ٦٧ مليونًا للخامس، ثمّ ١٫٤ × ١٠¹⁷ للسادس.
     """
 
     if vertices < 1:
         raise SimplicialError("الرؤوسُ واحدٌ فأكثر.")
+    higher = sum(comb(vertices, size) for size in range(2, vertices + 1))
+    return 1 << higher
+
+
+def enumerate_complexes(
+    vertices: int, passes_at_most: int = 4_096
+) -> tuple[Complex, ...]:
+    """عدِّد المركّباتِ على `n` رأسًا التي تحوي كلَّ رؤوسها، تعدادًا شاملًا.
+
+    ويُعدُّ الوجهُ الأعلى بأوجهه كلِّها: إضافةُ وجهٍ تقتضي أوجهَه الأدنى، فلا
+    يدخل مثلّثٌ بلا أضلاعه الثلاثة.
+
+    و`passes_at_most` سقفُ الدورات **المُعلَن**: ما تجاوزه يُرَدّ بعدده لا
+    بصمتٍ ولا بانتظار. فالوحدةُ التي تزن بلوغَ اختبارٍ حدَّه لا يليق بها أن
+    تحاول ما لا يُبلَغ؛ ورفعُ السقف يكون صريحًا ليُدفَع الثمنُ عن علم.
+    """
+
+    passes = enumeration_passes(vertices)
+    if passes > passes_at_most:
+        raise SimplicialError(
+            f"تعدادُ {vertices} رؤوسٍ يقتضي {passes:,} دورةً، والسقفُ المُعلَن "
+            f"{passes_at_most:,}. فارفعْه صراحةً إن أردتَ دفعَ الثمن."
+        )
     points = tuple(range(1, vertices + 1))
     higher = [
         _face(subset)

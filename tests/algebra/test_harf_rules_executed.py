@@ -237,4 +237,5 @@ def test_removing_any_rule_changes_something_so_none_is_dead_weight() -> None:
     assert set(effects) == set(ALL_RULES)
     assert all(count > 0 for count in effects.values()), effects
     assert effects["ق٥و"] == 1  # التوسيعُ يمسّ الفعلَ وحدَه في هذه العيّنة
+    assert effects["ق٥ح"] >= 1 and effects["ق٥م"] >= 1  # والحرفُ والمبنيُّ رايتان
     assert effects["ق٣"] == max(effects.values())  # والتشكيلُ أوسعُها أثرًا

@@ -45,6 +45,8 @@ __all__ = [
     "A_FIELD_THAT_CONTRADICTS_ITS_OWN_COUNT_VOIDS_WHAT_RESTS_ON_IT_NOTE",
     "A_MEANING_READ_OFF_THE_FORM_IS_NOT_EVIDENCE_FOR_THE_FORM_NOTE",
     "A_SPARSE_MUTUAL_INFORMATION_IS_BIASED_UPWARD_NOTE",
+    "BOTH_MARGINS_DO_NOT_FIX_A_CONDITIONAL_ENTROPY_NOTE",
+    "CONDITIONING_SIDES",
     "Direction",
     "NullReading",
     "Oracle",
@@ -52,6 +54,7 @@ __all__ = [
     "SIGNIFIED_NAMED_RESIDUALS",
     "SignifiedError",
     "Verdict",
+    "conditional_entropy",
     "contamination_share",
     "entropy",
     "mutual_information",
@@ -93,6 +96,35 @@ def entropy(counts: Iterable[int]) -> float:
     return -sum(
         float(Fraction(count, total)) * math.log2(float(Fraction(count, total)))
         for count in tallies
+    )
+
+
+CONDITIONING_SIDES: Final[tuple[str, ...]] = ("صورة", "مدلول")
+"""جانبا الشرط؛ والجانبُ يُسمّى لأنّ الاتّجاهين رقمان لا رقم."""
+
+
+def conditional_entropy(pairs: Sequence[Pair], *, given: str) -> float:
+    """`H(الآخر | given)` بالبتّات؛ والجانبُ **يُسمّى** ولا يُستنتَج.
+
+    فالاتّجاهان مقداران مختلفان لا صيغتان لمقدارٍ واحد: `H(مدلول | صورة)`
+    اشتراكٌ، و`H(صورة | مدلول)` ترادف. ودالّةٌ تختار أحدَهما ضمنًا تُسلِّم
+    الاتّجاهَ إلى ترتيب الحقول.
+    """
+
+    if given not in CONDITIONING_SIDES:
+        raise SignifiedError(
+            f"جانبُ الشرط يُسمّى من {CONDITIONING_SIDES}؛ و«{given}» ليس منها."
+        )
+    if not pairs:
+        raise SignifiedError("لا إنتروبيا شرطيّةَ على إسنادٍ خالٍ.")
+    index = CONDITIONING_SIDES.index(given)
+    grouped: dict[str, Counter[str]] = {}
+    for pair in pairs:
+        grouped.setdefault(pair[index], Counter())[pair[1 - index]] += 1
+    total = len(pairs)
+    return sum(
+        float(Fraction(sum(inner.values()), total)) * entropy(inner.values())
+        for inner in grouped.values()
     )
 
 
@@ -280,7 +312,15 @@ A_FIELD_THAT_CONTRADICTS_ITS_OWN_COUNT_VOIDS_WHAT_RESTS_ON_IT_NOTE: Final[str] =
     "يسرد غيرَه يُقاس تناقضُه أوّلًا، فإن جاوز حدًّا مُعلَنًا سقط ما بُني عليه"
 )
 
+BOTH_MARGINS_DO_NOT_FIX_A_CONDITIONAL_ENTROPY_NOTE: Final[str] = (
+    "BothMarginsDoNotFixAConditionalEntropy: صفريٌّ يحفظ هامشَي الجدول لا "
+    "يُثبِّت `H(الآخر | given)`؛ فجدولان بهامشين متطابقين يختلفان فيها. "
+    "والذي يُثبِّتها حفظُ **ملمحِ كلّ صفٍّ** — أي إعادةُ تسميةِ الأعمدة وحدَها، "
+    "وذلك هُويّةٌ لا صفريّ"
+)
+
 SIGNIFIED_NAMED_RESIDUALS: Final[tuple[str, ...]] = (
+    BOTH_MARGINS_DO_NOT_FIX_A_CONDITIONAL_ENTROPY_NOTE,
     A_MEANING_READ_OFF_THE_FORM_IS_NOT_EVIDENCE_FOR_THE_FORM_NOTE,
     AN_ORACLE_IS_DECLARED_AND_THE_CLAIM_IS_BOUND_TO_IT_NOTE,
     ARBITRARINESS_IS_THE_NULL_NOT_THE_FINDING_NOTE,

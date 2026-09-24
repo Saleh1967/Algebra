@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "allow": [
+      "Bash(pytest *)",
+      "Bash(python -m pytest *)",
+      "Bash(python3 -m pytest *)",
+      "Bash(ruff *)",
+      "Bash(python -m ruff *)",
+      "Bash(python3 -m ruff *)",
+      "Bash(mypy *)",
+      "Bash(python -m mypy *)",
+      "Bash(python3 -m mypy *)"
+    ]
+  }
+}

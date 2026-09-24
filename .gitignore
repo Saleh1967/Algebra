@@ -216,3 +216,8 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# بايتاتُ مدوّنةٍ تُجلَب للتشغيل المحلّيّ ولا تُودَع في شجرة الشفرة.
+# وإيداعُها قرارُ صاحب المستودع، لا أثرٌ جانبيٌّ لتشغيلٍ جرى.
+maqayis_by_root_csv_999.csv
+corpora/quran-simple-enhanced.txt

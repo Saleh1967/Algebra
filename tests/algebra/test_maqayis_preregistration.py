@@ -133,8 +133,12 @@ def test_no_verdict_is_recorded_in_this_commit() -> None:
     assert PREDICTIONS[0].verdict(Fraction(1, 100)) is Verdict.MET
 
 
-def test_the_named_residuals_are_five_and_distinct() -> None:
-    """البواقي المُسمّاةُ خمسٌ، ولا تكرارَ فيها."""
+def test_the_named_residuals_are_six_and_distinct() -> None:
+    """البواقي المُسمّاةُ ستٌّ، ولا تكرارَ فيها — وكانت خمسًا.
 
-    assert len(SIGNIFIED_NAMED_RESIDUALS) == 5
-    assert len(set(SIGNIFIED_NAMED_RESIDUALS)) == 5
+    والسادسةُ أنّ صفريًّا يحفظ هامشَي الجدول **لا يثبّت** إنتروبيا شرطيّة؛
+    والذي يثبّتها حفظُ ملمح كلّ صفّ، وذلك هُويّةٌ لا صفريّ.
+    """
+
+    assert len(SIGNIFIED_NAMED_RESIDUALS) == 6
+    assert len(set(SIGNIFIED_NAMED_RESIDUALS)) == 6

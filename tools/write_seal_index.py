@@ -20,6 +20,7 @@ from typing import Any
 REPOSITORY = Path(__file__).resolve().parents[1]
 TESTS = REPOSITORY / "tests"
 INDEX = REPOSITORY / "docs" / "فهرس-الأختام.md"
+TOOLS = REPOSITORY / "tools"
 HEX = re.compile(r"\b[0-9a-f]{64}\b")
 SKIPPED = {".git", "__pycache__", ".mypy_cache", ".ruff_cache", ".pytest_cache"}
 EASTERN = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
@@ -104,6 +105,36 @@ def _cited(digest: str) -> set[str]:
     return seen
 
 
+def records() -> list[dict[str, Any]]:
+    """السجلّاتُ المُجمَّدة — **تُكتشَف** بإعادة اشتقاق بصماتها لا تُعَدّ يدًا.
+
+    كلُّ وحدةٍ في `tools/` تحمل `rederive_record_digest` تُحسَب بصمتُها
+    من حقولها، وتُقابَل بالسجلّات المُودَعة. فما جُمِّد يدخل الفهرسَ
+    **بنفسه**، ولا يُضاف إلى جدول المستثنيات كلَّ مرّة.
+    """
+
+    found: list[dict[str, Any]] = []
+    for path in sorted(TOOLS.glob("*_seal.py")):
+        spec = importlib.util.spec_from_file_location(path.stem, path)
+        if spec is None or spec.loader is None:
+            continue
+        module = importlib.util.module_from_spec(spec)
+        sys.modules[path.stem] = module
+        spec.loader.exec_module(module)
+        derive = getattr(module, "rederive_record_digest", None)
+        checker = getattr(module, "verify_against_logs", None)
+        if derive is None:
+            continue
+        found.append(
+            {
+                "digest": derive(),
+                "module": str(path.relative_to(REPOSITORY)),
+                "complaints": list(checker()) if checker is not None else None,
+            }
+        )
+    return found
+
+
 def gather() -> list[dict[str, Any]]:
     """كلُّ شاهدٍ وشروطُه، ببصمةٍ **مُعادةِ الحساب** لا منقولة."""
 
@@ -172,6 +203,23 @@ def render() -> str:
             f"| {counted(len(cited), 'موضعٌ واحد', 'موضعان', 'مواضعَ', 'موضعًا')} |"
         )
     add("")
+    frozen = records()
+    if frozen:
+        add("## السجلّاتُ المُجمَّدة — نتائجُ مقيسةٌ لا تسجيلاتُ شروط")
+        add("")
+        add("**تُكتشَف بإعادة اشتقاق بصماتها**، ولا تُعَدّ يدًا. وما له")
+        add("مُقابِلٌ بالسجلّات المُودَعة تُعَدّ شكاواه، وشكوى واحدةٌ تُسقِط")
+        add("الفحص؛ وما لا مُقابِلَ له **يُقال إنّه بلا مُقابِل** ولا يُعَدّ صفرًا.")
+        add("")
+        add("| السجلّ | الختم | شكاوى |")
+        add("|---|---|---|")
+        for one in frozen:
+            said = one["complaints"]
+            add(
+                f"| `{one['module']}` | `{str(one['digest'])[:8]}…` "
+                f"| {eastern(len(said)) if said is not None else 'لا مُقابِل'} |"
+            )
+        add("")
     add("## تفصيلُ كلّ ختم")
     add("")
     for row in rows:

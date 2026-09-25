@@ -6,14 +6,18 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
+import sys
 from pathlib import Path
+from typing import Any
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 LOG = REPOSITORY / "deposits" / "context_ladder_run.log"
 VERSE_END = REPOSITORY / "deposits" / "verse_ending_run.log"
 NEIGHBOUR = REPOSITORY / "deposits" / "arabic_token_run.log"
 PAPER = REPOSITORY / "docs" / "سلّم-السياق-بلا-تسريب.md"
+SEAL = REPOSITORY / "tools" / "context_ladder_seal.py"
 EASTERN = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
 
 
@@ -33,7 +37,21 @@ def grab(pattern: str, text: str) -> tuple[str, ...]:
     return first if isinstance(first, tuple) else (first,)
 
 
+def _seal() -> Any:
+    spec = importlib.util.spec_from_file_location("context_ladder_seal", SEAL)
+    if spec is None or spec.loader is None:
+        raise SystemExit("لا قارئَ لسجلّ السلّم المُقفَل")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def render() -> str:
+    tool = _seal()
+    complaints = tool.verify_against_logs()
+    if complaints:
+        raise SystemExit(f"لا تُكتَب وثيقةٌ على سجلٍّ مخالف: {complaints}")
     text = LOG.read_text(encoding="utf-8")
     (lines,) = grab(r"— الأسطر: (\d+)", text)
     tokens, again = grab(r"— الألفاظ: (\d+) \| وعبرَ العدّادات (\d+)", text)
@@ -65,6 +83,10 @@ def render() -> str:
     add("# سلّمُ السياق بتّةً بتّة — بلا قائمةٍ ولا اسمٍ ولا تسريب")
     add("")
     add("**الختم**: `d568a91d…` — مُودَعٌ ومدفوعٌ **قبل** التشغيل.")
+    add(
+        f"**والسجلُّ مُقفَلٌ**: `{tool.RECORD_DIGEST[:8]}…` — بصمةٌ "
+        "**تُشتَقّ من حقوله**، وشكلُ النتيجة **قيدٌ في المُنشئ**."
+    )
     add("**الحصاد**: **إحدى عشرةَ** من اثنتي عشرةَ صمدت، و**واحدةٌ** سقطت.")
     add("")
     add("## ما مُنِع منعًا")
@@ -153,6 +175,22 @@ def render() -> str:
     add("**والجشعُ غيرُ مبرهَن**: أفضلُ سؤالٍ عند درجةٍ ليس أفضلَ سلّمٍ في")
     add("النهاية. **فما بُلِغ حدٌّ أدنى**، ولا يُقال «لا يُبلَغ أكثر» بل")
     add("**«لم يُبلَغ بهذا الجشع»**.")
+    add("")
+    add("## ما يحرسه السجلُّ المُقفَل")
+    add("")
+    add("**لا يُقفَل سجلٌّ** ترتفع فيه الملحَقةُ درجةً، ولا يقع أكبرُ ربحٍ في")
+    add("غير الدرجة الأولى، ولا يكون سؤالُ الأولى غيرَ سؤالِ الموضع، ولا")
+    add("تنزل محجوزةٌ تحت ملحَقتها، ولا تزيد الكتلُ على الضعف بسؤالٍ واحد،")
+    add("ولا يقلّ مجموعُ الكسب عن كسب الجار كلِّه، ولا يخلو من دَينه.")
+    add("")
+    add("**وتلاقي الختمين محروسٌ لا مرويّ**: يُردّ السجلُّ إن تباعد ربحُ")
+    add("الدرجة الأولى عمّا قِيس في `26ae5b5b…`.")
+    add("")
+    add("**وقيمُ الأسئلة نقاطُ ترميزٍ لا شرائحَ مكتوبة**: الصورةُ تُقرَأ من")
+    add("السجلّ المُودَع عند التحقّق، **فلا تُكتَب شريحةٌ بيد**.")
+    add("")
+    for name, why in tool.FROZEN_CONTEXT.unreached:
+        add(f"- **{name}** — {why}.")
     add("")
     return "\n".join(out) + "\n"
 

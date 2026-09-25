@@ -2,13 +2,17 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
+import sys
 from pathlib import Path
+from typing import Any
 
 REPOSITORY = Path(__file__).resolve().parents[1]
 LOG = REPOSITORY / "deposits" / "stirling_greedy_run.log"
 WITNESS = REPOSITORY / "deposits" / "stirling_greedy_witness.log"
 PAPER = REPOSITORY / "docs" / "ستيرلنغ-مع-الجشع.md"
+SEAL = REPOSITORY / "tools" / "stirling_greedy_seal.py"
 EASTERN = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
 
 
@@ -24,7 +28,21 @@ def grab(pattern: str, text: str) -> tuple[str, ...]:
     return first if isinstance(first, tuple) else (first,)
 
 
+def _seal() -> Any:
+    spec = importlib.util.spec_from_file_location("stirling_greedy_seal", SEAL)
+    if spec is None or spec.loader is None:
+        raise SystemExit("لا قارئَ للسجلّ المُقفَل")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def render() -> str:
+    tool = _seal()
+    complaints = tool.verify_against_logs()
+    if complaints:
+        raise SystemExit(f"لا تُكتَب وثيقةٌ على سجلٍّ مخالف: {complaints}")
     text = LOG.read_text(encoding="utf-8")
     spent = re.findall(
         r"^  (\S+) بمعيار (\S+): بتّاتٌ (\d+) \| أوّلُ سؤالٍ أصغرُ كتلةٍ فيه (\d+)$",
@@ -59,6 +77,10 @@ def render() -> str:
     add("# ستيرلنغ مع الجشع وقت الحساب — ودعوًى سقطت")
     add("")
     add("**الختم**: `62495099…` — مُودَعٌ ومدفوعٌ **قبل أن يُحسَب شيء**.")
+    add(
+        f"**والسجلُّ مُقفَل**: `{tool.RECORD_DIGEST[:8]}…` — **يُجمِّد** "
+        "**سقوطًا لا صمودًا**، والسقوطُ أسهلُ نسيانًا."
+    )
     add("**الحصاد**: **سبعُ** شروطٍ من عشرٍ صمدت، و**ثلاثٌ** سقطت — **ومنها**")
     add("**دعوايَ الكبرى**.")
     add("")

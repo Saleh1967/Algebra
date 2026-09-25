@@ -53,6 +53,7 @@ from pathlib import Path
 
 from frozen_corpus import requires_corpus
 from test_arabic_token_seal import DIGEST, ORACLE, PREDICTIONS
+from test_ingestion_swallows import MIRROR_INVARIANT, WHOLE_LINE_TOKENS
 
 from algebra.signified import Verdict, seal
 
@@ -63,9 +64,17 @@ FIRST = REPOSITORY / "deposits" / "state_cycle_run.log"
 pytestmark = requires_corpus
 
 LINES = 6_236
-BEFORE_TOKENS = 82_532
-MARKUP = 4_287
-TOKENS = 78_245
+BEFORE_TOKENS = WHOLE_LINE_TOKENS
+TOKENS = MIRROR_INVARIANT
+MARKUP = BEFORE_TOKENS - TOKENS
+"""لا يُكتَب ههنا عددٌ بيد: الثلاثةُ تُؤخَذ من `test_ingestion_swallows`.
+
+**ولمَ الاشتقاقُ لا الكتابة**: هذه الأعدادُ كانت **مُودَعةً في الشجرة قبل
+أن أكتب ختمَ `7773c03f…`** — ٨٢٬٥٣٢ على السطر كلِّه، و٧٨٬٢٤٥ بعد الوسم،
+والفجوةُ ٤٬٢٨٧ **محسوبةً ومُغلَقةً**. فكتبتُ حدَّ اللفظ بما يبتلعها، **وما
+راجعتُ ما في يدي**. فهي تُشتَقُّ ههنا من مصدرها الواحد كي لا تُكتَب مرّتين
+ولا تفترق نسختاها.
+"""
 SKELETONS = 14_871
 BLIND_COUNT = 2_592
 PAIRS_BEFORE = 76_296

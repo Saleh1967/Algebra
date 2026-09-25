@@ -131,7 +131,7 @@ def held_out(verses: list[list[int]]) -> tuple[float, float]:
 
 def cost_now(
     verses: list[list[int]], lengths: dict[int, int]
-) -> tuple[float, float, float, int, int]:
+) -> tuple[float, float, float, int, int, float]:
     used = {symbol for row in verses for symbol in row}
     longest = max((lengths[one] for one in used), default=1)
     book = math.fsum(
@@ -141,7 +141,14 @@ def cost_now(
     )
     outside, inside = held_out(verses)
     count = sum(len(one) for one in verses)
-    return (book + outside * count, book, outside * count, count, len(used))
+    return (
+        book + outside * count,
+        book,
+        outside * count,
+        count,
+        len(used),
+        book + inside * count,
+    )
 
 
 def straddles(
@@ -200,7 +207,8 @@ def main() -> int:
             mark = "↓" if here[0] < best[0] else "↑"
             print(
                 f"  بعد {len(merges)}: الجملة {here[0]:.0f} | معجم {here[1]:.0f} "
-                f"| بيان {here[2]:.0f} | رموز {here[3]} | أبجديّة {here[4]} {mark}"
+                f"| بيان {here[2]:.0f} | رموز {here[3]} | أبجديّة {here[4]} "
+                f"| ملحَقة {here[5]:.0f} | فرق {here[0] - here[5]:+.0f} {mark}"
             )
             if here[0] < best[0]:
                 best, best_at = here, len(merges)

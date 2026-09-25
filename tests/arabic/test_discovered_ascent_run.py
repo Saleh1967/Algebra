@@ -182,3 +182,29 @@ def test_every_discovered_unit_is_closed_class() -> None:
     for shape in shapes:
         assert "ا\u0652" not in shape, shape
     assert sum(1 for _, number, _ in rows if int(number) >= 400) == 7
+
+
+def test_the_document_quotes_shapes_verbatim_from_the_log() -> None:
+    """كلُّ صورةٍ في التوثيق منقولةٌ من السجلّ — لا مكتوبةً بيد.
+
+    **وهذا الفحصُ يحرس التشكيلَ والهمزةَ والشدّة**: صورةٌ تُكتَب باليد قد
+    تخالف بايتةً واحدة (ترتيبَ علامةٍ أو صورةَ همزة) فتصير هلوسةً تبدو
+    صحيحة. فتُقارَن صورُ الوثيقة بصور السجلّ **مطابقةً تامّة**.
+    """
+
+    paper = REPOSITORY / "docs" / "الصعود-المكتشَف.md"
+    text = LOG.read_text(encoding="utf-8")
+    shapes = {
+        one
+        for one, _, _ in re.findall(
+            r"^    (\S+)  \((\d+)\) وحداتُه (\d+)$", text, re.MULTILINE
+        )
+    }
+    written = paper.read_text(encoding="utf-8")
+    quoted = re.findall(
+        r"^\| \*\*(\S+)\*\* \| (\d+) \| (\d+) \|", written, re.MULTILINE
+    )
+    assert len(quoted) == 14
+    for shape, _, _ in quoted:
+        assert shape in shapes, shape
+    assert {one for one, _, _ in quoted} == shapes

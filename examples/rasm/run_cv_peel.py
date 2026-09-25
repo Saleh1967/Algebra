@@ -91,6 +91,42 @@ def peel(text: str) -> tuple[list[Unit], list[Extra]]:
     return (units, extras)
 
 
+def spans(text: str) -> list[tuple[int, int]]:
+    """مدى كلّ وحدةٍ في البايتات الأصليّة — فتُعرَض الوحدةُ بحروفها لا بتمثيلها.
+
+    **العلّةُ**: التقشيرُ يقرأ العُريَ سكونًا ويوسّع الشدّة، فطباعةُ الوحدة
+    من تمثيلها تُخرِج صورةً **ليست في المصحف** (`اْلْلْلَهُ` مكانَ `اللَّهُ`).
+    والمدى يُعيدها إلى بايتاتها، فلا تُعرَض صورةٌ لم تُكتَب.
+    """
+
+    found: list[tuple[int, int]] = []
+    index = 0
+    length = len(text)
+    while index < length:
+        letter = text[index]
+        if letter not in FOLD and letter not in BASE28:
+            found.append((index, index + 1))
+            index += 1
+            continue
+        after = index + 1
+        tail: list[str] = []
+        while after < length and text[after] in (SHADDA, *VOWELS, *TANWIN):
+            tail.append(text[after])
+            after += 1
+        doubled = SHADDA in tail
+        rest = [one for one in tail if one != SHADDA]
+        mark = rest[0] if rest else ""
+        if doubled:
+            found.append((index, index))  # الشطرُ الساكنُ لا بايتةَ له وحدَه
+        if mark in TANWIN:
+            found.append((index, after))
+            found.append((after, after))  # نونُ التنوين مُضمَرةٌ في العلامة
+        else:
+            found.append((index, after))
+        index = after
+    return found
+
+
 def rebuild(units: list[Unit], extras: list[Extra]) -> str:
     """الوحداتُ والبقايا ⟼ البايتاتُ نفسُها."""
 

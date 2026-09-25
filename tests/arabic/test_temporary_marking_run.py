@@ -136,3 +136,73 @@ def test_a_limited_search_is_reported_as_not_reached_not_impossible() -> None:
     assert sealed.__doc__ is not None
     assert "حدٌّ أدنى" in sealed.__doc__
     assert "فلا يُقال إنّها لا تُبلَغ" in sealed.__doc__
+
+
+FELL_WITH_THEM: dict[str, str] = {
+    "س٤": "دعوايَ أنّ الوسمَ الأبديَّ كان يُنفِد",
+    "س٥": "أنّ رفعَ الوسم يُحسِّن شيئًا أصلًا؛ فإن لم",
+}
+"""ما عُلِّق على سقوط كلِّ شرطٍ، مقتبَسًا من نصّ الختم لا مُعادَ تفسيره.
+
+فنصُّ `falsifies` **دعوًى ثانيةٌ معرَّضةٌ للسقوط** لا شرحًا محايدًا: إن سقط
+الشرطُ سقط معه ما عُلِّق عليه، ويُعلَن ذلك **عند موضع السقوط** لا في شرحٍ
+لاحق. وهو العطلُ الثاني عشر، ممنوعًا آليًّا.
+"""
+
+
+def test_what_fell_with_each_fallen_condition_is_quoted_where_it_fell() -> None:
+    """كلُّ منقوضٍ يحمل نصَّ ما سقط معه، مطابقًا لنصّ الختم بايتةً."""
+
+    for identifier, meaning in FELL_WITH_THEM.items():
+        found = next(one for one in PREDICTIONS if one.identifier == identifier)
+        assert meaning in found.falsifies, identifier
+        assert len(meaning) >= 10
+
+
+LICENCE = REPOSITORY / "deposits" / "greedy_licence_run.log"
+
+THE_BOUND_BINDS_BOTH_ARMS = False
+"""أيَعَضُّ الحدُّ المُعلَنُ (عمقُ ٢٤) الذراعين **بالسواء**؟ — والجوابُ: لا.
+
+وهذا هو العطلُ الثالثَ عشر مقيسًا: ذراعُ هذا الختم **محدودُ العمق بأربعٍ
+وعشرين**، وذراعُ المقابلة — تشغيلُ `69a1c10c…` — **لم يكن محدودَ العمق
+أصلًا**، بل يقف بتوالي خمسِ مئةِ رفض. فالحدُّ ليس مختلفَ الأثر فحسب:
+**هو قائمٌ في ذراعٍ ومرفوعٌ في الآخر**.
+
+**والتصحيحُ مُودَعٌ**: `2cd80c0f…` أعاد المقابلةَ بذراعين في تشغيلٍ واحدٍ
+وعمقٍ واحد. **وأرقامُ هذا الختم تبقى على حالها** ولا تُعاد قراءتُها؛ وإنّما
+يُقال **ما كانت تحته**.
+"""
+
+THE_BOUND_EVIDENCE = (
+    "الذراعُ ههنا يقف بـ«حالٌ لا يربح فيها أعلى 24 مقترَحٍ»، وذراعُ "
+    "المقابلة يقف بـ«توالى 500 رفضًا» بلا عمقٍ محدود — فالحدُّ مرفوعٌ "
+    "في أحدهما، ونصيبُ المرفوضات ٠٫٧٢٣٣ مقابلَ ٠٫٦٩٥٠ لا يُقابَل بينهما"
+)
+
+
+def test_the_declared_depth_stood_on_one_arm_only() -> None:
+    """الحدُّ قائمٌ في ذراعٍ مرفوعٌ في الآخر — فلا عزلَ تامًّا ههنا."""
+
+    mine = LOG.read_text(encoding="utf-8")
+    other = LICENCE.read_text(encoding="utf-8")
+    assert "الوقوف: حالٌ لا يربح فيها أعلى 24 مقترَحٍ" in mine
+    assert "الوقوف: توالى 500 رفضًا" in other
+    assert "عمق" not in other.splitlines()[9]  # سطرُ وقوفِ المقابلة بلا عمق
+    here = re.findall(r"اقتراحاتٌ (\d+) \| التزاماتٌ \d+ \| مرفوضاتٌ (\d+)", mine)
+    there = re.findall(r"اقتراحاتٌ (\d+) \| التزاماتٌ \d+ \| مرفوضاتٌ (\d+)", other)
+    assert here == [("8254", "5970")] and there == [("8729", "6067")]
+    shares = [int(two) / int(one) for one, two in here + there]
+    assert abs(shares[0] - 0.7233) < 5e-5 and abs(shares[1] - 0.6950) < 5e-5
+    bounded = ["أعلى 24 مقترَحٍ" in one for one in (mine, other)]
+    assert bounded == [True, False]  # الحدُّ في ذراعٍ دون الآخر
+    assert THE_BOUND_BINDS_BOTH_ARMS is (bounded[0] == bounded[1])
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

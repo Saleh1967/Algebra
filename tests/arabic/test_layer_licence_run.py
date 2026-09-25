@@ -189,3 +189,32 @@ def test_the_return_clause_holds_because_syllabifying_is_not_coarsening() -> Non
     sixth = next(one for one in PREDICTIONS if one.identifier == "ه٦")
     assert sixth.verdict(Fraction(0)) is Verdict.MET
     assert covered + refused == UNITS
+
+
+FELL_WITH_THEM: dict[str, str] = {
+    "ه٤": "دعوايَ أنّ البناءَ يبلغ الوزنَ الكمّيَّ بلا",
+}
+"""ما عُلِّق على سقوط كلِّ شرطٍ، مقتبَسًا من نصّ الختم لا مُعادَ تفسيره.
+
+فنصُّ `falsifies` **دعوًى ثانيةٌ معرَّضةٌ للسقوط** لا شرحًا محايدًا: إن سقط
+الشرطُ سقط معه ما عُلِّق عليه، ويُعلَن ذلك **عند موضع السقوط** لا في شرحٍ
+لاحق. وهو العطلُ الثاني عشر، ممنوعًا آليًّا.
+"""
+
+
+def test_what_fell_with_each_fallen_condition_is_quoted_where_it_fell() -> None:
+    """كلُّ منقوضٍ يحمل نصَّ ما سقط معه، مطابقًا لنصّ الختم بايتةً."""
+
+    for identifier, meaning in FELL_WITH_THEM.items():
+        found = next(one for one in PREDICTIONS if one.identifier == identifier)
+        assert meaning in found.falsifies, identifier
+        assert len(meaning) >= 10
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

@@ -164,3 +164,66 @@ def test_six_of_nine_and_the_three_that_fell_are_named() -> None:
     assert met | fell == {one.identifier for one in PREDICTIONS}  # type: ignore[attr-defined]
     assert len(met) == 6 and len(fell) == 3
     assert not met & fell
+
+
+FELL_WITH_THEM: dict[str, str] = {
+    "ت٤": "الدعوى المسؤولَ عنها: أنّ هوفمانَ بالتردّد",
+    "ت٥": "الصورةَ القويّةَ من الدعوى: أن تكون",
+    "ت٦": "أنّ أخذَ أكبرِ ربحٍ في كلّ حالٍ لا يكون",
+}
+"""ما عُلِّق على سقوط كلِّ شرطٍ، مقتبَسًا من نصّ الختم لا مُعادَ تفسيره.
+
+فنصُّ `falsifies` **دعوًى ثانيةٌ معرَّضةٌ للسقوط** لا شرحًا محايدًا: إن سقط
+الشرطُ سقط معه ما عُلِّق عليه، ويُعلَن ذلك **عند موضع السقوط** لا في شرحٍ
+لاحق. وهو العطلُ الثاني عشر، ممنوعًا آليًّا.
+"""
+
+
+def test_what_fell_with_each_fallen_condition_is_quoted_where_it_fell() -> None:
+    """كلُّ منقوضٍ يحمل نصَّ ما سقط معه، مطابقًا لنصّ الختم بايتةً."""
+
+    for identifier, meaning in FELL_WITH_THEM.items():
+        found = next(one for one in PREDICTIONS if one.identifier == identifier)
+        assert meaning in found.falsifies, identifier
+        assert len(meaning) >= 10
+
+
+THE_BOUND_BINDS_BOTH_ARMS = False
+"""أيَعَضُّ الحدُّ المُعلَنُ (نافذةُ ٢٤) القاعدتين **بالسواء**؟ — والجوابُ: لا.
+
+وهو العطلُ السابعَ عشر بعينه، مقيسًا ههنا لا مُعلَّلًا: «أكبرُ ربحًا» يختار
+من **حافّة** النافذة فمطلوبُه على الأرجح **خارجَها**، و«أوّلُ رابح» يختار
+الرتبةَ الأولى فلا تمسُّه النافذةُ أصلًا. فالحدُّ **واحدٌ في قيمته، مختلفٌ
+في أثره** — وحكمُ ت٦ **عند عمق ٢٤** لا فوقه.
+"""
+
+THE_BOUND_EVIDENCE = (
+    "وسيطُ رتبةِ ما يختاره «أكبرُ ربحًا» ٢٢ من ٢٤، و٠٫٤٥٠٠ من اختياراته "
+    "في الرتبتين ٢٣ و٢٤؛ بينما «أوّلُ رابح» يأخذ الرتبةَ الأولى في "
+    "٠٫٩٩٦٧ من الحالات — فنافذةُ ٢٤ تَعَضُّ الأوّلَ ولا تمسُّ الثاني"
+)
+
+
+def test_the_declared_window_is_measured_on_each_rule_not_declared_once() -> None:
+    """عَضّةُ النافذة تُقاس **لكلّ قاعدةٍ على حدة** — لا تُعلَن مرّةً للاثنتين."""
+
+    text = RANKS.read_text(encoding="utf-8")
+    pairs = re.findall(r"رتبةُ\s+(\d+):\s+(\d+) حالًا \(([\d.]+)\)", text)
+    edge = sum(float(share) for rank, _count, share in pairs[:24] if int(rank) >= 23)
+    assert abs(edge - 0.4500) < 5e-5
+    (middle,) = re.findall(r"وسيطُ الرتبة: (\d+)", text)
+    assert int(middle) == 22
+    first = float(
+        re.findall(r"«أوّلُ رابح»:\n  رتبةُ\s+1:\s+\d+ حالًا \(([\d.]+)\)", text)[0]
+    )
+    assert abs(first - 0.9967) < 5e-5
+    assert THE_BOUND_BINDS_BOTH_ARMS is (abs(first - edge) < 0.01)
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

@@ -43,6 +43,10 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
     "arabic/measure_sifa_candidate.py": (),
     "arabic/read_slgae_separation.py": (),
     "hawk_dove/run_hawk_dove.py": (),
+    "rasm/run_number_ladder.py": (
+        "--rule",
+        "deposits/number_rule_note.md",
+    ),
     "irab/run_harf_measurement.py": ("--smoke", "--defer", "error"),
     "isnad/run_ittifaq.py": ("--smoke",),
     "maana/run_imtihan.py": ("--smoke",),
@@ -128,10 +132,23 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة؛ ويعيد قياسَ الأرقام الكلميّة كلِّها "
         "على مدوّنةٍ مشتقّةٍ مرفوعةِ البسملات على ختم be03e5be…"
     ),
+    "rasm/run_context_ladder.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويصعّد السياقَ بتّةً بتّة بسؤالٍ ثنائيٍّ "
+        "واحدٍ في كلّ درجةٍ يُختار جشعًا بالمحجوز، بلا قائمةٍ ولا اسمٍ ولا "
+        "تسريبٍ من الموضع إلى نفسه، على ختم d568a91d…"
+    ),
+    "rasm/run_praise_blame.py": (
+        "يحتاج المدوّنةَ المشكولة ومسوّدةً مُودَعةً غيرَ موقَّعة؛ ويقيس "
+        "لوازمَها في حقل الحال بتصعيدٍ من خمس درجات، على ختم efb2eac8…"
+    ),
     "rasm/run_state_cycle.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويقيس حالَ الخاتمة ثباتًا وتبدّلًا "
         "وخلوًّا، وسلسلةَ ماركوف داخلَ السطر بحدَّيها المبرهَنين، "
         "على ختم 7773c03f…"
+    ),
+    "rasm/run_transfer_arrow.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويقيس النقلَ بين مجرى الحال ومجرى "
+        "الحرف أمامًا ومقلوبًا بصفريٍّ مُبدَّلٍ ومجال ثقة، على ختم 4289fc6c…"
     ),
     "rasm/run_verse_ending.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويقيس خاتمةَ الآية **شرطًا** لا "
@@ -204,9 +221,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 45
-    assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 34
+    assert len(found) == 49
+    assert len(RUNNABLE) == 12
+    assert len(NEEDS_A_CORPUS) == 37
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -246,7 +263,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 35
+    assert len(_examples()) - len(foreign) == 39
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

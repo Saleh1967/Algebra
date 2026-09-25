@@ -200,6 +200,17 @@ def main() -> int:
     mass: Counter[int] = Counter()
     for symbol, number in spread.items():
         mass[widths[symbol]] += number
+    over, seen = ascent.straddle_census(keep, heads, widths)  # type: ignore[attr-defined]
+    whole = sum(over.values())
+    print("\n  العبورُ مقسومًا بالعَرض (نصيبٌ من الجملة | معدّلٌ داخلَ المجموعة):")
+    for width in sorted(seen):
+        if seen[width] < 200 and not over[width]:
+            continue
+        print(
+            f"    عَرضُ {width}: عابرٌ {over[width]} من {seen[width]} "
+            f"| نصيبٌ {over[width] / whole:.4f} | معدّلٌ {over[width] / seen[width]:.4f}"
+        )
+    print(f"    جملةُ العابرات: {whole}")
     print("\n  المجموعةُ المولَّدةُ مقسومةً بالعَرض:")
     for width in sorted(kinds):
         print(

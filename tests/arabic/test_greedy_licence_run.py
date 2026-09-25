@@ -199,9 +199,15 @@ def test_the_paper_quotes_shapes_verbatim_and_has_no_gloss_column() -> None:
 
 
 def test_what_was_not_isolated_is_declared_not_isolated() -> None:
-    """أثرُ الدمجة الواحدة لم يُعزَل — ومكتوبٌ أنّه لم يُعزَل."""
+    """أثرُ **الدمجة الواحدة** لم يُعزَل — ومكتوبٌ أنّه لم يُعزَل.
+
+    وهو غيرُ ما عُزِل بختم `2cd80c0f…`: ذاك **سياسةُ الوسم**، وقد عُزِلت
+    وسقطت دعوايَ فيها. **وأمّا أنّ هذه الدمجةَ بعينها درجةٌ لما فوقها
+    فلا يزال استنتاجًا**، ولا يُخلَط البابان.
+    """
 
     written = PAPER.read_text(encoding="utf-8")
     assert "**وما لم يُقَس**" in written
     assert "**استنتاجٌ لا قياس**" in written
-    assert "**غيرُ معزولٍ بعد**" in written
+    assert "حتّى يُعزَل بختمٍ خاصّ" in written
+    assert "**عُزِل وسقط** بختم `2cd80c0f…`" in written  # وهو بابٌ آخر

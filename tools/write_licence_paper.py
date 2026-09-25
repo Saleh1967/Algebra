@@ -14,6 +14,7 @@ from pathlib import Path
 REPOSITORY = Path(__file__).resolve().parents[1]
 RUN = REPOSITORY / "deposits" / "greedy_licence_run.log"
 REFUSAL = REPOSITORY / "deposits" / "greedy_licence_refusal.log"
+CONTRAST = REPOSITORY / "deposits" / "marking_contrast_run.log"
 PAPER = REPOSITORY / "docs" / "الترخيص-بتّةً-بتّة.md"
 EASTERN = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
 
@@ -45,6 +46,7 @@ def render() -> str:
 
     run = RUN.read_text(encoding="utf-8")
     refusal = REFUSAL.read_text(encoding="utf-8")
+    contrast = CONTRAST.read_text(encoding="utf-8")
 
     (units, alphabet, verses) = grab(
         run, r"^L₀: (\d+) وحدةً \| أبجديّة (\d+) \| آيات (\d+)$"
@@ -274,17 +276,42 @@ def render() -> str:
         f"والرجعةُ **{grouped(back)}**."
     )
     add("")
+    (lasting, lifted) = grab(contrast, r"^  جملةُ الأبديّ (\d+) \| جملةُ المؤقّت (\d+)$")
+    (deep, shallow) = grab(
+        contrast, r"^  التزاماتُ الأبديّ (\d+) \| التزاماتُ المؤقّت (\d+)$"
+    )
+    depth_cost = int(lasting) - int(total)
+    mark_cost = int(lifted) - int(lasting)
     add(
         "**٢.** وهو **ليس أمثلَ**: الخسارةُ مقيسةٌ "
-        f"(**{grouped(str(int(total) - 1_394_638))}** بتًّا) — وسببُها المقترَح،"
+        f"(**{grouped(str(int(total) - 1_394_638))}** بتًّا). وسببُها الذي"
     )
-    add("أنّ الوسمَ الأبديَّ يقطع الطريقَ إلى ما فوق المرفوض، **غيرُ معزولٍ بعد**.")
+    add("اقترحتُه — أنّ **الوسمَ الأبديَّ** يقطع الطريقَ إلى ما فوق المرفوض —")
+    add("**عُزِل وسقط** بختم `2cd80c0f…`: رفعُ الوسم عند عمقٍ واحدٍ يجعلها")
+    add(f"**أغلى** ({grouped(lifted)} مقابلَ {grouped(lasting)}) وبالتزاماتٍ **أقلّ**")
+    add(f"({grouped(shallow)} مقابلَ {grouped(deep)}).")
+    add("")
+    add("**والفرقُ الملتبسُ ينقسم قسمةً تامّة**:")
+    add("")
+    add("| المتغيّر | التكلفة |")
+    add("|---|---|")
+    add(f"| حدُّ عمق البحث (بلا حدٍّ ⟶ ٢٤) | {eastern('+') + grouped(str(depth_cost))} |")
+    add(f"| رفعُ الوسم (عند عمقٍ ٢٤) | {eastern('+') + grouped(str(mark_cost))} |")
+    add(f"| **الجملة** | **{eastern('+') + grouped(str(depth_cost + mark_cost))}** |")
+    add("")
+    add(f"و**{grouped(str(int(lifted) - int(total)))}** هو الفرقُ المرصودُ بين")
+    add("التشغيلين، فالقسمةُ **تامّةٌ بلا بقيّة** — والمتغيّران متقاربان.")
     add("")
     add("**٣.** ودعوايَ الثالثةُ سقطت **معكوسةً**: ظننتُ الرخصةَ تشتري الضغطَ")
     add(f"بعبورٍ أكثر، والمقيسُ أنّها تحفظ الفراغَ **أكثر** — {eastern(share)}.")
     add("")
     add("**٤.** وهذا حدٌّ على **الجشع** لا على المادّة: أن يكون الاختيارُ")
     add("محلّيًّا أمثلَ لا يجعل المسارَ أمثل، ولا يُعرَف الأمثلُ من ههنا.")
+    add("")
+    add("**٥.** والزوجُ الذي رُفِض أوّلًا **رُفِض بحاله لا بذاته**: التُزِم عند")
+    add("الالتزام ٢١ حين رُفِع وسمُه، ومعه **٤١٤** زوجًا آخر. فالرفضُ حكمٌ")
+    add("على **لحظةٍ** لا على زوج — ومع ذلك فرفعُ الوسم أضرّ، لأنّ الأخذَ")
+    add("بالربح المحلّيّ مبكّرًا يُغلِق ما هو أكبرُ منه.")
     add("")
     return "\n".join(lines) + "\n"
 

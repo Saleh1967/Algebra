@@ -42,21 +42,36 @@ def _peel() -> object:
 
 def corpus_of(
     text: str,
-) -> tuple[list[list[int]], list[list[bool]], list[tuple[str, str]]]:
-    """(آياتٌ برموزٍ، أوائلُ الكلم لكلّ موضع، معجمُ الـ١١٢)."""
+) -> tuple[
+    list[list[int]],
+    list[list[bool]],
+    list[tuple[str, str]],
+    list[str],
+    list[list[tuple[int, int]]],
+]:
+    """(آياتٌ برموزٍ، أوائلُ الكلم، معجمُ الـ١١٢، الأسطر، مدى كلّ وحدةٍ فيها).
+
+    **والمدى يُحمَل لأنّ التمثيلَ ليس الصورة**: العُريُ يُقرأ سكونًا والشدّةُ
+    تُوسَّع، فطباعةُ وحدةٍ من تمثيلها تُخرِج ما ليس في المصحف. فتُعرَض
+    الوحدةُ **ببايتاتها** من السطر، لا بحروفٍ تُركَّب لها.
+    """
 
     peeler = _peel()
     table: dict[tuple[str, str], int] = {}
     verses: list[list[int]] = []
     heads: list[list[bool]] = []
+    lines: list[str] = []
+    reach: list[list[tuple[int, int]]] = []
     for line in text.splitlines():
         if not line.strip():
             continue
         units, _ = peeler.peel(line)  # type: ignore[attr-defined]
+        wide = peeler.spans(line)  # type: ignore[attr-defined]
         row: list[int] = []
         head: list[bool] = []
+        here: list[tuple[int, int]] = []
         fresh = True
-        for base, value in units:
+        for (base, value), edge in zip(units, wide):
             if base == peeler.STRUCTURE:  # type: ignore[attr-defined]
                 fresh = True
                 continue
@@ -65,12 +80,15 @@ def corpus_of(
                 table[key] = len(table)
             row.append(table[key])
             head.append(fresh)
+            here.append(edge)
             fresh = False
         if row:
             verses.append(row)
             heads.append(head)
+            lines.append(line)
+            reach.append(here)
     order = [key for key, _ in sorted(table.items(), key=lambda pair: pair[1])]
-    return (verses, heads, order)
+    return (verses, heads, order, lines, reach)
 
 
 def best_pair(verses: list[list[int]]) -> tuple[tuple[int, int], int] | None:
@@ -169,12 +187,40 @@ def straddles(
     return (crossing, total)
 
 
+def shapes_of(
+    verses: list[list[int]],
+    lines: list[str],
+    reach: list[list[tuple[int, int]]],
+    lengths: dict[int, int],
+    wanted: list[int],
+) -> dict[int, str]:
+    """صورةُ كلّ رمزٍ من بايتاتِ أوّلِ موضعٍ وقع فيه — لا من تمثيله."""
+
+    left = set(wanted)
+    found: dict[int, str] = {}
+    for row, line, edges in zip(verses, lines, reach):
+        place = 0
+        for symbol in row:
+            width = lengths[symbol]
+            if symbol in left:
+                start = edges[place][0]
+                stop = max(edges[one][1] for one in range(place, place + width))
+                found[symbol] = line[start:stop]
+                left.discard(symbol)
+            place += width
+        if not left:
+            break
+    return found
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--text", type=Path, required=True)
     given = parser.parse_args()
 
-    verses, heads, order = corpus_of(given.text.read_text(encoding="utf-8"))
+    verses, heads, order, lines, reach = corpus_of(
+        given.text.read_text(encoding="utf-8")
+    )
     lengths: dict[int, int] = {index: 1 for index in range(len(order))}
     spelling: dict[int, tuple[int, ...]] = {
         index: (index,) for index in range(len(order))
@@ -227,10 +273,10 @@ def main() -> int:
     flat = [symbol for row in verses for symbol in row]
     spread = Counter(flat)
     built = [(one, number) for one, number in spread.most_common() if lengths[one] > 1]
-    print("  أكثرُ الوحدات المكتشَفة:")
+    shown = shapes_of(verses, lines, reach, lengths, [one for one, _ in built[:14]])
+    print("  أكثرُ الوحدات المكتشَفة (ببايتاتها من المصحف):")
     for symbol, number in built[:14]:
-        word = "".join(f"{order[one][0]}{order[one][1]}" for one in spelling[symbol])
-        print(f"    {word}  ({number}) طولُه {lengths[symbol]}")
+        print(f"    {shown.get(symbol, '—')}  ({number}) وحداتُه {lengths[symbol]}")
     return 0
 
 

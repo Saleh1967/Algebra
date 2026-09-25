@@ -44,6 +44,10 @@ NOT_A_PREREGISTRATION = {
     "d435d63a4e49ea03a75344b050df01dd99d5bfb77335c807e2d6309f52174341": (
         "بصمةُ مُودَعٍ — مادّةٌ لا شرطَ فيها"
     ),
+    "ca75f300ba9125e3cd45cbf1f43eb6482d2ae6cdf40d1876eeb5fbc76ee7278a": (
+        "سجلُّ الانقلاب المُجمَّد — سجلُّ **نتيجةٍ مقيسة** لا تسجيلَ شرطٍ "
+        "قبل النظر؛ حقولُه مُقابَلةٌ بالسجلّات في `tools/inversion_seal.py`"
+    ),
     EMPTY: (
         "بصمةُ اللاشيء في خانة بصمة — **عطلٌ مُعلَنٌ لا إسناد**: "
         "`PROSE` في `test_schema_transition_preregistration` يحمل "

@@ -190,3 +190,36 @@ def test_eight_of_thirteen_and_the_five_that_fell_are_named() -> None:
     fell = {"ك٥", "ك٦", "ك٧", "ك٨", "ك٩"}
     assert met | fell == {one.identifier for one in PREDICTIONS}  # type: ignore[attr-defined]
     assert len(met) == 8 and len(fell) == 5 and not met & fell
+
+
+FELL_WITH_THEM: dict[str, str] = {
+    "ك٥": "العددَ المعروضَ لا الدعوى: فإن خالف فالفصلُ",
+    "ك٦": "تعريفَ الهيكل: وحداتُ الكلمة بلا حالها.",
+    "ك٧": "العددَ المعروضَ للغموض على تعريفي للهيكل",
+    "ك٨": "الدعوى الكبرى في العرض: أنّ نصفَ الكلم يقف",
+    "ك٩": "المثالَ المعروضَ نفسَه: فإن خالف عددُه",
+}
+"""ما عُلِّق على سقوط كلِّ شرطٍ، مقتبَسًا من نصّ الختم لا مُعادَ تفسيره.
+
+فنصُّ `falsifies` **دعوًى ثانيةٌ معرَّضةٌ للسقوط** لا شرحًا محايدًا: إن سقط
+الشرطُ سقط معه ما عُلِّق عليه، ويُعلَن ذلك **عند موضع السقوط** لا في شرحٍ
+لاحق. وهو العطلُ الثاني عشر، ممنوعًا آليًّا.
+"""
+
+
+def test_what_fell_with_each_fallen_condition_is_quoted_where_it_fell() -> None:
+    """كلُّ منقوضٍ يحمل نصَّ ما سقط معه، مطابقًا لنصّ الختم بايتةً."""
+
+    for identifier, meaning in FELL_WITH_THEM.items():
+        found = next(one for one in PREDICTIONS if one.identifier == identifier)
+        assert meaning in found.falsifies, identifier
+        assert len(meaning) >= 10
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

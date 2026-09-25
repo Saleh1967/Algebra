@@ -170,3 +170,12 @@ def test_six_of_seven_and_the_one_that_fell_is_mine() -> None:
     fell = {"ص٦"}
     assert met | fell == {one.identifier for one in PREDICTIONS}  # type: ignore[attr-defined]
     assert len(met) == 6 and not met & fell
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

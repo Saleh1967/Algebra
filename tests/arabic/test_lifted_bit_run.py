@@ -161,3 +161,42 @@ def test_six_of_seven_and_the_one_that_fell_is_named() -> None:
     fell = {"ن٦"}
     assert met | fell == {one.identifier for one in PREDICTIONS}  # type: ignore[attr-defined]
     assert len(met) == 6 and not met & fell
+
+
+THE_BOUND_BINDS_BOTH_ARMS = True
+"""أيَعَضُّ الحدُّ المُعلَنُ (عمقُ ٢٤) الذراعين **بالسواء**؟ — مقيسًا لا مفترَضًا.
+
+فحدٌّ **مُعلَنٌ واحدٌ في قيمته** قد يكون **مختلفًا في أثره**، وذاك هو العطلُ
+السابعَ عشر. والقياسُ ههنا: **نصيبُ المرفوضات من الاقتراحات** في كلّ ذراع —
+وهو نصيبُ الحالات التي لم تجد في النافذة رابحًا، أي **عَضّةُ الحدّ نفسِها**.
+"""
+
+THE_BOUND_EVIDENCE = (
+    "نصيبُ المرفوضات ٤٬٧٥٤ من ٣٦٬٧٤٤ في الذراع كما هو، و٤٬٨٦٩ من ٣٨٬١٨٤ "
+    "وقد رُفِعت البتّة — والفرقُ بين النصيبين ٠٫٠٠١٩، والقاعدةُ واحدةٌ "
+    "في الذراعين فتقع عَضّةُ الحدّ عليهما واحدةً"
+)
+
+
+def test_the_declared_bound_is_measured_on_each_arm_not_declared_once() -> None:
+    """عَضّةُ الحدّ تُقاس **في كلّ ذراعٍ على حدة** — العطلُ السابعَ عشر."""
+
+    text = LOG.read_text(encoding="utf-8")
+    stops = re.findall(r"الوقوف: التزاماتٌ \d+ \| اقتراحاتٌ (\d+) \| مرفوضاتٌ (\d+)", text)
+    assert len(stops) == 2
+    shares = [int(refused) / int(offered) for offered, refused in stops]
+    assert stops == [("36744", "4754"), ("38184", "4869")]
+    assert abs(shares[0] - 0.1294) < 5e-5
+    assert abs(shares[1] - 0.1275) < 5e-5
+    apart = abs(shares[0] - shares[1])
+    assert abs(apart - 0.0019) < 5e-5
+    assert THE_BOUND_BINDS_BOTH_ARMS is (apart < 0.01)
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

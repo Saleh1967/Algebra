@@ -173,3 +173,32 @@ def test_the_share_recovered_by_context_is_reported_not_extrapolated() -> None:
     # والسلّمُ لم يستوِ: الرتبةُ الثالثةُ أدنى من الثانية في السلّمين
     assert rasm[3][0] < rasm[2][0] and decode[3][0] < decode[2][0]
     assert rasm[3][2] < 0.5 and decode[3][2] < 0.5  # ونصيبُهما دون الأرضيّة
+
+
+FELL_WITH_THEM: dict[str, str] = {
+    "س٣": "دعوى أنّ الضبطَ خبرٌ جوهريٌّ لا زائدةٌ",
+}
+"""ما عُلِّق على سقوط كلِّ شرطٍ، مقتبَسًا من نصّ الختم لا مُعادَ تفسيره.
+
+فنصُّ `falsifies` **دعوًى ثانيةٌ معرَّضةٌ للسقوط** لا شرحًا محايدًا: إن سقط
+الشرطُ سقط معه ما عُلِّق عليه، ويُعلَن ذلك **عند موضع السقوط** لا في شرحٍ
+لاحق. وهو العطلُ الثاني عشر، ممنوعًا آليًّا.
+"""
+
+
+def test_what_fell_with_each_fallen_condition_is_quoted_where_it_fell() -> None:
+    """كلُّ منقوضٍ يحمل نصَّ ما سقط معه، مطابقًا لنصّ الختم بايتةً."""
+
+    for identifier, meaning in FELL_WITH_THEM.items():
+        found = next(one for one in PREDICTIONS if one.identifier == identifier)
+        assert meaning in found.falsifies, identifier
+        assert len(meaning) >= 10
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

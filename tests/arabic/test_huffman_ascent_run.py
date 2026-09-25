@@ -38,11 +38,13 @@
 
 from __future__ import annotations
 
+import importlib.util
 import re
+import sys
 from fractions import Fraction
 from pathlib import Path
 
-from frozen_corpus import requires_corpus
+from frozen_corpus import CORPUS, requires_corpus
 from test_huffman_ascent_seal import DIGEST, ORACLE, PREDICTIONS
 
 from algebra.signified import Verdict, seal
@@ -50,6 +52,7 @@ from algebra.signified import Verdict, seal
 REPOSITORY = Path(__file__).resolve().parents[2]
 LOG = REPOSITORY / "deposits" / "huffman_ascent_run.log"
 PAPER = REPOSITORY / "docs" / "الصعود-المكتشَف.md"
+READER = REPOSITORY / "examples" / "rasm" / "run_cv_peel.py"
 
 pytestmark = requires_corpus
 
@@ -163,3 +166,59 @@ def test_the_document_quotes_shapes_verbatim_and_has_no_gloss_column() -> None:
     assert {one for one, _, _ in quoted} == shapes
     assert len(quoted) == 14
     assert "| ما هي |" not in written
+
+
+def _reader() -> object:
+    spec = importlib.util.spec_from_file_location("run_cv_peel", READER)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_fifth_condition_is_judged_by_a_count_taken_now() -> None:
+    """ل٥: البايتاتُ التي لا تُستعاد — **تُعَدّ ههنا** لا تُفترَض.
+
+    وكان هذا الشرطُ **مكتوبًا ولم يُحكَم به**: السجلُّ لم يطبع عددَه،
+    والحكمُ عليه بقي في الشرح. فالعددُ يُشتَقّ الآن من المدوّنة سطرًا
+    سطرًا، ويُقابَل بالشرط — وهو العطلُ السابعُ بعينه، ممنوعًا آليًّا.
+    """
+
+    reader = _reader()
+    lines = CORPUS.read_text(encoding="utf-8").splitlines()
+    assert len(lines) == 6_236
+    astray = 0
+    for line in lines:
+        units, extras = reader.peel(line)  # type: ignore[attr-defined]
+        back = reader.rebuild(units, extras)  # type: ignore[attr-defined]
+        astray += sum(
+            1
+            for one, two in zip(line.encode("utf-8"), back.encode("utf-8"))
+            if one != two
+        )
+        astray += abs(len(line.encode("utf-8")) - len(back.encode("utf-8")))
+    fifth = next(one for one in PREDICTIONS if one.identifier == "ل٥")
+    assert fifth.verdict(Fraction(astray)) is Verdict.MET
+    assert astray == 0
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ("ل٤",)
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""
+
+
+def test_the_unsupported_reasoning_is_named_and_its_opposite_is_measured() -> None:
+    """ل٤ مرّ على حدّه، **وتعليلُه مخالفٌ للمقيس** — فيُسمّى لا يُطوى."""
+
+    assert REASONING_NOT_SUPPORTED == ("ل٤",)
+    fourth = next(one for one in PREDICTIONS if one.identifier == "ل٤")
+    assert fourth.verdict(Fraction(BEST_AT)) is Verdict.MET
+    assert fourth.threshold == Fraction(BEST_AT)  # على الحدّ تمامًا
+    assert "يخفّ بنقصان عدد الرموز" in fourth.falsifies
+    gaps = [one for one, _, _ in _checkpoints()]
+    assert gaps == sorted(gaps) and gaps[-1] > gaps[0]  # يثقل لا يخفّ

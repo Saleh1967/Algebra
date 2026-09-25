@@ -204,3 +204,33 @@ def test_the_residue_share_drops_and_is_published_as_an_upper_bound() -> None:
     assert abs(share - 0.0264) < 5e-4
     assert share < PUBLISHED / (body + PUBLISHED)
     assert share < 0.03
+
+
+FELL_WITH_THEM: dict[str, str] = {
+    "و٢": "دعوى أنّ البقيّةَ مشتقّةٌ من التيّار: إن لم",
+    "و٣": "دعوى أنّ في البقايا ما هو **قاعدةٌ محضة**:",
+}
+"""ما عُلِّق على سقوط كلِّ شرطٍ، مقتبَسًا من نصّ الختم لا مُعادَ تفسيره.
+
+فنصُّ `falsifies` **دعوًى ثانيةٌ معرَّضةٌ للسقوط** لا شرحًا محايدًا: إن سقط
+الشرطُ سقط معه ما عُلِّق عليه، ويُعلَن ذلك **عند موضع السقوط** لا في شرحٍ
+لاحق. وهو العطلُ الثاني عشر، ممنوعًا آليًّا.
+"""
+
+
+def test_what_fell_with_each_fallen_condition_is_quoted_where_it_fell() -> None:
+    """كلُّ منقوضٍ يحمل نصَّ ما سقط معه، مطابقًا لنصّ الختم بايتةً."""
+
+    for identifier, meaning in FELL_WITH_THEM.items():
+        found = next(one for one in PREDICTIONS if one.identifier == identifier)
+        assert meaning in found.falsifies, identifier
+        assert len(meaning) >= 10
+
+
+REASONING_NOT_SUPPORTED: tuple[str, ...] = ()
+"""شروطٌ **مرّت** وتعليلُها المكتوبُ معها **لم يُؤيَّد بالقياس** — إن وُجِدت.
+
+فشرطٌ يمرُّ بتعليلٍ خاطئ **ليس تأييدًا**: العددُ صحيحٌ والسببُ المنسوبُ إليه
+غيرُ مقيس. وهذا الاسمُ **مطلوبٌ في كلّ تشغيل** وإن كان فارغًا، كي يُسأل
+السؤالُ في كلّ مرّة ولا يُطوى بالسكوت — وهو العطلُ الثامن.
+"""

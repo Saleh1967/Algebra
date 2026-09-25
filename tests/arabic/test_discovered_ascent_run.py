@@ -21,11 +21,11 @@
 
 | الوحدة | وقوعات | ما هي |
 |---|---|---|
-| **اْلْ** | ٥٢٠ | أداةُ التعريف |
-| **هَاْ · هُمْ · نَاْ · كُمْ** | ٤٨١ · ٤٨٠ · ٤٥٣ · ٤١٨ | الضمائرُ الأربعة |
-| **مَاْ · مِنْ · فِيْ** | ٤٥٥ · ٤٥٣ · ٣١١ | أسماءٌ وحروفٌ وظيفيّة |
-| **اْلْلْلَهُ** | ٣٣٤ | «الله» — خمسُ وحداتٍ تامّة |
-| **اِلْلَاْ · عَلَاْ · وَاْلْ · وَمَاْ · وَاْ** | ٣١١ · ٣٢٣ · ٢٩٠ · ٢٧٧ · ٣٣٩ | |
+| **ال** | ٥٢٠ | أداةُ التعريف |
+| **هَا · هُمْ · نَا · كُمْ** | ٤٨١ · ٤٨٠ · ٤٥٣ · ٤١٨ | الضمائرُ الأربعة |
+| **مَا · مِن · فِي** | ٤٥٥ · ٤٥٣ · ٣١١ | أسماءٌ وحروفٌ وظيفيّة |
+| **اللَّهُ** | ٣٣٤ | خمسُ وحداتٍ تامّة |
+| **إِلَّا · عَلَى · وَالْ · وَمَا · وَا** | ٣١١ · ٣٢٣ · ٢٩٠ · ٢٧٧ · ٣٣٩ | |
 
 **ولا واحدةَ منها كلمةٌ معجميّةٌ مفتوحة.** فالطبقةُ التي يبنيها الاقتصادُ
 فوقَ الصوت مباشرةً هي **الوظيفيّةُ المغلقة** بأسرها — وهي رابعُ طريقٍ
@@ -37,6 +37,12 @@
 وقوعاته — و«وَاْلْ» و«وَمَاْ» شاهدان. **فحدُّ الكلمة لا يكتشفه الاقتصادُ
 وحدَه**، ويبقى مُلقَّنًا كما قال نصُّ الشرط.
 
+`AND_THE_SHAPES_ARE_SLICED_FROM_THE_BYTES_NOT_REBUILT`: وصورُ الوحدات
+**مقتطعةٌ من السطر نفسِه** بمدًى محفوظٍ لكلّ وحدة. وكان أوّلُ عرضٍ يركّبها
+من التمثيل الداخليّ فيُخرِج ما ليس في المصحف (`اْلْلْلَهُ` مكانَ
+`اللَّهُ`) — **والأرقامُ كانت صحيحةً والصورُ ملفَّقة**. فلا تُعرَض صورةٌ
+إلّا وهي بايتاتُ المدوّنة حرفًا بحرف.
+
 `AND_THE_ANTI_OVERFIT_GAP_GROWS_WITH_THE_DICTIONARY`: وك٥ صمد، وفرقُه
 **يتّسع باطّراد**: +١٬٣٤٦ عند الخمسمئة و+٩٬٧٨٩ عند الخمسة آلاف — لأنّ
 المعجمَ ينمو فيثقل ثمنُ ما لم يُرَ. فالحجزُ **يعمل ويُرى عملُه**.
@@ -45,6 +51,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 from fractions import Fraction
 from pathlib import Path
@@ -68,7 +75,6 @@ STOPPED_AT = 5_000
 SYLLABLE_COST = 1_785_954.0
 NOT_CROSSING = 0.8290
 GAPS = (1_346, 2_426, 3_514, 4_606, 5_677, 6_482, 7_442, 8_328, 9_044, 9_789)
-DISCOVERED = ("اْلْ", "هَاْ", "هُمْ", "مَاْ", "نَاْ", "مِنْ", "كُمْ", "اْلْلْلَهُ", "اِلْلَاْ")
 
 
 def _exact(measured: float) -> Fraction:
@@ -101,7 +107,9 @@ def test_the_machine_absorbs_exactly_on_a_slice() -> None:
     slice_ = [list(one) for one in verses[:200]]
     before = [list(one) for one in slice_]
     lengths = {index: 1 for index in range(len(order))}
-    spelling = {index: (index,) for index in range(len(order))}
+    spelling: dict[int, tuple[int, ...]] = {
+        index: (index,) for index in range(len(order))
+    }
     for _ in range(50):
         found = reader.best_pair(slice_)  # type: ignore[attr-defined]
         if found is None:
@@ -161,10 +169,16 @@ def test_the_anti_overfit_gap_held_and_widened_with_the_dictionary() -> None:
 
 
 def test_every_discovered_unit_is_closed_class() -> None:
-    """أداةُ التعريف والضمائرُ والحروفُ و«الله» — ولا كلمةَ معجميّةً مفتوحة."""
+    """الصورُ تُقرأ من السجلّ لا تُكتَب باليد — والحرفُ المكتوبُ يخالف."""
 
     text = LOG.read_text(encoding="utf-8")
-    for unit in DISCOVERED:
-        assert unit in text, unit
-    assert len(DISCOVERED) == 9
-    assert "اْلْلْلَهُ" in text  # خمسُ وحداتٍ تامّة
+    rows = re.findall(r"^    (\S+)  \((\d+)\) وحداتُه (\d+)$", text, re.MULTILINE)
+    assert len(rows) == 14
+    shapes = [one for one, _, _ in rows]
+    assert len({one for one in shapes}) == 14
+    widest = max(rows, key=lambda row: int(row[2]))
+    assert int(widest[2]) == 5 and int(widest[1]) == 334  # «الله» تامّةً
+    # ولا صورةَ تحمل رمزَ التمثيل الداخليّ: ساكنٌ على ألفٍ لا يُكتَب في المصحف
+    for shape in shapes:
+        assert "ا\u0652" not in shape, shape
+    assert sum(1 for _, number, _ in rows if int(number) >= 400) == 7

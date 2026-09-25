@@ -366,5 +366,5 @@ def test_a_crossing_of_this_ladder_must_account_for_every_entry() -> None:
     )
     assert crossing.balances
     assert crossing.refused_total == 136
-    assert crossing.refused[0][0] in LADDER.bridges[1].refusal_kinds[0] or True
+    assert crossing.refused[0][0].startswith(LADDER.bridges[1].refusal_kinds[0])
     assert LADDER.bridges[1].refusal_kinds[0] == "محرفٌ خارجَ الجرد المُعلَن"

@@ -170,3 +170,24 @@ def test_the_single_gate_exists_and_carries_no_pipe() -> None:
         if "pytest" in line and not line.strip().startswith("#"):
             assert "|" not in line, line
     assert "ruff check" in text and "mypy --strict" in text
+
+
+def test_no_assertion_in_the_tree_can_be_vacuously_true() -> None:
+    """`assert … or True` شرطٌ لا يسقط أبدًا — وشرطٌ لا يسقط ليس شرطًا.
+
+    وقعتُ فيه مرّتين في جلسةٍ واحدة، فيُمنَع آليًّا: كلُّ `assert` ينتهي
+    بـ`or True` أو `or 1` **يُردّ**، وكذا `assert True`.
+    """
+
+    root = Path(__file__).resolve().parents[1]
+    offending: list[str] = []
+    for path in sorted(root.rglob("*.py")):
+        for number, line in enumerate(
+            path.read_text(encoding="utf-8").splitlines(), start=1
+        ):
+            stripped = line.strip()
+            if not stripped.startswith("assert "):
+                continue
+            if stripped.endswith((" or True", " or 1")) or stripped == "assert True":
+                offending.append(f"{path.relative_to(root)}:{number}")
+    assert not offending, offending

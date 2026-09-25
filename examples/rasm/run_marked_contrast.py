@@ -80,7 +80,7 @@ def read_stream(text: str) -> list[tuple[str, str]]:
     index = 0
     while index < len(stream):
         folded = FOLD.get(stream[index], stream[index])
-        if folded in BASE:
+        if folded and folded in BASE:
             step = index + 1
             marks = ""
             while step < len(stream) and _is_mark(stream[step]):

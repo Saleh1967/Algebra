@@ -16,9 +16,14 @@
 الأرقام: مقامٌ لم يُعدَّد. والقارئُ منقولٌ في إيداعٍ مغلقٍ ببصمةِ كلّ ملفّ،
 فلا يُعدَّل ههنا — يُسمّى عطلُه ويُعَدّ، ويُصلَح في شجرته.
 
-`AND_ONE_NUMBER_STAYS_OPEN`: وعدُّ الرموز على السطر كلِّه ٨٢٬٥٣٢، والثابتُ
-المرصودُ في مرايا أسرة «simple» ٧٨٬٢٤٥ — والفرقُ **٤٬٢٨٧ غيرُ مفسَّرٍ
-ههنا**. ولا يُفسَّر بخيار تنزيلٍ ولا بغيره حتّى يُقاس، فيُسجَّل مفتوحًا.
+`AND_ONE_NUMBER_STAYED_OPEN_UNTIL_IT_WAS_COUNTED`: وعدُّ الرموز على السطر
+كلِّه ٨٢٬٥٣٢، والثابتُ المرصودُ في مرايا أسرة «simple» ٧٨٬٢٤٥ — والفرقُ
+٤٬٢٨٧ سُجِّل **مفتوحًا** ولم يُفسَّر بخيار تنزيلٍ ولا بغيره.
+
+`AND_THE_GAP_IS_NOW_CLOSED_BY_A_COUNT_NOT_BY_A_READING`: **وأُغلِق**: في
+المدوّنة **٤٬٢٨٧ وسمًا `<sel>`** بالضبط، كلٌّ منها توكنٌ مستقلٌّ بالفراغ.
+فـ٨٢٬٥٣٢ − ٤٬٢٨٧ = ٧٨٬٢٤٥ بلا بقيّة. فالفجوةُ **وسمٌ لا كلمات**، ومقيسةٌ
+في `test_ingestion_swallows`. والفضلُ للسؤال: «أين يبتلع أنبوبُك؟».
 """
 
 from __future__ import annotations
@@ -96,11 +101,14 @@ def test_the_survey_verdict_is_about_the_reader_not_about_the_quoted_total() -> 
     assert reading.distance_from_mirror_invariant == QUOTED_TOTAL - MIRROR_INVARIANT
 
 
-def test_the_gap_from_the_mirror_invariant_is_recorded_open() -> None:
-    """٨٢٬٥٣٢ مقابل ٧٨٬٢٤٥: فرقٌ ٤٬٢٨٧ يُسجَّل مفتوحًا ولا يُفسَّر بلا قياس."""
+def test_the_gap_from_the_mirror_invariant_is_closed_by_a_count() -> None:
+    """٨٢٬٥٣٢ مقابل ٧٨٬٢٤٥: الفرقُ ٤٬٢٨٧ وسمًا `<sel>` — أُغلِق بالعدّ."""
 
     gap = WHOLE_LINE_TOKENS - MIRROR_INVARIANT
     assert gap == 4_287
+    import re
+
+    assert len(re.findall(r"<sel>", CORPUS.read_text(encoding="utf-8"))) == gap
     assert gap != QUOTED_TOTAL - MIRROR_INVARIANT  # وهو غيرُ فرقِ الثلاثين المُسجَّل
     assert abs(QUOTED_TOTAL - MIRROR_INVARIANT) == 30
 

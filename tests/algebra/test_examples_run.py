@@ -1,4 +1,4 @@
-"""الأمثلةُ تُشغَّل لا تُقرَأ: أحدَ عشرَ مثالًا، وكلُّها تعمل.
+"""الأمثلةُ تُشغَّل لا تُقرَأ: أحدَ عشرَ مثالًا تعمل، وثمانيةٌ تُرَدّ بلا مدوّنة.
 
 **ما كشفه التشغيل أوّلًا**: فحصُ الفصل يغطّي `src/algebra` و`tests/algebra`
 **ولا يغطّي `examples/`**. وسبعةٌ من أحدَ عشرَ مثالًا كانت تسقط بـ
@@ -68,6 +68,20 @@ NEEDS_A_CORPUS: dict[str, str] = {
     "rasm/run_schema_transition_audit.py": (
         "يحتاج المدوّنةَ ببصمتها؛ ويعرض عليها المجموعاتِ المُودَعة"
     ),
+    "rasm/run_layer_induction.py": (
+        "يحتاج المدوّنةَ وخريطةَ السلّم المُودَعة؛ ويبني الطبقاتِ إسقاطًا "
+        "ثمّ يستقرئ عليها أربعَ مبرهنات"
+    ),
+    "rasm/run_root_projection.py": (
+        "يحتاج المدوّنةَ وجدولَ الجذور؛ ويشغّل الإسقاطَ المُودَع "
+        "π_اشتقاقي ويقيس كونَه دالّةً أو علاقة"
+    ),
+    "rasm/run_unit_coverage.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويعرض نظامَ (حرف × حالة) المُعلَن " "عليها تغطيةً وإفادة"
+    ),
+    "rasm/run_encoding_audit.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويشغّل المواصفةَ المُصلَحة ويعدّ الساقط " "ويقيس Δضبط"
+    ),
     "shahid/run_shahid.py": (
         "يحتاج المحاذاةَ ببصمتها (`--aligned` و`--digest` و`--closure`) "
         "وإسنادَ الأصناف؛ ولا مدوّنةَ مودَعةٌ ههنا"
@@ -92,16 +106,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """ثمانيةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """تسعةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 18
+    assert len(found) == 22
     assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 7
+    assert len(NEEDS_A_CORPUS) == 11
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -140,8 +154,8 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(foreign) - set(reading_deposits) <= set(RUNNABLE)
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
-    # والثمانيةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 8
+    # والتسعةُ الباقيةُ لا تستوردها ألبتّة
+    assert len(_examples()) - len(foreign) == 12
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

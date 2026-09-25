@@ -42,8 +42,9 @@ PAN_SEAL = "81884f7ea02235c37ef6edac5d555418924e9f0acd54bf1793fb5d2afb12e8eb"
 NULL_P95 = Fraction(928, 10_000)
 FORWARD, FORWARD_BAR = Fraction(2_853, 10_000), Fraction(1_128, 10_000)
 REVERSE, REVERSE_BAR = Fraction(2_437, 10_000), Fraction(1_020, 10_000)
-MARKED_PAN, PAN_BAR = Fraction(1_133, 10_000), Fraction(567, 10_000)
-BARE_ACROSS, BARE_WITHIN = Fraction(518, 10_000), Fraction(258, 10_000)
+MARKED_PAN, PAN_BAR = Fraction(1_133, 10_000), Fraction(569, 10_000)
+BARE_ACROSS, BARE_WITHIN = Fraction(519, 10_000), Fraction(260, 10_000)
+DABT_MARGIN = Fraction(565, 10_000)  # مقيسٌ لا مطروحٌ من رقمين مدوَّرين
 BARE_WITHIN_IN_خ١ = Fraction(260, 10_000)
 HALVES, LOST, WHOLE = (16_956, 10_425), 1, 27_382
 
@@ -101,10 +102,15 @@ def test_both_directions_clear_their_own_nulls_and_agree() -> None:
 
 
 def test_the_dabt_advantage_is_not_the_widening_of_the_symbol() -> None:
-    """مئينُ صفريّ الخلط ٠٫٠٥٦٧ يقارب كفّةَ الرسم ٠٫٠٥١٨ — والفضلُ فوقهما."""
+    """مئينُ صفريّ الخلط ٠٫٠٥٦٩ يقارب كفّةَ الرسم ٠٫٠٥١٩ — والفضلُ فوقهما.
 
-    margin = MARKED_PAN - PAN_BAR
-    assert margin == Fraction(566, 10_000)
+    والفضلُ **مقيسٌ ٠٫٠٥٦٥**، لا مطروحٌ من الرقمين المدوَّرين ههنا: طرحُ
+    مدوَّرين يعطي ٠٫٠٥٦٤، والفرقُ بينهما خانةٌ من التدوير لا من المادّة.
+    فيُنشَر المقيسُ ويُفحَص أنّ المطروحَ لا يفارقه فوقَ خطوة التدوير.
+    """
+
+    margin = DABT_MARGIN
+    assert abs((MARKED_PAN - PAN_BAR) - margin) <= Fraction(1, 10_000)
     assert margin > 0
     assert _prediction("م٤").verdict(margin) is Verdict.MET
 
@@ -123,18 +129,35 @@ def test_the_denominators_close_including_what_the_cut_took() -> None:
     assert _prediction("م٥").verdict(Fraction(2)) is Verdict.MET
 
 
-def test_the_two_adjacency_policies_are_published_and_differ_twofold() -> None:
-    """داخلَ الكلمة ٠٫٠٢٥٨ وعابرًا ٠٫٠٥١٨ — والسياسةُ تبدّل الرقمَ ضِعفًا."""
+def test_the_two_adjacency_policies_differ_by_a_hair_under_twofold() -> None:
+    """داخلَ الكلمة ٠٫٠٢٦٠ وعابرًا ٠٫٠٥١٩ — والنسبةُ ١٫٩٩٦، دون الضِّعف.
+
+    وكانت قبل إصلاح الرمز الخاوي ٠٫٠٥١٨/٠٫٠٢٥٨ = ٢٫٠٠٨، فكُتِب «ضِعفًا».
+    **والضِّعفُ كان أثرَ العطل**: الرمزُ الخاوي يكسر جوارًا داخلَ الكلمة
+    أكثرَ ممّا يكسره عابرًا. فيُصحَّح اللفظُ مع الرقم، ولا يبقى وصفٌ بُني
+    على عددٍ سقط.
+    """
 
     assert BARE_ACROSS > BARE_WITHIN
-    assert BARE_ACROSS / BARE_WITHIN > 2
+    ratio = BARE_ACROSS / BARE_WITHIN
+    assert Fraction(199, 100) < ratio < 2
 
 
-def test_a_third_undeclared_decision_is_the_row_normalisation() -> None:
-    """٠٫٠٢٥٨ ههنا و٠٫٠٢٦٠ في خ١: صفٌّ على وقوعاتٍ مقابلَ صفٍّ على احتمالات."""
+def test_the_gap_i_blamed_on_row_normalisation_was_a_defect_in_my_reader() -> None:
+    """٠٫٠٢٥٨ مقابل ٠٫٠٢٦٠ كان **عطلًا** لا قرارَ تسوية؛ وبعد إصلاحه تطابقا.
 
-    assert BARE_WITHIN != BARE_WITHIN_IN_خ١
-    assert abs(BARE_WITHIN - BARE_WITHIN_IN_خ١) < Fraction(5, 10_000)
-    decisions = ("صفٌّ على وقوعاتٍ خام", "صفٌّ على احتمالاتٍ بكسورٍ صحيحة")
-    assert len(set(decisions)) == 2
+    كتبتُ أوّلًا أنّ فرقَ الرقمين «من تسوية الصفّ: ذاك على احتمالاتٍ وهذا
+    على وقوعاتٍ خام». وكان ذلك **خطأً في التشخيص**: العلّةُ رمزٌ خاوٍ من
+    الهمزة المفردة في قارئٍ دون قارئ (انظر `test_phonetic_atom_audit`).
+    فلمّا أُصلِح صار الرقمان **٠٫٠٢٦٠ و٠٫٠٢٦٠** — وقارئان مستقلّان يخرجان
+    بالرقم نفسِه خبرٌ أقوى من فرقٍ يُفسَّر.
+
+    ويبقى قرارُ التسوية **غيرَ مُسمًّى في الختم** كما كُتِب — لكنّ أثرَه
+    دون ١٠⁻⁴، لا ٢×١٠⁻⁴ كما نُسِب إليه.
+    """
+
+    assert BARE_WITHIN == BARE_WITHIN_IN_خ١ == Fraction(260, 10_000)
+    misdiagnosis = "صفٌّ على وقوعاتٍ مقابلَ صفٍّ على احتمالات"
+    cause = "رمزٌ خاوٍ من الهمزة المفردة في أحد القارئين"
+    assert misdiagnosis != cause
     assert len(PAN_SEAL) == 64

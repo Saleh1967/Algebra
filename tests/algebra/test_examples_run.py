@@ -128,6 +128,10 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة؛ ويعيد قياسَ الأرقام الكلميّة كلِّها "
         "على مدوّنةٍ مشتقّةٍ مرفوعةِ البسملات على ختم be03e5be…"
     ),
+    "rasm/run_praise_blame.py": (
+        "يحتاج المدوّنةَ المشكولة ومسوّدةً مُودَعةً غيرَ موقَّعة؛ ويقيس "
+        "لوازمَها في حقل الحال بتصعيدٍ من خمس درجات، على ختم efb2eac8…"
+    ),
     "rasm/run_state_cycle.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويقيس حالَ الخاتمة ثباتًا وتبدّلًا "
         "وخلوًّا، وسلسلةَ ماركوف داخلَ السطر بحدَّيها المبرهَنين، "
@@ -204,9 +208,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 45
+    assert len(found) == 46
     assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 34
+    assert len(NEEDS_A_CORPUS) == 35
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -246,7 +250,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 35
+    assert len(_examples()) - len(foreign) == 36
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

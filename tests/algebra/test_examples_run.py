@@ -47,6 +47,10 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
         "--rule",
         "deposits/number_rule_note.md",
     ),
+    "rasm/run_hasr_audit.py": (
+        "--rule",
+        "deposits/hasr_rule_note.md",
+    ),
     "irab/run_harf_measurement.py": ("--smoke", "--defer", "error"),
     "isnad/run_ittifaq.py": ("--smoke",),
     "maana/run_imtihan.py": ("--smoke",),
@@ -221,8 +225,8 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 49
-    assert len(RUNNABLE) == 12
+    assert len(found) == 50
+    assert len(RUNNABLE) == 13
     assert len(NEEDS_A_CORPUS) == 37
 
 
@@ -263,7 +267,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 39
+    assert len(_examples()) - len(foreign) == 40
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

@@ -15,9 +15,11 @@
 أي **٠٫٧٧٨٠ منه**. فالاقتصادُ الأعمى **يسبق قاعدتي بـ٢٢٪**، وهي دعوًى
 كانت معرَّضةً للسقوط فصمدت.
 
-`AND_WHAT_IT_BUILT_FIRST_IS_THE_CLOSED_FUNCTIONAL_LAYER_ENTIRE`: وهذا
-**أثقلُ من الرقم**. الدمجُ لا يرى كلمةً ولا صرفًا ولا نحوًا — يرى وقوعاتٍ
-فقط. وأكثرُ أربعَ عشرةَ وحدةً بناها:
+`WHAT_IT_BUILT_IS_REPORTED_AS_BYTES_WIDTH_AND_COUNT_ONLY`: ويُعرَض ما بناه
+**بثلاثة أعمدةٍ لا رابعَ لها**: الرمزُ ببايتاته، وعددُ وقوعاته، وعَرضُه
+بوحدات ١١٢. **ولا عمودَ تفسير** — فالدمجُ لا يعرف حرفًا ولا أداةً ولا
+ضميرًا ولا زيادةً ولا تعريفًا ولا نفيًا ولا استثناءً ولا توكيدًا، ولا شيءَ
+من ذلك في هذه البايتات. وأكثرُ أربعَ عشرةَ رمزًا وقوعًا:
 
 | الوحدة | وقوعات | ما هي |
 |---|---|---|
@@ -27,15 +29,18 @@
 | **اللَّهُ** | ٣٣٤ | خمسُ وحداتٍ تامّة |
 | **إِلَّا · عَلَى · وَالْ · وَمَا · وَا** | ٣١١ · ٣٢٣ · ٢٩٠ · ٢٧٧ · ٣٣٩ | |
 
-**ولا واحدةَ منها كلمةٌ معجميّةٌ مفتوحة.** فالطبقةُ التي يبنيها الاقتصادُ
-فوقَ الصوت مباشرةً هي **الوظيفيّةُ المغلقة** بأسرها — وهي رابعُ طريقٍ
-مستقلّةٍ تنتهي إليها هذه الجلسة، بعد التباسِ الرسم، وثقلِ اللام والنون في
-دفتر البتّات، وأرضيّةِ الرسم.
+والجدولُ الكاملُ ومعه **قسمةُ المجموعة المولَّدة بالعَرض** في
+`docs/الصعود-المكتشَف.md` — ومجموعةُ العَرض ١ فيها **مئةٌ واثنتا عشرة**،
+أي أنّ الأمَّ باقيةٌ بتمامها: **التدويرُ ضمٌّ لا استبدال**.
 
-`BUT_THE_WORD_BOUNDARY_IS_NOT_DISCOVERED`: وك٤ **سقط**: نصيبُ ما لا يعبر
-حدَّ الكلمة **٠٫٨٢٩٠** والحدُّ ٠٫٩٠. فالدمجُ يعبر الفراغَ في **سُدُسِ**
-وقوعاته — و«وَاْلْ» و«وَمَاْ» شاهدان. **فحدُّ الكلمة لا يكتشفه الاقتصادُ
-وحدَه**، ويبقى مُلقَّنًا كما قال نصُّ الشرط.
+`BUT_THE_GAP_IS_NOT_DISCOVERED`: وك٤ **سقط**: نصيبُ ما لا يعبر الفراغَ
+**٠٫٨٣٧٩** والحدُّ ٠٫٩٠. فالدمجُ يعبر الفراغَ في **سُدُسِ** وقوعاته،
+**ولا يكتشفه الاقتصادُ وحدَه**، ويبقى مُلقَّنًا كما قال نصُّ الشرط.
+
+`AND_THE_EARLIER_FIGURE_WAS_MEASURED_ONE_CHECKPOINT_LATE`: وكان المنشورُ
+**٠٫٨٢٩٠**، وهو مقيسٌ على حالة **٥٬٠٠٠** — أي **بعد** أفضل نقطةٍ بخطوة.
+فصارت الحالةُ تُحفَظ عند **٤٬٥٠٠** ويُقاس عليها، والحكمُ **لم يتبدّل**
+والرقمُ تبدّل. وكذلك أعدادُ الرموز (ال ٥٢٠ ← ٥٥٢).
 
 `AND_THE_SHAPES_ARE_SLICED_FROM_THE_BYTES_NOT_REBUILT`: وصورُ الوحدات
 **مقتطعةٌ من السطر نفسِه** بمدًى محفوظٍ لكلّ وحدة. وكان أوّلُ عرضٍ يركّبها
@@ -73,7 +78,7 @@ BEST_INSIDE = 1_380_404.0
 BEST_AT = 4_500
 STOPPED_AT = 5_000
 SYLLABLE_COST = 1_785_954.0
-NOT_CROSSING = 0.8290
+NOT_CROSSING = 0.8379
 GAPS = (1_346, 2_426, 3_514, 4_606, 5_677, 6_482, 7_442, 8_328, 9_044, 9_789)
 
 
@@ -156,7 +161,7 @@ def test_the_word_boundary_is_not_discovered_by_thrift_alone() -> None:
     assert fourth.verdict(_exact(NOT_CROSSING)) is Verdict.FALSIFIED
     assert "مُلقَّنًا لا مكتشَفًا" in fourth.falsifies
     text = LOG.read_text(encoding="utf-8")
-    assert "لا يعبر حدَّ الكلمة: 89397 من 107841" in text
+    assert "لا يعبر حدَّ الكلمة: 93005 من 110994" in text
 
 
 def test_the_anti_overfit_gap_held_and_widened_with_the_dictionary() -> None:
@@ -168,7 +173,7 @@ def test_the_anti_overfit_gap_held_and_widened_with_the_dictionary() -> None:
     assert list(GAPS) == sorted(GAPS)  # يتّسع باطّراد
 
 
-def test_every_discovered_unit_is_closed_class() -> None:
+def test_the_shapes_are_read_from_the_log_and_never_typed() -> None:
     """الصورُ تُقرأ من السجلّ لا تُكتَب باليد — والحرفُ المكتوبُ يخالف."""
 
     text = LOG.read_text(encoding="utf-8")
@@ -177,7 +182,7 @@ def test_every_discovered_unit_is_closed_class() -> None:
     shapes = [one for one, _, _ in rows]
     assert len({one for one in shapes}) == 14
     widest = max(rows, key=lambda row: int(row[2]))
-    assert int(widest[2]) == 5 and int(widest[1]) == 334  # «الله» تامّةً
+    assert int(widest[2]) == 5 and int(widest[1]) == 340  # «الله» تامّةً
     # ولا صورةَ تحمل رمزَ التمثيل الداخليّ: ساكنٌ على ألفٍ لا يُكتَب في المصحف
     for shape in shapes:
         assert "ا\u0652" not in shape, shape
@@ -202,9 +207,11 @@ def test_the_document_quotes_shapes_verbatim_from_the_log() -> None:
     }
     written = paper.read_text(encoding="utf-8")
     quoted = re.findall(
-        r"^\| \*\*(\S+)\*\* \| (\d+) \| (\d+) \|", written, re.MULTILINE
+        r"^\| \*\*([^*|٠-٩]+)\*\* \| ([٠-٩]+) \| ([٠-٩]+) \|$",
+        written,
+        re.MULTILINE,
     )
-    assert len(quoted) == 14
-    for shape, _, _ in quoted:
-        assert shape in shapes, shape
     assert {one for one, _, _ in quoted} == shapes
+    assert len(quoted) == 14
+    # ولا عمودَ تفسيرٍ في الوثيقة: ثلاثةُ أعمدةٍ لا أربعة
+    assert "| ما هي |" not in written

@@ -133,6 +133,11 @@ def crossed(pairs: Counter[tuple[str, str]], held: Counter[tuple[str, str]]) -> 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--text", type=Path, required=True)
+    parser.add_argument(
+        "--arabic-only",
+        action="store_true",
+        help="يُسقِط كلَّ لفظٍ لا حرفَ عربيًّا فيه — حدُّ الختم المُصحَّح",
+    )
     given = parser.parse_args()
 
     lines = [
@@ -144,7 +149,17 @@ def main() -> int:
         raise SystemExit(f"المدوّنةُ تبدّلت: {len(lines)} لا {VERSES}")
     print(f"— الأسطر: {len(lines)}")
 
-    tokens_by_line = [one.split() for one in lines]
+    def arabic(one: str) -> bool:
+        return any("ARABIC" in unicodedata.name(two, "") for two in one)
+
+    tokens_by_line = [
+        [two for two in one.split() if arabic(two) or not given.arabic_only]
+        for one in lines
+    ]
+    print(
+        f"— حدُّ اللفظ: "
+        f"{'عربيٌّ فيه حرفٌ عربيّ' if given.arabic_only else 'كلُّ متتاليةٍ بلا فراغ'}"
+    )
     by_line = sum(len(one) for one in tokens_by_line)
 
     states: Counter[str] = Counter()
@@ -183,7 +198,7 @@ def main() -> int:
                     basmala_first += 1
                 else:
                     basmala_where.append((number + 1, position, token))
-            if not any("ARABIC" in unicodedata.name(two, "") for two in token):
+            if not arabic(token):
                 markup += 1
                 markup_forms[token] += 1
             counted += 1

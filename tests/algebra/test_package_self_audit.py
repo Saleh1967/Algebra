@@ -151,3 +151,22 @@ def test_no_module_imports_beyond_the_standard_library() -> None:
                     continue  # أخٌ في الحزمة نفسِها، لا تابعٌ خارجيّ
                 root = name.split(".")[0]
                 assert root in standard or root == "algebra", f"{path.name} ← {name}"
+
+
+def test_the_single_gate_exists_and_carries_no_pipe() -> None:
+    """`tools/verify.sh` بوّابةٌ واحدةٌ بلا أنبوبٍ حول الفحص.
+
+    **العطلُ الذي يحرسه**: `pytest | tail && git push` يُمرِّر الدفعَ
+    والفحصُ ساقط، لأنّ رمزَ خروج الأنبوب رمزُ آخرِ حلقةٍ فيه.
+    """
+
+    from pathlib import Path
+
+    gate = Path(__file__).resolve().parents[2] / "tools" / "verify.sh"
+    assert gate.exists()
+    text = gate.read_text(encoding="utf-8")
+    assert "set -euo pipefail" in text
+    for line in text.splitlines():
+        if "pytest" in line and not line.strip().startswith("#"):
+            assert "|" not in line, line
+    assert "ruff check" in text and "mypy --strict" in text

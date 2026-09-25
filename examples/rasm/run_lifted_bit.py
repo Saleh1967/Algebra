@@ -52,6 +52,20 @@ def _load(path: Path, name: str) -> object:
     return module
 
 
+def displayed(shapes: dict[int, str], symbol: int) -> str:
+    """صورةُ الوحدة، أو **تصريحٌ بأنّ مداها صفر** — ولا تُطبَع فارغةً قطّ.
+
+    بعضُ وحدات الـ١١٢ **لا بايتاتِ لها في المصحف**: مداها في السطر صفرٌ
+    وبايتاتُها في شريكتها. فطبعُها فراغًا يُقرَأ صورةً وليس بصورة، وهو
+    عطلُ عرضٍ من صنف الأوّل في `docs/سجل-الأعطال.md`.
+    """
+
+    shape = shapes.get(symbol)
+    if shape is None:
+        return "«لا شاهدَ»"
+    return shape if shape else "«مدًى صفرٌ في البايتات»"
+
+
 def ascend(
     forbidden: Pair | None,
     verses0: list[list[int]],
@@ -131,8 +145,8 @@ def ascend(
                 print("  البتّةُ المرفوعةُ — أوّلُ حالٍ يختلف فيه الحكمان:")
                 print(f"    عند الالتزام {commits + 1} | رتبتُها الخام {best + 1}")
                 print(
-                    f"    طرفاها ببايتاتهما: {shown.get(split[0], '—')} + "
-                    f"{shown.get(split[1], '—')}"
+                    f"    طرفاها ببايتاتهما: {displayed(shown, split[0])} + "
+                    f"{displayed(shown, split[1])}"
                 )
                 print(f"    وقوعُ الطرفين {left} و{right} | استبدالاتُها {number}")
                 print(f"    عَرضُها {widths[split[0]] + widths[split[1]]}")

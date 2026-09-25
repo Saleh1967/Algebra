@@ -29,9 +29,6 @@ NOT_A_PREREGISTRATION = {
     "37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a": (
         "بايتاتُ المدوّنة المُجمَّدة — سجلُّ مادّةٍ لا شرطَ فيه"
     ),
-    "30c7e393eff12641e27802dbfc38c51e7171ed873bfd2f78dc889de2fad7a359": (
-        "سجلُّ بايتاتٍ آخرُ — مادّةٌ لا شرطَ فيها"
-    ),
     "46b4393fdb3a09208ecb96fbbac990a150e4374f82d7940c655430cd1b1611ae": (
         "بصمةُ مصدرٍ — مادّةٌ لا شرطَ فيها"
     ),
@@ -43,10 +40,6 @@ NOT_A_PREREGISTRATION = {
     ),
     "d435d63a4e49ea03a75344b050df01dd99d5bfb77335c807e2d6309f52174341": (
         "بصمةُ مُودَعٍ — مادّةٌ لا شرطَ فيها"
-    ),
-    "ca75f300ba9125e3cd45cbf1f43eb6482d2ae6cdf40d1876eeb5fbc76ee7278a": (
-        "سجلُّ الانقلاب المُجمَّد — سجلُّ **نتيجةٍ مقيسة** لا تسجيلَ شرطٍ "
-        "قبل النظر؛ حقولُه مُقابَلةٌ بالسجلّات في `tools/inversion_seal.py`"
     ),
     EMPTY: (
         "بصمةُ اللاشيء في خانة بصمة — **عطلٌ مُعلَنٌ لا إسناد**: "
@@ -88,7 +81,9 @@ def test_every_indexed_seal_is_recomputed_not_copied() -> None:
 def test_no_seal_in_the_tree_falls_outside_the_index() -> None:
     """كلُّ ثابتٍ من ٦٤ خانةً في `tests/` إمّا مُفهرَسٌ أو مُعلَنٌ بسببه."""
 
-    indexed = {row["digest"] for row in _tool().gather()}  # type: ignore[attr-defined]
+    tool = _tool()
+    indexed = {row["digest"] for row in tool.gather()}
+    indexed |= {row["digest"] for row in tool.records()}  # المُجمَّدُ يُكتشَف
     loose: dict[str, set[str]] = {}
     for path in sorted(TESTS.rglob("*.py")):
         for digest in HEX.findall(path.read_text(encoding="utf-8")):
@@ -101,7 +96,7 @@ def test_no_seal_in_the_tree_falls_outside_the_index() -> None:
 def test_the_exemptions_are_named_and_few() -> None:
     """المستثنى يُسمّى بسببه — ولا يُتوسَّع فيه."""
 
-    assert len(NOT_A_PREREGISTRATION) <= 8
+    assert len(NOT_A_PREREGISTRATION) <= 6
     for digest, why in NOT_A_PREREGISTRATION.items():
         assert len(digest) == 64 and HEX.fullmatch(digest)
         assert len(why) > 20 and "—" in why

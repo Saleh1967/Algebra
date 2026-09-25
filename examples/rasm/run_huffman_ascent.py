@@ -154,7 +154,8 @@ def main() -> int:
     start = cost_now(verses, widths)
     print(
         f"نقطةُ الصفر: الجملة {start[0]:.0f} | بيانٌ هوفمانيّ {start[2]:.0f} "
-        f"| H {start[7]:.4f} | الفرقُ للرمز {start[2] / start[3] - start[7]:+.4f}"
+        f"| H {start[7]:.4f} | الفرقُ للرمز {start[2] / start[3] - start[7]:+.4f} "
+        f"| ملحَقة {start[5]:.0f}"
     )
 
     merges = 0
@@ -179,7 +180,8 @@ def main() -> int:
             print(
                 f"  بعد {merges}: الجملة {here[0]:.0f} | معجم {here[1]:.0f} "
                 f"| بيان {here[2]:.0f} | رموز {here[3]} | أبجديّة {here[4]} "
-                f"| H {here[7]:.4f} | L−H {gap:+.4f} | مرتدّ {here[6]:.4f} {mark}"
+                f"| H {here[7]:.4f} | L−H {gap:+.4f} | مرتدّ {here[6]:.4f} "
+                f"| ملحَقة {here[5]:.0f} | فرق {here[0] - here[5]:+.0f} {mark}"
             )
             if here[0] < best[0]:
                 best, best_at = here, merges

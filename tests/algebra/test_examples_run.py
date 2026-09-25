@@ -124,6 +124,10 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة؛ ويرخّص الصعودَ **دمجةً دمجة** لا كتلةً "
         "على ختم 69a1c10c…"
     ),
+    "rasm/run_markov_ladder.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويقيس أربعةَ مستوياتٍ من الوحدة إلى "
+        "السطر ملحَقًا ومحجوزًا، ويصنّف ما فوقها، على ختم 248f10df…"
+    ),
     "rasm/run_word_escalation.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويعدّ الكلمَ والهياكلَ الغامضة ويصعد "
         "جشعًا بقيدِ حدّ الكلمة ويسعّر الدَّينين على ختم 2a849c9a…"
@@ -183,9 +187,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 40
+    assert len(found) == 41
     assert len(RUNNABLE) == 11
-    assert len(NEEDS_A_CORPUS) == 29
+    assert len(NEEDS_A_CORPUS) == 30
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -225,7 +229,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 30
+    assert len(_examples()) - len(foreign) == 31
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

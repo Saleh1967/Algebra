@@ -234,6 +234,9 @@ def main() -> int:
     )
 
     merges: list[tuple[int, int]] = []
+    keep: list[list[int]] = [list(row) for row in verses]
+    widths: Counter[int] = Counter()
+    kinds: Counter[int] = Counter()
     best = start
     best_at = 0
     rises = 0
@@ -258,23 +261,35 @@ def main() -> int:
             )
             if here[0] < best[0]:
                 best, best_at = here, len(merges)
+                keep = [list(row) for row in verses]
+                widths = Counter(lengths[one] for row in keep for one in row)
+                kinds = Counter(
+                    lengths[one] for one in {one for row in keep for one in row}
+                )
             else:
                 rises += 1
                 stopped = len(merges)
                 break
 
-    crossing, total = straddles(verses, heads, lengths)
+    crossing, total = straddles(keep, heads, lengths)
     print(f"\nنقطةُ الوقوف: {stopped or len(merges)} دمجةً | أفضلُ تكلفةٍ عند {best_at}")
     print(f"  الجملة {best[0]:.0f} | النسبةُ إلى L₀ {best[0] / start[0]:.4f}")
     print(
         f"  لا يعبر حدَّ الكلمة: {total - crossing} من {total} "
         f"= {(total - crossing) / total:.4f}"
     )
-    flat = [symbol for row in verses for symbol in row]
+    flat = [symbol for row in keep for symbol in row]
     spread = Counter(flat)
     built = [(one, number) for one, number in spread.most_common() if lengths[one] > 1]
-    shown = shapes_of(verses, lines, reach, lengths, [one for one, _ in built[:14]])
-    print("  أكثرُ الوحدات المكتشَفة (ببايتاتها من المصحف):")
+    shown = shapes_of(keep, lines, reach, lengths, [one for one, _ in built[:14]])
+    print("\n  المجموعةُ المولَّدةُ مقسومةً بالعَرض (وحداتُ ١١٢ في الرمز):")
+    for width in sorted(kinds):
+        print(
+            f"    عَرضُ {width}: رموزٌ {kinds[width]} | وقوعاتٌ {widths[width]} "
+            f"| نصيبٌ {widths[width] / sum(widths.values()):.4f}"
+        )
+    print(f"    الجملة: رموزٌ {sum(kinds.values())} | وقوعاتٌ {sum(widths.values())}")
+    print("\n  أكثرُ الرموز وقوعًا (ببايتاتها من المصحف):")
     for symbol, number in built[:14]:
         print(f"    {shown.get(symbol, '—')}  ({number}) وحداتُه {lengths[symbol]}")
     return 0

@@ -40,7 +40,9 @@ ORACLE = Oracle(
 PREDICTIONS = (
     Prediction(
         identifier="و١",
-        statistic="أدنى (المحجوزة عند الرتبة صفر − المحجوزة عند الرتبة ٣) لكلّ قناة (بت)",
+        statistic=(
+            "أدنى (المحجوزة عند الرتبة صفر − المحجوزة عند " "الرتبة ٣) لكلّ قناة (بت)"
+        ),
         threshold=Fraction(0),
         direction=Direction.AT_LEAST,
         falsifies=(

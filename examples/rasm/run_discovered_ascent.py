@@ -187,6 +187,30 @@ def straddles(
     return (crossing, total)
 
 
+def straddle_census(
+    verses: list[list[int]],
+    heads: list[list[bool]],
+    lengths: dict[int, int],
+) -> tuple[Counter[int], Counter[int]]:
+    """(العابراتُ بكلّ عَرض، الوقوعاتُ بكلّ عَرض) — فيُعرَف أين تقع الفجوة.
+
+    **والرقمان مختلفان**: نصيبُ المجموعة من جملة العابرات شيء، ومعدّلُ
+    عبورها داخلَ نفسها شيءٌ آخر؛ وخلطُهما عطلُ وحدات.
+    """
+
+    crossing: Counter[int] = Counter()
+    seen: Counter[int] = Counter()
+    for row, head in zip(verses, heads):
+        place = 0
+        for symbol in row:
+            width = lengths[symbol]
+            seen[width] += 1
+            if width > 1 and any(head[place + one] for one in range(1, width)):
+                crossing[width] += 1
+            place += width
+    return (crossing, seen)
+
+
 def shapes_of(
     verses: list[list[int]],
     lines: list[str],

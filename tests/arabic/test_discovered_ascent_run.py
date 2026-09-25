@@ -95,7 +95,9 @@ def test_the_machine_absorbs_exactly_on_a_slice() -> None:
     """بسطُ الرموز يعيد الـ١١٢ بالضبط — يُفحَص لا يُدَّعى."""
 
     reader = _reader()
-    verses, _, order = reader.corpus_of(CORPUS.read_text(encoding="utf-8"))  # type: ignore[attr-defined]
+    verses, _, order, _lines, _reach = reader.corpus_of(  # type: ignore[attr-defined]
+        CORPUS.read_text(encoding="utf-8")
+    )
     slice_ = [list(one) for one in verses[:200]]
     before = [list(one) for one in slice_]
     lengths = {index: 1 for index in range(len(order))}

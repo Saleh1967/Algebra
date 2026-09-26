@@ -177,9 +177,9 @@ def test_no_line_claims_a_proven_linguistic_meaning() -> None:
 
     written = BRIDGE.read_text(encoding="utf-8")
     assert "**لا بتّةَ ههنا بُرهنت إفادتُها اللغويّة.**" in written
-    assert "**ولا جسرَ ههنا مُرخَّص**" in written
-    assert "**ولا تُوقِّع الآلةُ ما صاغته**" in written
-    assert "**والمُرخَّصُ صفرٌ**" in written
+    assert "**والترخيصُ ليس تصحيحًا**" in written
+    assert "**وإفصاحٌ لازم: الصائغُ هو المُوقِّع.**" in written
+    assert "ولا يُقرَأ شهادةً مستقلّة" in written
     for one in written.splitlines():
         if "بُرهن" in one and "لغوي" in one:
             assert one.lstrip().startswith("- **لا بتّةَ"), one
@@ -197,8 +197,9 @@ def test_the_signature_is_carried_in_the_bridge_and_bound_to_it() -> None:
         hand.FROZEN_SIGNATURE.readings
     )
     assert hand.verify_against_logs() == []
-    assert hand.FROZEN_SIGNATURE.licenses == ()
-    assert "موقَّعٌ فرضًا، غيرُ مُرخَّصٍ برهانًا" in written
+    assert len(hand.FROZEN_SIGNATURE.licenses) == len(tool.FAMILIES)
+    assert "موقَّعٌ ومُرخَّصٌ بجدولٍ مُودَع، فرضًا يُنقَض" in written
+    assert "bridge_tables.md" in written
     for name in tool.FAMILIES:
         assert f"### «{name}»" in written, name
 

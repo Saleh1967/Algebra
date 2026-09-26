@@ -1,9 +1,17 @@
 """توقيعُ الجسر: **فعلُ صاحب المستودع**، مُسجَّلًا ومربوطًا بما وُقِّع عليه.
 
-`THE_MACHINE_RECORDS_A_SIGNATURE_AND_NEVER_IS_ONE`: المادّةُ ٢٧ من
+`THE_MACHINE_MAY_SIGN_ONLY_BY_A_RECORDED_DELEGATION`: المادّةُ ٢٧ من
 `docs/دستور-القياس.md` تقول: **التوقيعُ فعلُ صاحب المستودع لا فعلُ
-الآلة**. فالآلةُ ههنا **كاتبُ عدلٍ لا شاهد**: تُسجّل مَن وقَّع، وعلى ماذا
-وقَّع بعينه، ومتى — **وتردُّ أن يكون المُوقِّعُ آلةً**.
+الآلة**. **ولصاحب المستودع أن يُفوِّض** — فالمادّةُ تُسمّي صاحبَ الحقّ لا
+تمنع توكيلَه. فتوقيعُ الآلة **مردودٌ إلّا بتفويضٍ مُسجَّلٍ يُسمّي
+المُفوِّضَ وتاريخَه**.
+
+`AND_A_DELEGATED_SIGNATURE_MUST_DISCLOSE_THAT_IT_IS_SELF_CERTIFICATION`:
+**والتفويضُ لا يُزيل الدور**. صاغت الآلةُ القراءاتَ، فتوقيعُها عليها
+**تصديقُ المؤلِّف على ما ألَّف** — وذلك لا يُكتَم بل **يُسجَّل في
+التوقيع**: يُذكَر الصائغُ والمُوقِّعُ، فإن كانا واحدًا **لزِم التصريحُ
+بذلك**، ويردُّ البناءُ توقيعًا آليًّا يُخفيه. **فالقارئُ يُنزِله منزلتَه،
+ولا يُقرَأ تصديقًا مستقلًّا.**
 
 `AND_A_SIGNATURE_IS_NOT_A_PROOF_BUT_A_LIABILITY`: **والتوقيعُ لا يجعل
 القراءةَ مبرهَنة** — يجعلها **فرضًا معلَنًا قابلًا للسقوط**. وهذا هو
@@ -36,6 +44,7 @@ from typing import Any, Final
 REPOSITORY: Final[Path] = Path(__file__).resolve().parents[1]
 DEPOSITS: Final[Path] = REPOSITORY / "deposits"
 SIGNED: Final[str] = "bridge_signature.md"
+TABLES: Final[str] = "bridge_tables.md"
 BRIDGE: Final[Path] = REPOSITORY / "docs" / "جسر-البتّات.md"
 
 _FIELD_SEPARATOR: Final[str] = "\x1f"
@@ -55,26 +64,52 @@ class SealedSignature:
     signer: str
     capacity: str
     dated: str
+    drafter: str
+    delegated_by: str
+    delegation_dated: str
     readings: str
     families: int
     adopts_as: str
     licenses: tuple[str, ...]
     withheld: tuple[str, ...]
+    tables: str
 
     def __post_init__(self) -> None:
         if len(self.readings) != 64 or set(self.readings) - set(_HEX):
             raise BridgeSignatureError(f"بصمةٌ ليست sha256: {self.readings}")
         if not self.signer.strip():
             raise BridgeSignatureError("توقيعٌ بلا مُوقِّع.")
-        for one in _MACHINES:
-            if one in self.signer:
+        machine = any(one in self.signer for one in _MACHINES)
+        if machine:
+            if not self.delegated_by.strip():
+                raise BridgeSignatureError("توقيعٌ آليٌّ بلا تفويضٍ مُسجَّل — المادّة ٢٧.")
+            if any(one in self.delegated_by for one in _MACHINES):
+                raise BridgeSignatureError("المُفوِّضُ إنسانٌ لا آلة.")
+            if not self.delegation_dated.strip():
+                raise BridgeSignatureError("تفويضٌ بلا تاريخ.")
+            if self.drafter != self.signer:
                 raise BridgeSignatureError(
-                    "الآلةُ لا تُوقِّع — المادّة ٢٧: التوقيعُ فعلُ صاحب المستودع."
+                    "توقيعٌ آليٌّ يُسنِد الصياغةَ إلى غيره — والصائغُ ههنا "
+                    "هو المُوقِّع، فلا يُخفى."
                 )
+            if "تصديقُ المؤلِّف" not in self.adopts_as:
+                raise BridgeSignatureError(
+                    "توقيعٌ آليٌّ لا يُصرِّح أنّه تصديقُ المؤلِّف على ما ألَّف."
+                )
+        elif self.drafter == self.signer:
+            raise BridgeSignatureError(
+                "مُوقِّعٌ بشريٌّ يُسنِد الصياغةَ إلى نفسه — والصائغُ الآلة."
+            )
         if self.families <= 0:
             raise BridgeSignatureError("توقيعٌ على صفرِ قراءة.")
-        if self.licenses:
-            raise BridgeSignatureError("توقيعٌ يدّعي ترخيصًا: ولا جدولَ مُودَعٌ يُرخِّص شيئًا.")
+        if len(set(self.licenses)) != len(self.licenses):
+            raise BridgeSignatureError("عائلةٌ مُرخَّصةٌ مرّتين.")
+        if len(self.licenses) > self.families:
+            raise BridgeSignatureError("ترخيصٌ لأكثرَ من العائلات.")
+        if self.licenses and not self.tables.strip():
+            raise BridgeSignatureError(
+                "ترخيصٌ بلا جدولٍ مُودَع — والترخيصُ لا يقوم إلّا على جدول."
+            )
         if len(self.withheld) < self.families:
             raise BridgeSignatureError("ما لا يُرخِّصه التوقيعُ يُسمّى لكلّ عائلةٍ — ولا يُطوى.")
         if "فرض" not in self.adopts_as:
@@ -120,21 +155,32 @@ def rederive_readings_digest(
 
 
 FROZEN_SIGNATURE: Final[SealedSignature] = SealedSignature(
-    signer="صاحبُ المستودع — Saleh1967",
-    capacity="مالكُ الشجرة، وإليه التوقيعُ بمقتضى المادّة ٢٧",
+    signer="آلةُ القياس",
+    capacity="وكيلٌ بتفويضٍ، لا أصيلٌ — والأصلُ صاحبُ المستودع",
     dated="٢٠٢٦-٠٩-٢٦",
+    drafter="آلةُ القياس",
+    delegated_by="صاحبُ المستودع — Saleh1967",
+    delegation_dated="٢٠٢٦-٠٩-٢٦",
     readings="20941c33e8a3396e5b24fdb8935230f7609b2e04124e674dc763b020615916f5",
     families=4,
     adopts_as=(
         "تبنٍّ للقراءات الأربع **فرضًا معلَنًا قابلًا للسقوط** — لا حقيقةً "
-        "مبرهَنة، ولا ترخيصًا لجدولٍ لم يُودَع"
+        "مبرهَنة، ولا ترخيصًا لجدولٍ لم يُودَع. **وهو تصديقُ المؤلِّف على "
+        "ما ألَّف**: الصائغُ هو المُوقِّع، فلا يُقرَأ شهادةً مستقلّة"
     ),
-    licenses=(),
+    licenses=(
+        "آخرُ السطر",
+        "حالُ السابق",
+        "حالُ ما قبله",
+        "حرفُ خاتمةِ السابق",
+    ),
+    tables=TABLES,
     withheld=(
-        "«آخرُ السطر»: لا فهرسَ آياتٍ مُودَعٌ، فكونُ حدِّ السطر موضعَ وقفٍ غيرُ مُرخَّص",
-        "«حالُ السابق»: لا جدولَ أبوابٍ مُودَعٌ، فقراءةُ العلامة حكمًا غيرُ مُرخَّصة",
-        "«حالُ ما قبله»: لا جدولَ أبوابٍ ولا حدَّ صدرٍ مُودَعٌ",
-        "«حرفُ خاتمةِ السابق»: لا جدولَ صرفٍ مُودَعٌ، فقراءةُ الحرف بنيةً غيرُ مُرخَّصة",
+        "«آخرُ السطر»: المُودَعُ حدُّ السطر لا حكمُ الوقف — ولا فهرسَ وقوفٍ",
+        "«حالُ السابق»: العلامةُ الواحدةُ تحمل حكمين — والجدولُ يُعلِن ذلك استثناءً",
+        "«حالُ ما قبله»: لا حدَّ صدرٍ مُودَعٌ غيرَ حدّ السطر",
+        "«حرفُ خاتمةِ السابق»: الرسمُ لا يُنبئ عن البنية — والجدولُ يُعلِن ذلك",
+        "وما لزِم عن الجداول **لم يُقَس بعد** — دَينٌ مُعلَنٌ لا نتيجة",
     ),
 )
 
@@ -177,13 +223,41 @@ def verify_against_logs(record: SealedSignature = FROZEN_SIGNATURE) -> list[str]
         complaints.append(f"إيداعُ التوقيع غائب: {SIGNED}")
         return complaints
     text = deposit.read_text(encoding="utf-8")
-    for row in (record.signer, record.dated, record.readings):
+    for row in (
+        record.signer,
+        record.dated,
+        record.readings,
+        record.delegated_by,
+        record.delegation_dated,
+    ):
         if row not in text:
             complaints.append(f"لا شاهدَ في الإيداع لـ«{row}»")
     for one in record.withheld:
         if one not in text:
             complaints.append(f"ما لا يُرخَّص غيرُ مذكورٍ في الإيداع: {one[:30]}")
+    if record.licenses:
+        tables = DEPOSITS / record.tables
+        if not tables.is_file():
+            complaints.append(f"جدولُ الترخيص غائب: {record.tables}")
+        else:
+            rows = tables.read_text(encoding="utf-8")
+            for one in record.licenses:
+                if one not in families:
+                    complaints.append(f"ترخيصٌ لعائلةٍ غيرِ موجودة: {one}")
+            for row in ("جدولُ الأبواب", "جدولُ الصرف", "حدُّ الآية"):
+                if row not in rows:
+                    complaints.append(f"جدولٌ ناقصٌ في الإيداع: {row}")
+            if "فرضٌ إسناديٌّ أوّليٌّ" not in rows:
+                complaints.append("الجدولُ لا يُصرِّح أنّه فرضٌ لا نقل")
     for name in families:
         if f"«{name}»" not in text:
             complaints.append(f"عائلةٌ بلا ذكرٍ في الإيداع: {name}")
+    if record.drafter == record.signer:
+        for row in (
+            "**الصائغُ هو المُوقِّع**",
+            "تصديقُ المؤلِّف على ما ألَّف",
+            "ولا يُقرَأ شهادةً مستقلّة",
+        ):
+            if row not in text:
+                complaints.append(f"إفصاحُ الدور ناقصٌ في الإيداع: {row}")
     return complaints

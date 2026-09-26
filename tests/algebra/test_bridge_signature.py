@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import importlib.util
+import re
 import sys
 from dataclasses import replace
 from pathlib import Path
@@ -70,27 +71,111 @@ def test_changing_one_letter_of_a_reading_breaks_the_signature() -> None:
     assert tool.rederive_readings_digest(fewer) != signed
 
 
-def test_the_machine_can_never_be_the_signer() -> None:
-    """المادّة ٢٧ **مفحوصةً**: مُوقِّعٌ فيه اسمُ آلةٍ يُردّ."""
+def test_a_machine_signs_only_under_a_recorded_delegation() -> None:
+    """توقيعٌ آليٌّ بلا تفويضٍ مُسجَّلٍ **يُردّ** — المادّة ٢٧ مفحوصةً."""
 
     tool = _tool("bridge_signature.py")
-    for name in ("الآلة", "Claude", "المولّد", "آلةُ القياس"):
+    signed = tool.FROZEN_SIGNATURE
+    assert any(one in signed.signer for one in tool._MACHINES)
+    for bad in (
+        {"delegated_by": ""},
+        {"delegated_by": "   "},
+        {"delegated_by": "الآلة"},
+        {"delegation_dated": ""},
+    ):
         with pytest.raises(tool.BridgeSignatureError):
-            replace(tool.FROZEN_SIGNATURE, signer=name)
+            replace(signed, **bad)
     with pytest.raises(tool.BridgeSignatureError):
-        replace(tool.FROZEN_SIGNATURE, signer="   ")
+        replace(signed, signer="   ")
     register = (REPOSITORY / "docs" / "دستور-القياس.md").read_text(encoding="utf-8")
     assert "**التوقيعُ فعلُ صاحب المستودع لا فعلُ الآلة**" in register
 
 
-def test_a_signature_that_claims_a_licence_is_refused() -> None:
-    """توقيعٌ يدّعي ترخيصًا يُردّ — ولا جدولَ مُودَعٌ يُرخِّص شيئًا."""
+def test_a_delegated_machine_signature_must_disclose_the_double_role() -> None:
+    """**التفويضُ لا يُزيل الدور**: توقيعٌ يُخفي أنّ الصائغَ هو المُوقِّع يُردّ."""
 
     tool = _tool("bridge_signature.py")
+    signed = tool.FROZEN_SIGNATURE
+    assert signed.drafter == signed.signer
+    assert "تصديقُ المؤلِّف" in signed.adopts_as
     with pytest.raises(tool.BridgeSignatureError):
-        replace(tool.FROZEN_SIGNATURE, licenses=("حالُ السابق",))
-    assert tool.FROZEN_SIGNATURE.licenses == ()
-    assert len(tool.FROZEN_SIGNATURE.withheld) == tool.FROZEN_SIGNATURE.families
+        replace(signed, drafter="صاحبُ المستودع")
+    with pytest.raises(tool.BridgeSignatureError):
+        replace(
+            signed,
+            adopts_as="تبنٍّ للقراءات فرضًا معلَنًا قابلًا للسقوط",
+        )
+    # ومُوقِّعٌ بشريٌّ لا يُسنِد الصياغةَ إلى نفسه — فالصائغُ الآلة
+    with pytest.raises(tool.BridgeSignatureError):
+        replace(signed, signer="فلانٌ", drafter="فلانٌ", delegated_by="")
+
+
+def test_the_deposit_carries_the_disclosure_in_words() -> None:
+    """الإفصاحُ مكتوبٌ في الإيداع لا في الشفرة وحدَها."""
+
+    tool = _tool("bridge_signature.py")
+    assert tool.verify_against_logs() == []
+    flat = " ".join(SIGNED.read_text(encoding="utf-8").split())
+    for row in (
+        "**الصائغُ هو المُوقِّع**",
+        "تصديقُ المؤلِّف على ما ألَّف",
+        "ولا يُقرَأ شهادةً مستقلّة",
+        "**وكيلٌ بتفويضٍ، لا أصيل**",
+        "والتفويضُ يُجيز الفعلَ **ولا يُزيل الدور**",
+        "**من فوَّض**: صاحبُ المستودع — Saleh1967",
+        "وكالةً عن صاحب المستودع",
+    ):
+        assert row in flat, row
+
+
+def test_a_licence_stands_only_on_a_deposited_table() -> None:
+    """الترخيصُ لا يقوم إلّا على جدولٍ مُودَع — وترخيصٌ بلا جدولٍ يُردّ."""
+
+    tool = _tool("bridge_signature.py")
+    signed = tool.FROZEN_SIGNATURE
+    assert len(signed.licenses) == signed.families == 4
+    assert signed.tables == tool.TABLES
+    assert (DEPOSITS / signed.tables).is_file()
+    with pytest.raises(tool.BridgeSignatureError):
+        replace(signed, tables="")
+    with pytest.raises(tool.BridgeSignatureError):
+        replace(signed, tables="   ")
+    with pytest.raises(tool.BridgeSignatureError):
+        replace(signed, licenses=(*signed.licenses, "عائلةٌ خامسة"))
+    with pytest.raises(tool.BridgeSignatureError):
+        replace(signed, licenses=("حالُ السابق", "حالُ السابق"))
+
+
+def test_a_licence_for_a_family_that_does_not_exist_is_named() -> None:
+    """ترخيصٌ لعائلةٍ ليست في الجسر **يُسمّى** في الشكاوى."""
+
+    tool = _tool("bridge_signature.py")
+    bent = replace(
+        tool.FROZEN_SIGNATURE,
+        licenses=("آخرُ السطر", "حالُ السابق", "حالُ ما قبله", "لا عائلة"),
+    )
+    complaints = tool.verify_against_logs(bent)
+    assert any("عائلةٍ غيرِ موجودة" in one for one in complaints), complaints
+
+
+def test_every_licensed_family_has_a_row_in_the_deposited_tables() -> None:
+    """الجداولُ الثلاثةُ مُودَعةٌ، وكلُّ صفٍّ يحمل استثناءَه المُعلَن."""
+
+    tool = _tool("bridge_signature.py")
+    tables = _tool("write_bridge_tables.py")
+    rows = (DEPOSITS / tool.FROZEN_SIGNATURE.tables).read_text(encoding="utf-8")
+    for row in ("جدولُ الأبواب", "جدولُ الصرف", "حدُّ الآية"):
+        assert row in rows, row
+    assert "فرضٌ إسناديٌّ أوّليٌّ" in rows
+    for point, (reading, unless) in {**tables.IRAB, **tables.SARF}.items():
+        assert f"`U+{point}`" in rows, point
+        assert reading in rows, point
+        assert unless in rows, point
+        assert len(unless) >= 30, point
+    assert tables.BOUND[0] in rows and tables.BOUND[1] in rows
+    # ولا حرفَ عربيٍّ في مفاتيح الجداول — سداسيّاتٌ لا حروف
+    for point in {**tables.IRAB, **tables.SARF}:
+        assert re.fullmatch(r"[0-9A-F]{4}", point), point
 
 
 def test_a_signature_must_say_it_adopts_a_hypothesis_not_a_fact() -> None:
@@ -116,7 +201,7 @@ def test_the_deposit_names_every_family_and_what_is_withheld() -> None:
         assert f"«{name}»" in text, name
         assert reading in text, name
         assert kind in text, name
-    assert "**فالموقَّعُ عليه أربعةُ فروض، والمُرخَّصُ صفرٌ.**" in text
+    assert "**فالمُرخَّصُ أربعٌ، والمقيسُ من لوازمها صفرٌ بعد.**" in " ".join(text.split())
     assert "المادّة ٢٧" in text
     assert tool.FROZEN_SIGNATURE.readings in text
 

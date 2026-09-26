@@ -107,9 +107,11 @@ def test_the_analysis_names_what_it_does_not_sign() -> None:
     assert "## ما **لم** يُوقَّع عليه" in text
     for row in ("الـ١٬٦٨٠", "الـ٨٢٤", "الاقتباساتُ الخمسةَ عشرَ"):
         assert row in text, row
-    assert "**وكيلٌ بتفويضٍ، لا أصيل**" in text
-    assert "**والصائغُ هو المُوقِّع**" in text
-    assert "ولا\nيُقرَأ شهادةً مستقلّة" in text
+    flat = " ".join(text.split())
+    assert "**وهذا توقيعُ وكالةٍ لا توقيعُ أصيل**" in flat
+    assert "**واليدُ يدُ الآلة**" in flat
+    assert "**والصائغُ هو الوكيلُ نفسُه**" in flat
+    assert "ولا يُقرَأ شهادةً مستقلّة" in flat
 
 
 def test_the_analysis_upholds_the_fall_and_the_constitution() -> None:
@@ -141,3 +143,67 @@ def test_no_name_from_outside_the_bytes_entered_the_witness() -> None:
     for word in ("ARABIC", "سكون", "تنوين", "إعراب", "مرفوع", "مجرور"):
         assert word not in text.split("— ما لا يدخل هذا السجلّ")[0], word
     assert unicodedata.name("ّ").startswith("ARABIC")  # الشدّةُ اسمُها خارجٌ
+
+
+def _proxy() -> Any:
+    path = REPOSITORY / "tools" / "pr45_signature.py"
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def test_the_proxy_signature_carries_the_principals_name_and_the_agents_hand() -> None:
+    """الاسمُ اسمُ الأصيل، واليدُ يدُ الوكيل — والإفصاحُ لازمٌ في البناء."""
+
+    tool = _proxy()
+    record = tool.FROZEN_PROXY
+    assert tool.verify_against_logs() == []
+    assert record.signer.endswith("Saleh1967")
+    assert record.executed_by != record.signer
+    assert record.drafter == record.executed_by
+    assert record.signer in record.authority
+    assert tool.rederive_record_digest() == tool.RECORD_DIGEST
+
+
+def test_a_proxy_that_hides_its_agency_is_refused() -> None:
+    """توقيعٌ يُخفي وكالتَه **يُردّ** — ولا يُترَك للنثر."""
+
+    from dataclasses import replace
+
+    import pytest
+
+    tool = _proxy()
+    record = tool.FROZEN_PROXY
+    for bad in (
+        {"authority": ""},
+        {"authority": "تفويضٌ من فلان"},  # لا يُسمّي صاحبَ الاسم
+        {"authority_dated": ""},
+        {"drafter": "صاحبُ المستودع"},
+        {"signer": "آلةُ القياس"},  # الآلةُ لا تكون اسمًا
+        {"signer": "  "},
+        {"signed_scope": ()},
+        {"withheld_scope": ()},
+    ):
+        with pytest.raises(tool.ProxySignatureError):
+            replace(record, **bad)
+    # وأصيلٌ يحمل سندَ وكالةٍ تلبيسٌ يُردّ
+    with pytest.raises(tool.ProxySignatureError):
+        replace(record, executed_by=record.signer, drafter=record.signer)
+
+
+def test_the_signed_scope_is_only_what_was_verified_here() -> None:
+    """الموقَّعُ عليه ما حُقِّق على المدوّنة — وكلُّ بندٍ له شاهدٌ في السجلّ."""
+
+    tool = _proxy()
+    record = tool.FROZEN_PROXY
+    assert len(record.signed_scope) == 5
+    assert len(record.withheld_scope) == 5
+    text = ANALYSIS.read_text(encoding="utf-8")
+    for row in ("٨١٧", "٠٫٢٧٠٢", "٠٫٤٥٥٠", "٠٫٦٥٦٤", "٠٫٨٧٨٦"):
+        assert row in text, row
+    witness = WITNESS.read_text(encoding="utf-8")
+    for row in ("817", "0.2702", "0.4550", "0.6564", "0.8786"):
+        assert row in witness, row

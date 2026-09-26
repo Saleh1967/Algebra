@@ -150,6 +150,10 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة؛ ويقيس النقلَ بين مجرى الحال ومجرى "
         "الحرف أمامًا ومقلوبًا بصفريٍّ مُبدَّلٍ ومجال ثقة، على ختم 4289fc6c…"
     ),
+    "rasm/run_unit_roles.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويُسنِد كلَّ نقطةِ ترميزٍ إلى قناةٍ ويبني "
+        "سجلَّ أدوار الـ١١٢ بمصادرها، على ختم a581ddb9…"
+    ),
     "rasm/run_letter_roles.py": (
         "يحتاج المدوّنةَ المشكولة والجدولَ المُودَع؛ ويعدّ أدوارَ حروف "
         "«سألتمونيها» الممكنةَ في خانة الموقع والحال، على ختم 72b39b4c…"
@@ -229,9 +233,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 51
+    assert len(found) == 52
     assert len(RUNNABLE) == 12
-    assert len(NEEDS_A_CORPUS) == 39
+    assert len(NEEDS_A_CORPUS) == 40
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -260,12 +264,13 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     """
 
     foreign = [name for name in _examples() if _imports_foreign(EXAMPLES / name)]
-    assert len(foreign) == 10
+    assert len(foreign) == 11
     reading_deposits = sorted(one for one in foreign if not one.startswith("arabic/"))
     assert reading_deposits == [
         "rasm/run_marked_contrast.py",
         "rasm/run_pan_difference.py",
         "rasm/run_schema_transition_audit.py",
+        "rasm/run_unit_roles.py",
     ]
     assert set(foreign) - set(reading_deposits) <= set(RUNNABLE)
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)

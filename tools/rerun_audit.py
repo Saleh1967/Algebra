@@ -49,9 +49,11 @@ RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
     ),
     "huffman_ascent": ("run_huffman_ascent.py", (), True),
     "lifted_bit": ("run_lifted_bit.py", (), True),
+    "lumping_barrier": ("run_lumping_barrier.py", (), False),
     "marking_contrast": ("run_marking_contrast.py", (), True),
     "markov_ladder": ("run_markov_ladder.py", (), True),
     "measured_ranking": ("run_measured_ranking.py", (), True),
+    "morph_residue": ("run_morph_residue.py", (), True),
     "number_ladder": (
         "run_number_ladder.py",
         ("--rule", "deposits/number_rule_note.md"),

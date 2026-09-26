@@ -80,8 +80,8 @@ class SealedRerun:
 FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
     corpus="37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a",
     corpus_lines=6236,
-    compared=22,
-    matched=22,
+    compared=24,
+    matched=24,
     rows=(
         (
             "arabic_token_run.log",
@@ -129,6 +129,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "7c5d86bdff465f991c414c019b7b68e6208473ab601dcac91f34d46f88976085",
         ),
         (
+            "lumping_barrier_run.log",
+            4122,
+            "573f9509bb8444ed71fbfed92d148af400625565205a83766803aa8f5f5310bb",
+        ),
+        (
             "marking_contrast_run.log",
             2661,
             "12743a6449217b35f6b0f8c2f389b2fd3a74889e0dd0e80031d35c6e171e7eb4",
@@ -142,6 +147,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "measured_ranking_run.log",
             3951,
             "6de8bba98f9289e481f21bf490456113b524a039a5c9ad38d5b4ea348ef79377",
+        ),
+        (
+            "morph_residue_run.log",
+            3194,
+            "4f48cb31994928d2469b7e118e3ac957a3b8dc9001ff1ab0bb3e46d603880a0a",
         ),
         (
             "number_ladder_run.log",

@@ -48,7 +48,7 @@ def test_no_table_is_printed_empty() -> None:
 
     rows = BRIDGE.read_text(encoding="utf-8").splitlines()
     heads = [one for one, two in enumerate(rows) if re.fullmatch(r"\|[-:| ]+\|", two)]
-    assert len(heads) == 3, heads
+    assert len(heads) == 5, heads
     for one in heads:
         assert rows[one + 1].startswith("|"), rows[one : one + 2]
 
@@ -104,6 +104,7 @@ def test_every_number_in_the_bridge_has_a_witness_or_a_derivation() -> None:
             "arabic_token_run.log",
             "pausal_split_run.log",
             "pausal_split_witness.log",
+            "morph_residue_run.log",
         )
     )
     ladder = (DEPOSITS / "context_ladder_run.log").read_text(encoding="utf-8")
@@ -117,6 +118,26 @@ def test_every_number_in_the_bridge_has_a_witness_or_a_derivation() -> None:
     for whole_gain, inner_gain in tool.lifted().values():
         stayed = float(inner_gain) / float(whole_gain) if float(whole_gain) else 0.0
         derived.add(f"{stayed:.2f}")
+    # ونِسَبُ السقف مُشتَقّةٌ كذلك — وتُعاد **بعينها** لا بجدول ضربٍ
+    morph = (DEPOSITS / "morph_residue_run.log").read_text(encoding="utf-8")
+
+    def _read(pattern: str, where: str = morph) -> float:
+        found = re.search(pattern, where)
+        assert found is not None, pattern
+        return float(found.group(1))
+
+    field = _read(r"— خاناتُ الحال: 8 \| H = ([0-9.]+)")
+    held = _read(r"مجموعُ الكسب المحجوز: \+([0-9.]+)", logs)
+    shape = _read(r"— I\(الحال؛ه\) محجوزةً: \+([0-9.]+)")
+    ceiling = _read(r"— وسقفُ ما يزيده الجارُ بعد الصورة ملحَقًا: \+([0-9.]+)")
+    for one in (
+        _read(r"— I\(الحال؛ج\) محجوزةً: \+([0-9.]+)"),
+        _read(r"— I\(الحال؛ر\) محجوزةً: \+([0-9.]+)"),
+        shape,
+        ceiling,
+    ):
+        derived.add(f"{one / field:.4f}")
+    derived.add(f"{shape / held:.2f}")
     counting = {str(one) for one in range(0, len(rows) + 1)} | {str(tool.BOXES)}
     figures = {one.translate(WESTERN) for one in re.findall(r"[٠-٩][٠-٩٫]*", body)}
     astray = sorted(

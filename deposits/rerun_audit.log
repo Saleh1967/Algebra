@@ -1,6 +1,6 @@
 — المدوّنة: 37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a | أسطرٌ 6236
 — حدُّ المقابلة: sha256 على البايتات كلِّها — لا سطرًا ولا عينًا
-— المُقابَل: 22 سجلًّا
+— المُقابَل: 24 سجلًّا
 
   السجلّ | البايتات | بصمةُ المودَع | بصمةُ المُعاد | الحكم
   arabic_token | 2702 | 1bac65d2d938c814 | 1bac65d2d938c814 | مطابق
@@ -12,9 +12,11 @@
   hasr_audit | 3272 | f4db4ad597766a58 | f4db4ad597766a58 | مطابق
   huffman_ascent | 8316 | 4ec84d6a0beecd3c | 4ec84d6a0beecd3c | مطابق
   lifted_bit | 2489 | 7c5d86bdff465f99 | 7c5d86bdff465f99 | مطابق
+  lumping_barrier | 4122 | 573f9509bb8444ed | 573f9509bb8444ed | مطابق
   marking_contrast | 2661 | 12743a6449217b35 | 12743a6449217b35 | مطابق
   markov_ladder | 1986 | aba88b38afc14c18 | aba88b38afc14c18 | مطابق
   measured_ranking | 3951 | 6de8bba98f9289e4 | 6de8bba98f9289e4 | مطابق
+  morph_residue | 3194 | 4f48cb31994928d2 | 4f48cb31994928d2 | مطابق
   number_ladder | 2590 | 65b893d06ffb7899 | 65b893d06ffb7899 | مطابق
   pausal_split | 7655 | 4fa8588f04ea0339 | 4fa8588f04ea0339 | مطابق
   praise_blame | 3507 | 0eb078b3aa2a05b6 | 0eb078b3aa2a05b6 | مطابق
@@ -26,9 +28,9 @@
   verse_ending | 8168 | 37e2558e1b5fcb57 | 37e2558e1b5fcb57 | مطابق
   word_escalation | 2682 | 9190c2d4e4a206d5 | 9190c2d4e4a206d5 | مطابق
 
-— مطابقٌ بتّاً ببتّ: 22
+— مطابقٌ بتّاً ببتّ: 24
 — مخالف: 0
-— بايتاتٌ قُوبِلت: 119822
+— بايتاتٌ قُوبِلت: 127138
 
 — المختصَرُ من كاملٍ مودَعٍ إلى جانبه:
     temporary_marking_run.log: 56 سطرًا، قُوبِل بـtemporary_marking_full.log — أسطرٌ مفقودةٌ منه 0
@@ -43,9 +45,11 @@
     hasr_audit: run_hasr_audit.py --rule deposits/hasr_rule_note.md
     huffman_ascent: run_huffman_ascent.py --text <المدوّنة>
     lifted_bit: run_lifted_bit.py --text <المدوّنة>
+    lumping_barrier: run_lumping_barrier.py
     marking_contrast: run_marking_contrast.py --text <المدوّنة>
     markov_ladder: run_markov_ladder.py --text <المدوّنة>
     measured_ranking: run_measured_ranking.py --text <المدوّنة>
+    morph_residue: run_morph_residue.py --text <المدوّنة>
     number_ladder: run_number_ladder.py --rule deposits/number_rule_note.md
     pausal_split: run_pausal_split.py --text <المدوّنة>
     praise_blame: run_praise_blame.py --text <المدوّنة> --rule deposits/praise_blame_rule.md

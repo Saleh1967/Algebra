@@ -25,6 +25,7 @@ LADDER = DEPOSITS / "context_ladder_run.log"
 TOKENS = DEPOSITS / "arabic_token_run.log"
 PAUSAL = DEPOSITS / "pausal_split_run.log"
 WITNESS = DEPOSITS / "pausal_split_witness.log"
+MORPH = DEPOSITS / "morph_residue_run.log"
 PAPER = REPOSITORY / "docs" / "جسر-البتّات.md"
 EASTERN = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
 BOXES = 8
@@ -141,6 +142,30 @@ def render() -> str:
     field_last = grab(r"— H\(ج\) = ([0-9.]+)", shown)
     identity = grab(r"— I المُشتَقّ = ([0-9.]+)", shown)
     drift = grab(r"— أقصى انحرافٍ عن الهويّة: (\S+)", shown)
+    morph = MORPH.read_text(encoding="utf-8")
+    shape_gain = grab(r"— I\(الحال؛ه\) محجوزةً: \+([0-9.]+)", morph)
+    bone_gain = grab(r"— I\(الحال؛ج\) محجوزةً: \+([0-9.]+)", morph)
+    near_gain = grab(r"— I\(الحال؛ر\) محجوزةً: \+([0-9.]+)", morph)
+    added_out = grab(r"— I\(الحال؛ر \| ه\) محجوزةً: (\S+)", morph)
+    shape_cells = grab(r"— صورُ \(ه\) منقوصةَ العلامة: (\d+)", morph)
+    bone_cells = grab(r"— صورُ \(ج\) مجرَّدةً: (\d+)", morph)
+    near_cells = grab(r"— قيمُ \(ر\) حالِ السابق: (\d+)", morph)
+    rows_here = re.findall(
+        r"^  (?:\(ه\) الصورةُ منقوصةً|\(ه، ر\) معًا) \| (\d+) \| ([0-9.]+) \|",
+        morph,
+        re.M,
+    )
+    if len(rows_here) != 2:
+        raise SystemExit("لا صفَّين للصورة ولمجموعِها مع الجار")
+    both_cells = rows_here[1][0]
+    added_in = f"{float(rows_here[0][1]) - float(rows_here[1][1]):.6f}"
+    parts = grab(r"— أقسامُها: (\d+)", morph)
+    stretch = grab(r"— نصيبُ حروف المدّ الثلاثة منها: ([0-9.]+)", morph)
+    tails = re.findall(
+        r"^    (\S+ U\+[0-9A-F]{4}) \| (\d+) \| نصيبٌ ([0-9.]+)$", morph, re.M
+    )
+    if not tails:
+        raise SystemExit("لا أقسامَ لخانة بلا علامة")
 
     out: list[str] = []
     add = out.append
@@ -283,6 +308,87 @@ def render() -> str:
         "للدرجة الأولى بعينه**، بانحرافٍ "
         f"`{eastern(drift)}`. **فبتّةُ الموضع هي اختلافُ التوزيعين لا شيءَ "
         "غيرُه** — وذلك يُسمّى ولا يُفسَّر."
+    )
+    add("")
+    add("## السقفُ الأعلى — وهو أهمُّ سطرٍ في هذا الملفّ")
+    add("")
+    add(
+        "**سؤالٌ يتقدّم كلَّ جسر**: كم من العلامةِ الأخيرة يحدّده **اللفظُ "
+        "في نفسه**؟ فإن كان أكثرَها فليس لجارِه — ولا لأيّ حكمٍ تركيبيّ — "
+        "إلّا ما بقي **بعد** معرفة صورته. فقِيس ذلك بختم `0410f435…` على "
+        f"**{eastern(words)}** لفظًا: صورةُ اللفظ **منقوصةَ علامتِه "
+        "الأخيرة** (ولا تسريب: لفظٌ بلا علامةٍ يعطي الصورةَ عينَها)."
+    )
+    add("")
+    add("| المتغيّر | قيمُه | معلوماتُه محجوزةً | نصيبُه من الحقل |")
+    add("|---|---:|---:|---:|")
+    for label_, cells, gain in (
+        ("**صورةُ اللفظ منقوصةً**", shape_cells, shape_gain),
+        ("الهيكلُ مجرَّدًا", bone_cells, bone_gain),
+        ("حالُ السابق وحدَه", near_cells, near_gain),
+    ):
+        part = f"{float(gain) / float(entropy):.4f}"
+        add(f"| {label_} | {eastern(cells)} | +{eastern(gain)} | {eastern(part)} |")
+    add("")
+    times = eastern(f"{float(shape_gain) / float(held):.2f}")
+    share_of_field = eastern(f"{float(shape_gain) / float(entropy):.4f}")
+    add(
+        f"**فصورةُ اللفظ تحمل +{eastern(shape_gain)} بتًّا محجوزًا — "
+        f"{times} ضِعفَ كسبِ السلّم كلِّه** (+{eastern(held)})، "
+        f"و**{share_of_field}** من الحقل. **فالعلامةُ الأخيرةُ في أكثرها "
+        "من بنية اللفظ لا من جواره** — وذلك مقيسٌ محجوزٌ لا رأي."
+    )
+    add("")
+    add("### وما يبقى لقراءةٍ تركيبيّةٍ — بحدّين لا برقمٍ واحد")
+    add("")
+    add(
+        "سُئل: أيزيد الجارُ شيئًا **بعد** معرفة الصورة؟ **والجوابُ لم "
+        "يُحسَم**، ويُعرَض بحدّيه:"
+    )
+    add("")
+    add(
+        f"- **محجوزًا: {eastern(added_out)}** — سالبٌ. وليس معناه أنّ "
+        f"الجارَ لا يحمل شيئًا، بل أنّ الفضاءَ اتّسع من "
+        f"{eastern(shape_cells)} خانةً إلى {eastern(both_cells)}، "
+        "**فعاقبت السَّعةُ التقديرَ**."
+    )
+    add(
+        f"- **ملحَقًا: +{eastern(added_in)}** — وهو **حدٌّ أعلى** مُسمًّى "
+        "منتفخًا **قبل النظر**، لا قياسًا."
+    )
+    add("")
+    add(
+        "**فالسؤالُ خلوٌّ مُصنَّف** (`UNCLASSIFIED`): فحصُه مُعيَّنٌ "
+        "والمقدِّرُ لم يحسمه — **لا نتيجةُ صفر**."
+    )
+    add("")
+    add(
+        f"**وأمّا السقفُ فيُقرَأ**: حتّى بالحدّ الأعلى المنتفخ، ما يزيده "
+        f"الجارُ بعد الصورة **+{eastern(added_in)}** — أي **دون نصفِ** "
+        f"كسبِ السلّم وحدَه (+{eastern(held)})، و"
+        f"**{eastern(f'{float(added_in) / float(entropy):.4f}')}** "
+        "من الحقل. "
+        "**فأكثرُ نصفِ ما قِيس لبتّات الجوار هو بنيةُ اللفظ نفسِها، وما "
+        "يبقى لأيّ قراءةٍ تركيبيّة أربعةٌ من مئةٍ من الحقل فأقلّ.**"
+    )
+    add("")
+    add(f"### وخانةُ `{bare}` صارت مُسمّاةً بأقسامها")
+    add("")
+    add(
+        f"أكبرُ خانةٍ في الهدف — نصيبُها {eastern(bare_share)} — **شُقِّقت "
+        f"بحرف خاتمتها**: **{eastern(parts)}** قسمًا، لا كتلةً واحدة. "
+        "وذلك فحصُ بايتاتٍ لا تفسيرٌ نحويّ."
+    )
+    add("")
+    add("| حرفُ الخاتمة | العدد | نصيبُه من الخانة |")
+    add("|---|---:|---:|")
+    for letter, count, share in tails:
+        add(f"| `{letter}` | {eastern(count)} | {eastern(share)} |")
+    add("")
+    add(
+        f"**وحروفُ المدّ الثلاثةُ المختومةُ {eastern(stretch)} منها.** "
+        "فالفجوةُ الكبرى **موزّعةٌ على حروفٍ مسمّاةٍ بنقاط ترميزها**، "
+        "ومَن أراد قراءتَها فليودِع جدولًا يُسنِد الحرفَ إلى بنيته."
     )
     add("")
     add("## ما لا يُدَّعى في هذا الملفّ")

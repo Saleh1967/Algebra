@@ -43,8 +43,19 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
     "arabic/measure_sifa_candidate.py": (),
     "arabic/read_slgae_separation.py": (),
     "hawk_dove/run_hawk_dove.py": (),
+    "rasm/run_lumping_barrier.py": (),
     "rasm/run_number_ladder.py": (
         "--rule",
+        "deposits/number_rule_note.md",
+    ),
+    "rasm/run_hasr_audit.py": (
+        "--rule",
+        "deposits/hasr_rule_note.md",
+    ),
+    "rasm/run_stirling_greedy.py": (
+        "--hasr",
+        "deposits/hasr_rule_note.md",
+        "--numbers",
         "deposits/number_rule_note.md",
     ),
     "irab/run_harf_measurement.py": ("--smoke", "--defer", "error"),
@@ -54,6 +65,24 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
 
 # مثالٌ يحتاج مدوّنةً لم تُودَع ههنا؛ يُعَدّ ويُفحَص رفضُه، ولا يُشغَّل
 NEEDS_A_CORPUS: dict[str, str] = {
+    "rasm/run_ceiling_census.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس سقفَ «الباقي ثابتًا» في المسندين"
+    ),
+    "rasm/run_gemination_ceiling.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس سقفَ الساكن بفكّ المشدَّد"
+    ),
+    "rasm/run_table_consequence.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس لازمَ الجدول المُودَع على مسندين"
+    ),
+    "rasm/run_morph_residue.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس ما تحدّده صورةُ اللفظ نفسِها"
+    ),
+    "rasm/run_pausal_split.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس البتّاتَ نفسَها على مسندين"
+    ),
+    "rasm/run_pausal_witness.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس أواخرَ الأسطر ويُقابلها بالطرح"
+    ),
     "rasm/run_final_vowel_entropy.py": (
         "يحتاج المحاذاةَ المشكولةَ (`--aligned`) وهي متنٌ لم يُودَع"
     ),
@@ -221,9 +250,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 49
-    assert len(RUNNABLE) == 12
-    assert len(NEEDS_A_CORPUS) == 37
+    assert len(found) == 58
+    assert len(RUNNABLE) == 15
+    assert len(NEEDS_A_CORPUS) == 43
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -263,7 +292,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 39
+    assert len(_examples()) - len(foreign) == 48
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

@@ -165,7 +165,7 @@ def test_every_run_either_binds_its_conditions_or_is_named_out_of_reach() -> Non
     assert read, "لم يُقرَأ تشغيلٌ واحد — القراءةُ نفسُها معطوبة"
     assert read | OUT_OF_REACH == every, sorted(every - (read | OUT_OF_REACH))
     assert not read & OUT_OF_REACH, sorted(read & OUT_OF_REACH)
-    assert len(read) == 25
+    assert len(read) == 29
 
 
 def test_every_sealed_condition_is_judged_in_its_own_run() -> None:
@@ -203,7 +203,10 @@ def test_every_run_names_the_reasoning_its_measurement_did_not_support() -> None
         "test_huffman_ascent_run.py": ("ل٤",),
         "test_context_ladder_run.py": ("ق٦",),
         "test_state_cycle_run.py": ("ح٣", "ح٤"),
+        "test_stirling_greedy_run.py": ("غ٢", "غ٩"),
         "test_transfer_arrow_run.py": ("ظ٧",),
+        "test_pausal_split_run.py": ("و٩", "و١٠"),
+        "test_morph_residue_run.py": ("ص١١",),
     }, named
 
 
@@ -238,7 +241,7 @@ def test_every_fallen_condition_quotes_what_fell_with_it() -> None:
         if bad:
             unquoted[one.run.name] = bad
     assert not unquoted, unquoted
-    assert sum(len(one.falsified()) for one in read_all()) == 47
+    assert sum(len(one.falsified()) for one in read_all()) == 55
 
 
 def test_every_claim_of_isolation_answers_whether_its_bound_binds_alike() -> None:
@@ -267,12 +270,13 @@ def test_every_claim_of_isolation_answers_whether_its_bound_binds_alike() -> Non
     assert sum(one is True for one in answered.values()) == 1
 
 
-def test_the_four_guards_are_named_in_the_register_of_flaws() -> None:
+def test_every_guard_is_named_in_the_register_of_flaws() -> None:
     """ما صار له مانعٌ يُشطَب من «بلا مانع» في سجلّ الأعطال، بالاسم."""
 
     register = REPOSITORY / "docs" / "سجل-الأعطال.md"
     text = register.read_text(encoding="utf-8")
-    for guard in ("أ)", "ب)", "ج)", "د)"):
+    for guard in ("أ)", "ب)", "ج)", "د)", "هـ)"):
         assert f"**المانعُ {guard}**" in text, guard
     assert "test_sealed_conditions_audit" in text
+    assert "test_ceiling_audit" in text
     assert "بلا مانع" in text  # والقاعدةُ نفسُها تبقى مكتوبة

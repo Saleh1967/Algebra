@@ -94,6 +94,19 @@ FORBIDDEN = (
 DECLARATION = "— ما لا يدخل هذا السجلّ"
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ق٧": (
+        Fraction(26106, 10000),
+        "مجموعُ ما يُزال من الشكّ لا يفوق `H(الحال)`، وهي ٢٫٦١٠٦ في سجلّ هذا التشغيل",
+    ),
+    "ق٨": (
+        Fraction(1),
+        "نصيبُ درجةٍ من مجموع الكسب: البسطُ جزءٌ من المقام بحكم البناء",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

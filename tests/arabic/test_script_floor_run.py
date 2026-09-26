@@ -71,6 +71,15 @@ HELD_OUT = 1.9207
 ACHIEVED = 1.3177
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ج٤": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _exact(measured: float) -> Fraction:
     return Fraction(measured).limit_denominator(10**9)
 

@@ -1,0 +1,64 @@
+— المدوّنة: 37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a | أسطرٌ 6236
+— حدُّ المقابلة: sha256 على البايتات كلِّها — لا سطرًا ولا عينًا
+— المُقابَل: 25 سجلًّا
+
+  السجلّ | البايتات | بصمةُ المودَع | بصمةُ المُعاد | الحكم
+  arabic_token | 2702 | 1bac65d2d938c814 | 1bac65d2d938c814 | مطابق
+  basmala_lifted | 1725 | 921e166a764f1e96 | 921e166a764f1e96 | مطابق
+  context_ladder | 3880 | 56056bcc070c8451 | 56056bcc070c8451 | مطابق
+  discovered_ascent | 4999 | bb3499767e47606f | bb3499767e47606f | مطابق
+  greedy_algebra | 2857 | c938f1e2986fe766 | c938f1e2986fe766 | مطابق
+  greedy_licence | 5664 | 55df1aa8c8aa6755 | 55df1aa8c8aa6755 | مطابق
+  hasr_audit | 3272 | f4db4ad597766a58 | f4db4ad597766a58 | مطابق
+  huffman_ascent | 8316 | 4ec84d6a0beecd3c | 4ec84d6a0beecd3c | مطابق
+  lifted_bit | 2489 | 7c5d86bdff465f99 | 7c5d86bdff465f99 | مطابق
+  lumping_barrier | 4122 | 573f9509bb8444ed | 573f9509bb8444ed | مطابق
+  marking_contrast | 2661 | 12743a6449217b35 | 12743a6449217b35 | مطابق
+  markov_ladder | 1986 | aba88b38afc14c18 | aba88b38afc14c18 | مطابق
+  measured_ranking | 3951 | 6de8bba98f9289e4 | 6de8bba98f9289e4 | مطابق
+  morph_residue | 3194 | 4f48cb31994928d2 | 4f48cb31994928d2 | مطابق
+  number_ladder | 2590 | 65b893d06ffb7899 | 65b893d06ffb7899 | مطابق
+  pausal_split | 7655 | 4fa8588f04ea0339 | 4fa8588f04ea0339 | مطابق
+  praise_blame | 3507 | 0eb078b3aa2a05b6 | 0eb078b3aa2a05b6 | مطابق
+  separation_rule | 1380 | 60ff64c698c62531 | 60ff64c698c62531 | مطابق
+  state_cycle | 2767 | 7677e2b30259d786 | 7677e2b30259d786 | مطابق
+  stirling_greedy | 4060 | d46c801c6406633e | d46c801c6406633e | مطابق
+  table_consequence | 3725 | 3e26d748a52e2eb4 | 3e26d748a52e2eb4 | مطابق
+  temporary_marking | 40195 | 17a9d1554ceaca94 | 17a9d1554ceaca94 | مطابق
+  transfer_arrow | 2316 | 6d26453065961266 | 6d26453065961266 | مطابق
+  verse_ending | 8168 | 37e2558e1b5fcb57 | 37e2558e1b5fcb57 | مطابق
+  word_escalation | 2682 | 9190c2d4e4a206d5 | 9190c2d4e4a206d5 | مطابق
+
+— مطابقٌ بتّاً ببتّ: 25
+— مخالف: 0
+— بايتاتٌ قُوبِلت: 130863
+
+— المختصَرُ من كاملٍ مودَعٍ إلى جانبه:
+    temporary_marking_run.log: 56 سطرًا، قُوبِل بـtemporary_marking_full.log — أسطرٌ مفقودةٌ منه 0
+
+— الاستدعاءُ كما يجب، ومن خالفه قرأ عطلَ استدعاءٍ عطلَ رقم:
+    arabic_token: run_state_cycle.py --text <المدوّنة> --arabic-only
+    basmala_lifted: run_basmala_lifted.py --text <المدوّنة>
+    context_ladder: run_context_ladder.py --text <المدوّنة>
+    discovered_ascent: run_discovered_ascent.py --text <المدوّنة>
+    greedy_algebra: run_greedy_algebra.py --text <المدوّنة>
+    greedy_licence: run_greedy_licence.py --text <المدوّنة>
+    hasr_audit: run_hasr_audit.py --rule deposits/hasr_rule_note.md
+    huffman_ascent: run_huffman_ascent.py --text <المدوّنة>
+    lifted_bit: run_lifted_bit.py --text <المدوّنة>
+    lumping_barrier: run_lumping_barrier.py
+    marking_contrast: run_marking_contrast.py --text <المدوّنة>
+    markov_ladder: run_markov_ladder.py --text <المدوّنة>
+    measured_ranking: run_measured_ranking.py --text <المدوّنة>
+    morph_residue: run_morph_residue.py --text <المدوّنة>
+    number_ladder: run_number_ladder.py --rule deposits/number_rule_note.md
+    pausal_split: run_pausal_split.py --text <المدوّنة>
+    praise_blame: run_praise_blame.py --text <المدوّنة> --rule deposits/praise_blame_rule.md
+    separation_rule: run_separation_rule.py --text <المدوّنة>
+    state_cycle: run_state_cycle.py --text <المدوّنة>
+    stirling_greedy: run_stirling_greedy.py --hasr deposits/hasr_rule_note.md --numbers deposits/number_rule_note.md
+    table_consequence: run_table_consequence.py --text <المدوّنة>
+    temporary_marking: run_temporary_marking.py --text <المدوّنة>
+    transfer_arrow: run_transfer_arrow.py --text <المدوّنة>
+    verse_ending: run_verse_ending.py --text <المدوّنة>
+    word_escalation: run_word_escalation.py --text <المدوّنة>

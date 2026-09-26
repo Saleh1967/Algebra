@@ -94,6 +94,23 @@ FALLS_OUT = 3
 LAST_STEP_OUT = 0.0693
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ش٦": (
+        Fraction(1),
+        "نصيبُ أغلبِ خانةٍ: قد تكون الخاناتُ كلُّها واحدةً فيبلغ الواحد",
+    ),
+    "ش٧": (
+        Fraction(1),
+        "نصيبُ أغلبِ خانةٍ كما في ش٦",
+    ),
+    "ش١٢": (
+        Fraction(1),
+        "`I(X؛Y) ≤ H(Y)` مبرهنةً، وY **بتّةٌ** فإنتروبيتُها لا تفوق الواحد",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

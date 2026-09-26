@@ -62,6 +62,15 @@ LOCKED_FROM = 10
 LOCKED_GROUPS = 23
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ف٢": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _rows() -> list[tuple[int, int, int, float, float]]:
     text = LOG.read_text(encoding="utf-8")
     found = re.findall(

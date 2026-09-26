@@ -101,6 +101,17 @@ NOW = 55_160
 HALVING = 46_726
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "و٤": (
+        Fraction(162557, 10000),
+        "ثمنُ لابلاس `−log2((c+1)/(n+k))` أقصاه `log2(n+k)` عند `c = 0`؛ "
+        "وk = ٢ للقناة، وn ≤ ٧٨٬٢٤٥ — فالسقفُ ١٦٫٢٥٥٧. "
+        "**وهو حدٌّ سليمٌ غيرُ محكَم**، ويُقال كذلك لا يُسكَت عنه.",
+    ),
+}
+
+
 def _exact(measured: float) -> Fraction:
     return Fraction(measured).limit_denominator(10**9)
 

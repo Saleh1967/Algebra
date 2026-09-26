@@ -37,6 +37,16 @@ def _tool() -> Any:
     return module
 
 
+def _signature() -> Any:
+    path = REPOSITORY / "tools" / "bridge_signature.py"
+    spec = importlib.util.spec_from_file_location(path.stem, path)
+    assert spec is not None and spec.loader is not None
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_the_bridge_is_regenerated_and_never_typed() -> None:
     """المكتوبُ مطابقٌ لما تولّده الأداة — حرفًا بحرف."""
 
@@ -168,10 +178,29 @@ def test_no_line_claims_a_proven_linguistic_meaning() -> None:
     written = BRIDGE.read_text(encoding="utf-8")
     assert "**لا بتّةَ ههنا بُرهنت إفادتُها اللغويّة.**" in written
     assert "**ولا جسرَ ههنا مُرخَّص**" in written
-    assert "التوقيعُ فعلُ صاحب المستودع" in written
+    assert "**ولا تُوقِّع الآلةُ ما صاغته**" in written
+    assert "**والمُرخَّصُ صفرٌ**" in written
     for one in written.splitlines():
         if "بُرهن" in one and "لغوي" in one:
             assert one.lstrip().startswith("- **لا بتّةَ"), one
+
+
+def test_the_signature_is_carried_in_the_bridge_and_bound_to_it() -> None:
+    """الجسرُ يحمل المُوقِّعَ وبصمةَ ما وُقِّع عليه — ولا يُقرَأ ترخيصًا."""
+
+    tool = _tool()
+    hand = _signature()
+    written = BRIDGE.read_text(encoding="utf-8")
+    assert hand.FROZEN_SIGNATURE.readings[:16] in written
+    assert hand.FROZEN_SIGNATURE.signer in written
+    assert hand.rederive_readings_digest(tool.FAMILIES) == (
+        hand.FROZEN_SIGNATURE.readings
+    )
+    assert hand.verify_against_logs() == []
+    assert hand.FROZEN_SIGNATURE.licenses == ()
+    assert "موقَّعٌ فرضًا، غيرُ مُرخَّصٍ برهانًا" in written
+    for name in tool.FAMILIES:
+        assert f"### «{name}»" in written, name
 
 
 def test_the_families_are_exhaustive_over_the_questions() -> None:

@@ -65,7 +65,7 @@ def test_every_flaw_an_article_cites_is_recorded_in_the_register() -> None:
         int(one.translate(EASTERN))
         for one in re.findall(r"^## ([٠-٩]+)\)", register, re.MULTILINE)
     )
-    assert highest == 26
+    assert highest == 27
     assert all(int(one.translate(EASTERN)) <= highest for one in cited)
 
 

@@ -10,6 +10,11 @@
 
 **والمصادرُ ستّة، مغلقة**: بايتات · اصطلاح الشجرة · مُودَع · نصّ صاحب
 المستودع · منقول من الكتاب · UNCLASSIFIED.
+
+**وتشغيلُ ختم `f23fc0cd…` (`--signed`)** يضيف سابعًا: جدولٌ وقّعه صاحبُ
+المستودع (`deposits/unit_roles_draft.tsv`)، يملأ كلَّ خانةٍ UNCLASSIFIED؛
+وخاناتُ النحويّ التي يذكرها باب الحرف في الكتاب تحمل نصَّه حرفيًّا. وبلا
+`--signed` يبقى السجلُّ كما شُغّل في ختم `a581ddb9…`.
 """
 
 from __future__ import annotations
@@ -45,7 +50,44 @@ DEPOSITED = "مُودَع"
 OWNER = "نصّ صاحب المستودع"
 BOOK = "منقول من الكتاب"
 UNCLASSIFIED = "UNCLASSIFIED"
-SOURCES = (BYTES, TREE, DEPOSITED, OWNER, BOOK, UNCLASSIFIED)
+SIGNED = "جدولٌ وقّعه صاحبُ المستودع"
+SOURCES = (BYTES, TREE, DEPOSITED, OWNER, BOOK, UNCLASSIFIED, SIGNED)
+
+ROLES_TABLE = REPOSITORY / "deposits" / "unit_roles_draft.tsv"
+SIGNATURE_MARK = "# التوقيع: موقَّع"
+TABLE_COLUMNS = (
+    "أبجدي: القيمة",
+    "صوتي: الصفة",
+    "اشتقاقي",
+    "صرفي",
+    "نحوي",
+    "إعرابي",
+    "الدال والمدلول معًا",
+    "وظيفي: الجدول المُودَع",
+)
+"""أعمدةُ الجدول الموقَّع بعد عمود الوحدة، بترتيبها؛ والأخيرُ تكملةُ الوظيفيّ."""
+
+BOOK_NAHWI = {
+    "بِ": (
+        "«الباء»: تكون للإلصاق كقولك: به داء، وقد تكون للاستعانة كقولك: كتبت بالقلم",
+    ),
+    "لِ": ("«اللام»: تكون للاختصاص كقولك: المال لزيد", "ولام الأمر في قولك ليفعل زيد"),
+    "لَ": (
+        "ولام جواب القسم في قولك: والله لأفعلن كذا",
+        "ولام الابتداء في قولك: لزيد منطلق",
+    ),
+    "لْ": ("لام التعريف الداخلة على الاسم المنكر لتعريفه كالرجل",),
+    "وَ": ("«الواو»: هـي لمطـلق الجـمـع لا تفيد ترتيباً ولا معية",),
+    "فَ": ("«الفاء»: تفيد الترتيب والتعقيب كقولك: جاء زيد فعمرو",),
+    "كَ": ("«الكاف»: قد تكون حرفاً للتشبيه كقولك: فلان كالبدر",),
+    "تَ": ("و«تاء القسم» مبدلة من «الواو» في قولك: تالله",),
+    "تْ": ("العاشر: تاء التأنيث الساكنة في قولك: فعلتْ كذا",),
+    "اَ": ("وحروف الاستفهام وهي «الهمزة» و«هل» في قولك: أزيد قام؟",),
+    "سَ": ("وحروف الاستقبال وهي: «السين» و«سوف»",),
+    "نْ": ("الحادي عشر: «التنوين» و«النون المؤكدة»",),
+    "هَ": ("الخامس: حروف التنبيه، وهي: «ها»",),
+}
+"""نصُّ باب الحرف في «الشخصية الإسلامية» ج٣ بحروفه — تُطابَق على الملفّ حيث وُجد."""
 
 LEVELS = (
     "ترميزي",
@@ -312,8 +354,72 @@ def _makhraj(letter: str) -> Cell:
     return Cell("", UNCLASSIFIED, "حرفٌ لا يرد في الجدول المُودَع")
 
 
+def signed_table(path: Path = ROLES_TABLE) -> dict[tuple[str, str], dict[str, str]]:
+    """الجدولُ الموقَّع: فارغٌ إن لم يقل سطرُ توقيعه «موقَّع»."""
+
+    lines = path.read_text(encoding="utf-8").split("\n")
+    if not any(line.startswith(SIGNATURE_MARK) for line in lines):
+        return {}
+    table: dict[tuple[str, str], dict[str, str]] = {}
+    for line in lines:
+        if not line or line.startswith("#"):
+            continue
+        unit, *cells = line.split("\t")
+        if len(cells) != len(TABLE_COLUMNS):
+            raise ValueError(f"صفٌّ بغير أعمدته: {unit}")
+        table[(unit[0], unit[1])] = dict(zip(TABLE_COLUMNS, cells, strict=True))
+    return table
+
+
+def missing_book_quotes(book: Path) -> list[str]:
+    """اقتباساتُ باب الحرف التي لا توجد بحروفها في ملفّ الكتاب."""
+
+    words = book.read_text(encoding="utf-8")
+    return [one for quotes in BOOK_NAHWI.values() for one in quotes if one not in words]
+
+
+def fill_from_signed(
+    rows: dict[tuple[str, str], dict[str, Cell]],
+    table: dict[tuple[str, str], dict[str, str]],
+) -> None:
+    """تُملأ كلُّ خانةٍ UNCLASSIFIED من الجدول الموقَّع؛ والنحويُّ من الكتاب إن ذكره."""
+
+    for unit, cells in rows.items():
+        given = table.get(unit)
+        if given is None:
+            continue
+        for level in TABLE_COLUMNS:
+            if cells[level].source != UNCLASSIFIED:
+                continue
+            quotes = BOOK_NAHWI.get("".join(unit)) if level == "نحوي" else None
+            if quotes:
+                cells[level] = Cell(
+                    " | ".join(f"«{one}»" for one in quotes)
+                    + " — وصياغةُ الجدول الموقَّع: "
+                    + given[level],
+                    BOOK,
+                )
+            else:
+                cells[level] = Cell(given[level], SIGNED)
+
+
+def final_share(text: str, unit: tuple[str, str]) -> tuple[int, int]:
+    """ك٣ وك٤: (وقوعاتُ الوحدة آخرَ لفظها، وقوعاتُها كلُّها)."""
+
+    peeler = _load("run_cv_peel")
+    last = total = 0
+    for line in text.split("\n"):
+        for token in line.replace(MARKUP, " ").split():
+            units, _ = peeler.peel(token)
+            total += sum(1 for one in units if tuple(one) == unit)
+            if units and tuple(units[-1]) == unit:
+                last += 1
+    return (last, total)
+
+
 def registry(
     text: str,
+    signed: bool = False,
 ) -> tuple[dict[tuple[str, str], dict[str, Cell]], dict[tuple[str, str], Profile]]:
     """السجلّ: ١١٢ وحدةً × خمسةَ عشرَ مستوًى، ومعه ملفُّ كلّ وحدة."""
 
@@ -438,6 +544,8 @@ def registry(
             )
             cells["المدلول وحده"] = Cell(MUHMAL, BOOK)
             rows[unit] = cells
+    if signed:
+        fill_from_signed(rows, signed_table())
     return (rows, found)
 
 
@@ -464,6 +572,8 @@ def coverage(rows: dict[tuple[str, str], dict[str, Cell]]) -> dict[str, Counter[
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--text", type=Path, required=True)
+    parser.add_argument("--signed", action="store_true")
+    parser.add_argument("--book", type=Path)
     given = parser.parse_args()
 
     raw = given.text.read_text(encoding="utf-8")
@@ -477,7 +587,7 @@ def main() -> int:
     depth = _load("run_surface_depth")
     print(f"أسطرٌ لا تُعاد: {depth.unrebuilt_lines(text)}")
 
-    rows, found = registry(text)
+    rows, found = registry(text, signed=given.signed)
     print(f"الوحداتُ في السجلّ: {len(rows)} | المرصودة: {len(found)}")
     print(f"الخاناتُ: {len(rows) * len(LEVELS)} | الصامتة: {silent_cells(rows)}")
     for level, sources in coverage(rows).items():
@@ -488,6 +598,21 @@ def main() -> int:
     marked, bare = single_letter_tokens(text)
     print(f"ج٥: عليه علامة {len(marked)} | عارٍ {len(bare)} {Counter(bare)}")
     print(f"حركةٌ على ألفٍ بعدها: {sum(displaced_by_tanwin(text).values())}")
+    if given.signed:
+        unclassified = sum(
+            1
+            for cells in rows.values()
+            for cell in cells.values()
+            if cell.source == UNCLASSIFIED
+        )
+        print(f"\nك٢: غيرُ المصنَّف {unclassified}")
+        for name, unit in (("ك٣", ("م", SUKUN)), ("ك٤", ("ت", SUKUN))):
+            last, total = final_share(text, unit)
+            print(
+                f"{name}: {''.join(unit)} آخرًا {last} من {total} = {last / total:.4f}"
+            )
+    if given.book is not None:
+        print(f"اقتباساتٌ غائبةٌ عن الكتاب: {missing_book_quotes(given.book)}")
     return 0
 
 

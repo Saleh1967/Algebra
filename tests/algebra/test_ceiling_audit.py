@@ -19,7 +19,7 @@
 سقفٍ مُصرَّحٍ به، ولا يردُّ سقفًا مُصرَّحًا خطأً.**
 
 **والدَّينُ مكشوفٌ ومقيَّد**: ما لم يُصرَّح بسقفه من الأختام السابقة
-معروضٌ بعينه في `CEILING_NOT_DECLARED` — **تسعةٌ وعشرون شرطًا في سبعةَ عشرَ
+معروضٌ بعينه في `CEILING_NOT_DECLARED` — **اثنان وعشرون شرطًا في خمسةَ عشرَ
 ملفًّا**، **يُرى ولا ينمو**. وكلُّ ختمٍ جديدٍ يلزمه التصريح.
 """
 
@@ -40,7 +40,6 @@ from algebra.signified import Direction
 
 # دَينٌ **يُرى ولا ينمو**: شروطٌ من أختامٍ سابقةٍ لم يُصرَّح بسقفها بعد
 CEILING_NOT_DECLARED: dict[str, tuple[str, ...]] = {
-    "test_arabic_token_run.py": ("ط١٠", "ط١٢", "ط٧"),
     "test_basmala_lifted_run.py": ("ر٥", "ر٨"),
     "test_context_ladder_run.py": ("ق٧", "ق٨"),
     "test_crossing_census_run.py": ("ف٢",),
@@ -52,13 +51,12 @@ CEILING_NOT_DECLARED: dict[str, tuple[str, ...]] = {
     "test_residue_derivation_run.py": ("و٤",),
     "test_script_floor_run.py": ("ج٤",),
     "test_separation_rule_run.py": ("ص٣",),
-    "test_state_cycle_run.py": ("ح١٢", "ح٥", "ح٧", "ح٨"),
     "test_transfer_arrow_run.py": ("ظ٧", "ظ٩"),
     "test_verse_ending_run.py": ("خ٩",),
     "test_vowel_ladder_run.py": ("س٤",),
     "test_word_escalation_run.py": ("ك١١", "ك١٢"),
 }
-OWING = 29
+OWING = 22
 LEAST_REASON = 25
 
 
@@ -157,7 +155,7 @@ def test_every_declared_ceiling_holds_its_threshold_and_is_reasoned() -> None:
         assert len(why) >= LEAST_REASON, (name, identifier, why)
         seen += 1
     assert seen == len(_bounded()) - OWING
-    assert seen == 6
+    assert seen == 13
 
 
 def test_the_guard_says_what_it_does_not_do() -> None:
@@ -167,5 +165,5 @@ def test_the_guard_says_what_it_does_not_do() -> None:
     text = " ".join(__doc__.split())
     assert "**لا تُحسَب السقوفُ آليًّا**" in text
     assert "ولا يردُّ سقفًا مُصرَّحًا خطأً" in text
-    assert "**تسعةٌ وعشرون شرطًا في سبعةَ عشرَ ملفًّا**" in text
+    assert "**اثنان وعشرون شرطًا في خمسةَ عشرَ ملفًّا**" in text
     assert "**يُرى ولا ينمو**" in text

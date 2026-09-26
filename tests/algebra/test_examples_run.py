@@ -65,6 +65,9 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
 
 # مثالٌ يحتاج مدوّنةً لم تُودَع ههنا؛ يُعَدّ ويُفحَص رفضُه، ولا يُشغَّل
 NEEDS_A_CORPUS: dict[str, str] = {
+    "rasm/run_ceiling_census.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس سقفَ «الباقي ثابتًا» في المسندين"
+    ),
     "rasm/run_gemination_ceiling.py": (
         "يحتاج المدوّنةَ المُقفَلة؛ ويقيس سقفَ الساكن بفكّ المشدَّد"
     ),
@@ -247,9 +250,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 57
+    assert len(found) == 58
     assert len(RUNNABLE) == 15
-    assert len(NEEDS_A_CORPUS) == 42
+    assert len(NEEDS_A_CORPUS) == 43
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -289,7 +292,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 47
+    assert len(_examples()) - len(foreign) == 48
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

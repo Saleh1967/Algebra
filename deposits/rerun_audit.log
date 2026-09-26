@@ -1,6 +1,6 @@
 — المدوّنة: 37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a | أسطرٌ 6236
 — حدُّ المقابلة: sha256 على البايتات كلِّها — لا سطرًا ولا عينًا
-— المُقابَل: 24 سجلًّا
+— المُقابَل: 25 سجلًّا
 
   السجلّ | البايتات | بصمةُ المودَع | بصمةُ المُعاد | الحكم
   arabic_token | 2702 | 1bac65d2d938c814 | 1bac65d2d938c814 | مطابق
@@ -23,14 +23,15 @@
   separation_rule | 1380 | 60ff64c698c62531 | 60ff64c698c62531 | مطابق
   state_cycle | 2767 | 7677e2b30259d786 | 7677e2b30259d786 | مطابق
   stirling_greedy | 4060 | d46c801c6406633e | d46c801c6406633e | مطابق
+  table_consequence | 3725 | 3e26d748a52e2eb4 | 3e26d748a52e2eb4 | مطابق
   temporary_marking | 40195 | 17a9d1554ceaca94 | 17a9d1554ceaca94 | مطابق
   transfer_arrow | 2316 | 6d26453065961266 | 6d26453065961266 | مطابق
   verse_ending | 8168 | 37e2558e1b5fcb57 | 37e2558e1b5fcb57 | مطابق
   word_escalation | 2682 | 9190c2d4e4a206d5 | 9190c2d4e4a206d5 | مطابق
 
-— مطابقٌ بتّاً ببتّ: 24
+— مطابقٌ بتّاً ببتّ: 25
 — مخالف: 0
-— بايتاتٌ قُوبِلت: 127138
+— بايتاتٌ قُوبِلت: 130863
 
 — المختصَرُ من كاملٍ مودَعٍ إلى جانبه:
     temporary_marking_run.log: 56 سطرًا، قُوبِل بـtemporary_marking_full.log — أسطرٌ مفقودةٌ منه 0
@@ -56,6 +57,7 @@
     separation_rule: run_separation_rule.py --text <المدوّنة>
     state_cycle: run_state_cycle.py --text <المدوّنة>
     stirling_greedy: run_stirling_greedy.py --hasr deposits/hasr_rule_note.md --numbers deposits/number_rule_note.md
+    table_consequence: run_table_consequence.py --text <المدوّنة>
     temporary_marking: run_temporary_marking.py --text <المدوّنة>
     transfer_arrow: run_transfer_arrow.py --text <المدوّنة>
     verse_ending: run_verse_ending.py --text <المدوّنة>

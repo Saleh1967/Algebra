@@ -30,6 +30,7 @@ REPOSITORY = Path(__file__).resolve().parents[1]
 DEPOSITS = REPOSITORY / "deposits"
 LADDER = DEPOSITS / "context_ladder_run.log"
 MORPH = DEPOSITS / "morph_residue_run.log"
+TRIED = DEPOSITS / "table_consequence_run.log"
 TABLES = DEPOSITS / "bridge_tables.md"
 EASTERN = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
 
@@ -145,6 +146,16 @@ def render() -> str:
     letters = tails()
     field = grab(r"— خاناتُ الحال: 8 \| H = ([0-9.]+)", LADDER.read_text("utf-8"))
     ceiling = grab(r"— ونصيبُ السقفِ من الحقل: ([0-9.]+)", MORPH.read_text("utf-8"))
+    tried = TRIED.read_text(encoding="utf-8")
+    near_shifting = grab(r"— I\(الحال؛ر\) محجوزةً على \(متبدّلة\): \+([0-9.]+)", tried)
+    shape_shifting = grab(r"— I\(الحال؛ه\) محجوزةً على \(متبدّلة\): \+([0-9.]+)", tried)
+    near_whole = grab(r"— I\(الحال؛ر\) محجوزةً: \+([0-9.]+)", MORPH.read_text("utf-8"))
+    quiet_steady = grab(r"— نصيبُ السكون: ثابتة ([0-9.]+) \|", tried)
+    quiet_shifting = grab(r"— نصيبُ السكون: ثابتة [0-9.]+ \| متبدّلة ([0-9.]+)", tried)
+    tanween_gap = grab(r"— وفرقُه \(متبدّلة − ثابتة\): \+([0-9.]+)", tried)
+    times = f"{float(near_shifting) / float(near_whole):.2f}"
+    dominance = f"{float(shape_shifting) / float(near_shifting):.2f}"
+    backwards = f"{float(quiet_shifting) / float(quiet_steady):.2f}"
     out: list[str] = []
     add = out.append
     add("# جداولُ الجسر — **مُودَعةٌ بتفويضٍ، فرضًا يُقاس ويُنقَض**")
@@ -222,13 +233,50 @@ def render() -> str:
         "**فالجدولُ يُدخِل القراءةَ في السقف، لا يرفعه.**"
     )
     add("")
-    add("## وأوّلُ ما يلزم عنها فيُقاس")
+    add("## ما سقط من هذا الجدول — مقيسًا بختم `9470c8f0…`")
     add("")
     add(
-        "**لازمٌ مُعلَنٌ قابلٌ للسقوط**: إن كانت العلامةُ الأخيرةُ حكمَ "
-        "بابٍ كما يقول الجدول، فالهياكلُ التي تثبت علامتُها **مبنيّةٌ** "
-        "والتي تتبدّل **معربة**. **وذلك يُقاس بختمٍ يُدفَع قبل تشغيله**، "
-        "ولم يُقَس بعد — **فهو دَينٌ مُعلَنٌ لا نتيجةٌ مُدَّعاة**."
+        "**اختُبِر الجدولُ ولم يُترَك نثرًا.** اثنا عشرَ شرطًا، **عشرٌ "
+        "صمدت وصفّان سقطا** — ويُسجَّل السقوطُ ههنا، **ولا يُصلَح صفٌّ "
+        "بعد النظر**."
+    )
+    add("")
+    add("| اللازم | المُقاس | الحكم |")
+    add("|---|---|---|")
+    add(
+        f"| **ج٨** الجارُ أخبرُ حيث تتبدّل العلامة | "
+        f"+{eastern(near_shifting)} — **{eastern(times)} ضِعفَ** "
+        f"+{eastern(near_whole)} في المدوّنة كلِّها | **صمد** |"
+    )
+    add(
+        f"| **ج٩** والتبدّلُ تبدّلُ موقعٍ لا صورة | الصورةُ أخبرُ بـ"
+        f"**{eastern(dominance)}** ضِعفًا (+{eastern(shape_shifting)} مقابلَ "
+        f"+{eastern(near_shifting)}) | **سقط** |"
+    )
+    add(
+        f"| **ج٧** السكونُ أقربُ إلى الثابت | نصيبُه في المتبدّلة "
+        f"**{eastern(quiet_shifting)}** وفي الثابتة "
+        f"**{eastern(quiet_steady)}** — **{eastern(backwards)}** أضعافًا "
+        "في الجهة المخالفة | **سقط معكوسًا** |"
+    )
+    add(
+        f"| **ج٦** التنوينُ أقربُ إلى المتبدّل | فرقٌ "
+        f"+{eastern(tanween_gap)} | **صمد** |"
+    )
+    add("")
+    add(
+        "**فصفُّ السكون ساقطٌ بعينه** (ج٧)، **وأصلُ دعوى الجدول ساقطٌ في "
+        f"مقداره** (ج٩): للموقع أثرٌ حيث تتبدّل العلامةُ — **{eastern(times)} "
+        "ضِعفَ** ما له في العامّة — **لكنّ صورةَ اللفظ تفوقه ثمّةَ بعشرةِ "
+        "أضعافٍ ونصف**. فالعلامةُ تتبدّل **لتبدّل الصورة في أكثرها لا "
+        "لتبدّل الموقع**."
+    )
+    add("")
+    add(
+        "**وحدُّ هذا السقوط**: الجدولُ **فرضٌ إسناديٌّ أوّليٌّ** أُودِع "
+        "وكالةً، لا نقلٌ عن عالمٍ ولا راوٍ. **فسقوطُ صفَّيه سقوطُ فرضٍ "
+        "مُودَعٍ**، ولا يمسُّ نحوًا ولا ناقلًا — **ولا يُقال «سقط "
+        "الإعراب»**."
     )
     return "\n".join(out) + "\n"
 

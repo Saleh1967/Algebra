@@ -80,8 +80,8 @@ class SealedRerun:
 FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
     corpus="37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a",
     corpus_lines=6236,
-    compared=24,
-    matched=24,
+    compared=25,
+    matched=25,
     rows=(
         (
             "arabic_token_run.log",
@@ -182,6 +182,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "stirling_greedy_run.log",
             4060,
             "d46c801c6406633ea2ac3167b07c0d0fcf3b488ee5098de87ee80612a5d4735c",
+        ),
+        (
+            "table_consequence_run.log",
+            3725,
+            "3e26d748a52e2eb4157b9db21136013cf1d75337260de1dde1e4a1c94c1960a4",
         ),
         (
             "temporary_marking_full.log",

@@ -77,6 +77,7 @@ RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
         ),
         False,
     ),
+    "table_consequence": ("run_table_consequence.py", (), True),
     "temporary_marking": ("run_temporary_marking.py", (), True),
     "transfer_arrow": ("run_transfer_arrow.py", (), True),
     "verse_ending": ("run_verse_ending.py", (), True),

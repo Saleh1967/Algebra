@@ -270,12 +270,13 @@ def test_every_claim_of_isolation_answers_whether_its_bound_binds_alike() -> Non
     assert sum(one is True for one in answered.values()) == 1
 
 
-def test_the_four_guards_are_named_in_the_register_of_flaws() -> None:
+def test_every_guard_is_named_in_the_register_of_flaws() -> None:
     """ما صار له مانعٌ يُشطَب من «بلا مانع» في سجلّ الأعطال، بالاسم."""
 
     register = REPOSITORY / "docs" / "سجل-الأعطال.md"
     text = register.read_text(encoding="utf-8")
-    for guard in ("أ)", "ب)", "ج)", "د)"):
+    for guard in ("أ)", "ب)", "ج)", "د)", "هـ)"):
         assert f"**المانعُ {guard}**" in text, guard
     assert "test_sealed_conditions_audit" in text
+    assert "test_ceiling_audit" in text
     assert "بلا مانع" in text  # والقاعدةُ نفسُها تبقى مكتوبة

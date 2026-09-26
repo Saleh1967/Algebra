@@ -48,7 +48,7 @@ def test_no_table_is_printed_empty() -> None:
 
     rows = BRIDGE.read_text(encoding="utf-8").splitlines()
     heads = [one for one, two in enumerate(rows) if re.fullmatch(r"\|[-:| ]+\|", two)]
-    assert len(heads) == 2, heads
+    assert len(heads) == 3, heads
     for one in heads:
         assert rows[one + 1].startswith("|"), rows[one : one + 2]
 
@@ -99,7 +99,12 @@ def test_every_number_in_the_bridge_has_a_witness_or_a_derivation() -> None:
     body = written.split("## ما لا يُدَّعى", 1)[0]
     logs = "".join(
         (DEPOSITS / one).read_text(encoding="utf-8")
-        for one in ("context_ladder_run.log", "arabic_token_run.log")
+        for one in (
+            "context_ladder_run.log",
+            "arabic_token_run.log",
+            "pausal_split_run.log",
+            "pausal_split_witness.log",
+        )
     )
     ladder = (DEPOSITS / "context_ladder_run.log").read_text(encoding="utf-8")
     rows = tool.steps(ladder)
@@ -108,6 +113,10 @@ def test_every_number_in_the_bridge_has_a_witness_or_a_derivation() -> None:
         mine = [one for one in rows if tool.family_of(one[1]) == name]
         assert mine, name
         derived.add(f"{sum(float(one[2]) for one in mine):.6f}")
+    # ونِسبُ البقاء مُشتَقّةٌ أيضًا — تُعاد قسمةً ولا تُستثنى
+    for whole_gain, inner_gain in tool.lifted().values():
+        stayed = float(inner_gain) / float(whole_gain) if float(whole_gain) else 0.0
+        derived.add(f"{stayed:.2f}")
     counting = {str(one) for one in range(0, len(rows) + 1)} | {str(tool.BOXES)}
     figures = {one.translate(WESTERN) for one in re.findall(r"[٠-٩][٠-٩٫]*", body)}
     astray = sorted(

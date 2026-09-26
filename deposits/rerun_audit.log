@@ -1,6 +1,6 @@
 — المدوّنة: 37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a | أسطرٌ 6236
 — حدُّ المقابلة: sha256 على البايتات كلِّها — لا سطرًا ولا عينًا
-— المُقابَل: 21 سجلًّا
+— المُقابَل: 22 سجلًّا
 
   السجلّ | البايتات | بصمةُ المودَع | بصمةُ المُعاد | الحكم
   arabic_token | 2702 | 1bac65d2d938c814 | 1bac65d2d938c814 | مطابق
@@ -16,6 +16,7 @@
   markov_ladder | 1986 | aba88b38afc14c18 | aba88b38afc14c18 | مطابق
   measured_ranking | 3951 | 6de8bba98f9289e4 | 6de8bba98f9289e4 | مطابق
   number_ladder | 2590 | 65b893d06ffb7899 | 65b893d06ffb7899 | مطابق
+  pausal_split | 7655 | 4fa8588f04ea0339 | 4fa8588f04ea0339 | مطابق
   praise_blame | 3507 | 0eb078b3aa2a05b6 | 0eb078b3aa2a05b6 | مطابق
   separation_rule | 1380 | 60ff64c698c62531 | 60ff64c698c62531 | مطابق
   state_cycle | 2767 | 7677e2b30259d786 | 7677e2b30259d786 | مطابق
@@ -25,9 +26,9 @@
   verse_ending | 8168 | 37e2558e1b5fcb57 | 37e2558e1b5fcb57 | مطابق
   word_escalation | 2682 | 9190c2d4e4a206d5 | 9190c2d4e4a206d5 | مطابق
 
-— مطابقٌ بتّاً ببتّ: 21
+— مطابقٌ بتّاً ببتّ: 22
 — مخالف: 0
-— بايتاتٌ قُوبِلت: 112167
+— بايتاتٌ قُوبِلت: 119822
 
 — المختصَرُ من كاملٍ مودَعٍ إلى جانبه:
     temporary_marking_run.log: 56 سطرًا، قُوبِل بـtemporary_marking_full.log — أسطرٌ مفقودةٌ منه 0
@@ -46,6 +47,7 @@
     markov_ladder: run_markov_ladder.py --text <المدوّنة>
     measured_ranking: run_measured_ranking.py --text <المدوّنة>
     number_ladder: run_number_ladder.py --rule deposits/number_rule_note.md
+    pausal_split: run_pausal_split.py --text <المدوّنة>
     praise_blame: run_praise_blame.py --text <المدوّنة> --rule deposits/praise_blame_rule.md
     separation_rule: run_separation_rule.py --text <المدوّنة>
     state_cycle: run_state_cycle.py --text <المدوّنة>

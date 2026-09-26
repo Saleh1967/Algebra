@@ -23,6 +23,8 @@ REPOSITORY = Path(__file__).resolve().parents[1]
 DEPOSITS = REPOSITORY / "deposits"
 LADDER = DEPOSITS / "context_ladder_run.log"
 TOKENS = DEPOSITS / "arabic_token_run.log"
+PAUSAL = DEPOSITS / "pausal_split_run.log"
+WITNESS = DEPOSITS / "pausal_split_witness.log"
 PAPER = REPOSITORY / "docs" / "جسر-البتّات.md"
 EASTERN = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
 BOXES = 8
@@ -102,6 +104,19 @@ def boxes(text: str) -> list[tuple[str, str, str]]:
     return found
 
 
+def lifted() -> dict[str, tuple[str, str]]:
+    """البتّة ← (كسبُها في المقام أ، كسبُها في المقام ب) — من سجلّ الفصل."""
+
+    found = re.findall(
+        r"^  د(\d+) «.+?» \| \+([0-9.]+) \| \+([0-9.]+) \| \S+$",
+        PAUSAL.read_text(encoding="utf-8"),
+        re.M,
+    )
+    if len(found) != 12:
+        raise SystemExit(f"صفوفُ المقابلة {len(found)} لا اثنا عشر")
+    return {one: (two, three) for one, two, three in found}
+
+
 def render() -> str:
     ladder = LADDER.read_text(encoding="utf-8")
     tokens = TOKENS.read_text(encoding="utf-8")
@@ -114,6 +129,18 @@ def render() -> str:
     bare_share = grab(r"\(بلا علامة\) \d+ \| نصيبٌ ([0-9.]+)", tokens)
     three = grab(r"نصيبُ الثلاث: \d+ من \d+ = ([0-9.]+)", tokens)
     reach = grab(r"— الدرجاتُ المبلوغة: (\d+)", ladder)
+    split = PAUSAL.read_text(encoding="utf-8")
+    shown = WITNESS.read_text(encoding="utf-8")
+    kept = lifted()
+    inner = grab(r"— المجال \(ب\) ما ليس آخرَ سطره: (\d+)", split)
+    rest_whole = grab(r"— مجموعُ الإحدى عشرة في \(أ\): \+([0-9.]+)", split)
+    rest_inner = grab(r"— مجموعُ الإحدى عشرة في \(ب\): \+([0-9.]+)", split)
+    bare_inner = grab(r"· \| 23986 \| نصيبٌ ([0-9.]+)", split)
+    bare_last = grab(r"· \| 333 \| نصيبٌ ([0-9.]+)", shown)
+    field_inner = grab(r"— خاناتُ الحال في المجال \(ب\): H = ([0-9.]+)", split)
+    field_last = grab(r"— H\(ج\) = ([0-9.]+)", shown)
+    identity = grab(r"— I المُشتَقّ = ([0-9.]+)", shown)
+    drift = grab(r"— أقصى انحرافٍ عن الهويّة: (\S+)", shown)
 
     out: list[str] = []
     add = out.append
@@ -203,6 +230,59 @@ def render() -> str:
         "**وهي بتّةُ موضعٍ لا بتّةُ نحو**: تسأل عن حدّ السطر، **ولا تنظر في "
         "حرفٍ ولا علامة**. فأقوى ما دفع له المجمَّدُ **أبعدُه عن الإعراب**، "
         "وأقربُ ما يُقرَأ إعرابًا **أضعفُه كسبًا**."
+    )
+    add("")
+    add("## ما يعيش بعد رفع حدّ السطر — وهذا هو البرهانُ المتاحُ لكلّ بتّة")
+    add("")
+    add(
+        "**السؤالُ**: كم من كسب كلّ بتّةٍ أثرُ **حدّ السطر** وكم أثرُ "
+        "**الجوار**؟ فرُفِع كلُّ موضعٍ آخرِ سطرٍ وأُعيد القياسُ "
+        "**بالأسئلة نفسِها وبترتيبها نفسِه** — لا اختيارَ جشعٍ جديد — "
+        f"على **{eastern(inner)}** موضعًا (ختمُ `c4ffe307…`)."
+    )
+    add("")
+    add("| البتّة | في (أ) كلُّ المواضع | في (ب) بلا أواخرِ الأسطر | ما بقي | أعاشت؟ |")
+    add("|---|---:|---:|---:|---|")
+    for step, question, gain, _ in rows:
+        whole_gain, inner_gain = kept[step]
+        stayed = float(inner_gain) / float(whole_gain) if float(whole_gain) else 0.0
+        living = "**نعم**" if float(inner_gain) > 0 else "**لا**"
+        add(
+            f"| د{eastern(step)} | +{eastern(whole_gain)} | +{eastern(inner_gain)} | "
+            f"{eastern(f'{stayed:.2f}')}× | {living} |"
+        )
+    add("")
+    add(
+        f"**فلا بتّةَ ماتت إلّا الموضعيّة نفسُها** — وهي تصير **صفرًا تامًّا** "
+        f"لأنّها ثابتةٌ في (ب) بحكم التقييد. ومجموعُ الإحدى عشرة الباقية "
+        f"ينزل من **+{eastern(rest_whole)}** إلى **+{eastern(rest_inner)}** — "
+        "**فثلاثةُ أرباعِ ما تحمله بتّاتُ الجوار ليس أثرَ حدّ السطر.**"
+    )
+    add("")
+    add("### ودعوايَ في تعليل ذلك سقطت — بشرطين مختومين")
+    add("")
+    add(
+        f"زعمتُ أنّ خانةَ `{bare}` **مسكونةٌ بالوقف**، فبرفع أواخر الأسطر "
+        f"ينقص نصيبُها. **فزاد**: {eastern(bare_share)} ⟶ "
+        f"**{eastern(bare_inner)}**. وقِيس مقامُ أواخرِ الأسطر وحدَه فبان "
+        f"السبب: نصيبُ `{bare}` فيها **{eastern(bare_last)}** — أي نحوُ "
+        "**سُدسِ** ما في وسط السطر. **فأواخرُ الأسطر أقلُّ المواضع خلوًّا "
+        "من العلامة لا أكثرُها.**"
+    )
+    add("")
+    add(
+        f"وزعمتُ أنّ `H` **ترتفع** برفع الوقف. **فنزلت**: "
+        f"{eastern(entropy)} ⟶ **{eastern(field_inner)}**، ومقامُ الأواخر "
+        f"وحدَه **{eastern(field_last)}**. **والحدسُ الساذجُ كان أصوبَ "
+        "من تعليلي.**"
+    )
+    add("")
+    add(
+        "**وقاعدةُ السلسلة تُغلِق على البتّة الأولى**: "
+        f"`H(أ) − Σ وزنٌ·H = {eastern(identity)}` وهو **الربحُ الملحَقُ "
+        "للدرجة الأولى بعينه**، بانحرافٍ "
+        f"`{eastern(drift)}`. **فبتّةُ الموضع هي اختلافُ التوزيعين لا شيءَ "
+        "غيرُه** — وذلك يُسمّى ولا يُفسَّر."
     )
     add("")
     add("## ما لا يُدَّعى في هذا الملفّ")

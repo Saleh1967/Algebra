@@ -57,6 +57,7 @@ RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
         ("--rule", "deposits/number_rule_note.md"),
         False,
     ),
+    "pausal_split": ("run_pausal_split.py", (), True),
     "praise_blame": (
         "run_praise_blame.py",
         ("--rule", "deposits/praise_blame_rule.md"),

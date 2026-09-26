@@ -58,6 +58,15 @@ CONTROL_COMMITS = 2_308
 BY_BLOCK = 1_394_638
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ت٤": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

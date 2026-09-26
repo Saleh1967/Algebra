@@ -69,6 +69,15 @@ DEBT = 8.8407
 WITH_CONTEXT = 11.1909
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ك١١": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

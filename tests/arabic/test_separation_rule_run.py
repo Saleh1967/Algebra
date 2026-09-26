@@ -62,6 +62,15 @@ PER_TOKEN = 19.6339
 CUT = 0.5946
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ص٣": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

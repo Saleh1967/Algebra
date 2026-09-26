@@ -56,6 +56,16 @@ PREFIXED_WORDS = 448
 TOKENS = 78_245
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "خ٩": (
+        Fraction(1),
+        "`I(X؛Y) ≤ H(Y)` مبرهنةً، وY **ثنائيّةٌ** (خاتمةُ آيةٍ أو لا) "
+        "فإنتروبيتُها لا تفوق الواحد",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

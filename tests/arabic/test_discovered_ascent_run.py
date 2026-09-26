@@ -82,6 +82,15 @@ NOT_CROSSING = 0.8379
 GAPS = (1_346, 2_426, 3_514, 4_606, 5_677, 6_482, 7_442, 8_328, 9_044, 9_789)
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ك٤": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _exact(measured: float) -> Fraction:
     return Fraction(measured).limit_denominator(10**9)
 

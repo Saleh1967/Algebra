@@ -18,9 +18,11 @@
 `الحدُّ ≤ السقف`، ويفحص أنّ المقيسَ لا يفوقه. **فيردُّ الصمتَ وحدًّا فوق
 سقفٍ مُصرَّحٍ به، ولا يردُّ سقفًا مُصرَّحًا خطأً.**
 
-**والدَّينُ مكشوفٌ ومقيَّد**: ما لم يُصرَّح بسقفه من الأختام السابقة
-معروضٌ بعينه في `CEILING_NOT_DECLARED` — **اثنان وعشرون شرطًا في خمسةَ عشرَ
-ملفًّا**، **يُرى ولا ينمو**. وكلُّ ختمٍ جديدٍ يلزمه التصريح.
+**ولا دَينَ أعمى**: صُرِّح بسقفِ **واحدٍ وثلاثين** شرطًا من خمسةٍ
+وثلاثين، **وأربعةٌ مُصنَّفةٌ بأسبابها** في `CEILING_NEEDS_DERIVATION` —
+وسببُ كلٍّ أنّ إحصاءه **ثمنُ شفرةٍ أو تغطيةُ رتبة**، **فسقفُه يحتاج
+اشتقاقًا لا قراءة**، ولم يُشتَقّ. **وذلك خلوٌّ يُصنَّف ولا يُصفَّر**، ولا
+يُصرَّح بسقفٍ لم يُفحَص مقامُه. وكلُّ ختمٍ جديدٍ يلزمه التصريح.
 """
 
 from __future__ import annotations
@@ -38,25 +40,43 @@ from algebra.ceiling import (
 from algebra.results import Vacancy
 from algebra.signified import Direction
 
-# دَينٌ **يُرى ولا ينمو**: شروطٌ من أختامٍ سابقةٍ لم يُصرَّح بسقفها بعد
-CEILING_NOT_DECLARED: dict[str, tuple[str, ...]] = {
-    "test_basmala_lifted_run.py": ("ر٥", "ر٨"),
-    "test_context_ladder_run.py": ("ق٧", "ق٨"),
-    "test_crossing_census_run.py": ("ف٢",),
-    "test_discovered_ascent_run.py": ("ك٤",),
-    "test_greedy_algebra_run.py": ("ب٤", "ب٦"),
-    "test_markov_ladder_run.py": ("ي٥",),
-    "test_measured_ranking_run.py": ("ت٤",),
-    "test_praise_blame_run.py": ("ش١٢", "ش٦", "ش٧"),
-    "test_residue_derivation_run.py": ("و٤",),
-    "test_script_floor_run.py": ("ج٤",),
-    "test_separation_rule_run.py": ("ص٣",),
-    "test_transfer_arrow_run.py": ("ظ٧", "ظ٩"),
-    "test_verse_ending_run.py": ("خ٩",),
-    "test_vowel_ladder_run.py": ("س٤",),
-    "test_word_escalation_run.py": ("ك١١", "ك١٢"),
+# **لا دَينَ أعمى بعد اليوم**: ما بقي **مُصنَّفٌ بسببه**، وسببُه أنّ إحصاءه
+# **ليس نسبةً ولا معلوماتٍ** بل **ثمنُ شفرةٍ محجوزًا** أو **تغطيةَ رتبة** —
+# فسقفُه يحتاج اشتقاقًا لا قراءةً، **ولم يُشتَقّ**. وذلك خلوٌّ يُصنَّف
+# ولا يُصفَّر، ولا يُصرَّح بسقفٍ لم يُفحَص مقامُه.
+CEILING_NEEDS_DERIVATION: dict[str, tuple[tuple[str, str], ...]] = {
+    "test_markov_ladder_run.py": (
+        (
+            "ي٥",
+            "أقصى ارتفاعٍ في **ثمنٍ محجوز** — وثمنُ لابلاس يفوق الإنتروبيا "
+            "عند غيرِ المشهود، فلا يحدُّه الواحدُ ولا `H`",
+        ),
+    ),
+    "test_residue_derivation_run.py": (
+        (
+            "و٤",
+            "**إنتروبيا قناةٍ محجوزةً** — ثمنٌ لا إنتروبيا، وقناةٌ ثنائيّةٌ "
+            "ثمنُها المحجوزُ قد يفوق البتّةَ الواحدة",
+        ),
+    ),
+    "test_vowel_ladder_run.py": (
+        (
+            "س٤",
+            "**نصيبُ المقروء عند رتبةٍ ثانية** — وأوّلُ موضعين من كلّ "
+            "متتاليةٍ لا سابقَين لهما، **فيمتنعان بالبناء**؛ والسقفُ يحتاج "
+            "عدَّ المتتاليات",
+        ),
+    ),
+    "test_word_escalation_run.py": (
+        (
+            "ك١٢",
+            "**دَينٌ معجميٌّ محجوزًا بتًّا للكلمة** — ثمنُ معجمٍ لا نسبةٌ، "
+            "وحدُّه الأعلى طولُ الشفرة لا الواحد",
+        ),
+    ),
 }
-OWING = 22
+CLASSIFIED = 4
+
 LEAST_REASON = 25
 
 
@@ -115,7 +135,7 @@ def test_every_bounded_condition_declares_its_ceiling_or_is_owed() -> None:
         module = __import__(name.removesuffix(".py"))
         declared = set(getattr(module, "CEILINGS", {}))
         here = {two for one, two, _ in _bounded() if one == name}
-        owed = set(CEILING_NOT_DECLARED.get(name, ()))
+        owed = set({one for one, _ in CEILING_NEEDS_DERIVATION.get(name, ())})
         missing = sorted(here - declared - owed)
         if missing:
             astray[name] = missing
@@ -124,16 +144,17 @@ def test_every_bounded_condition_declares_its_ceiling_or_is_owed() -> None:
             stale[name] = both
     assert not astray, astray
     assert not stale, stale  # ولا يُترَك في الدَّين ما صُرِّح به
-    assert sum(len(one) for one in CEILING_NOT_DECLARED.values()) == OWING
+    assert sum(len(one) for one in CEILING_NEEDS_DERIVATION.values()) == CLASSIFIED
 
 
 def test_no_owed_entry_names_a_condition_that_is_not_bounded() -> None:
     """ولا يُحشَى الدَّينُ بشرطٍ ليس محدودًا — فالجدولُ يُقابَل بالشجرة."""
 
     real = {(one, two) for one, two, _ in _bounded()}
-    for name, owing in CEILING_NOT_DECLARED.items():
-        for one in owing:
+    for name, owing in CEILING_NEEDS_DERIVATION.items():
+        for one, why in owing:
             assert (name, one) in real, (name, one)
+            assert len(why) >= LEAST_REASON, (name, one, why)
 
 
 def test_every_declared_ceiling_holds_its_threshold_and_is_reasoned() -> None:
@@ -154,8 +175,9 @@ def test_every_declared_ceiling_holds_its_threshold_and_is_reasoned() -> None:
         assert threshold <= ceiling, (name, identifier, threshold, ceiling)
         assert len(why) >= LEAST_REASON, (name, identifier, why)
         seen += 1
-    assert seen == len(_bounded()) - OWING
-    assert seen == 13
+    assert seen == len(_bounded()) - CLASSIFIED
+    assert seen == len(_bounded()) - CLASSIFIED
+    assert seen == 31
 
 
 def test_the_guard_says_what_it_does_not_do() -> None:
@@ -165,5 +187,6 @@ def test_the_guard_says_what_it_does_not_do() -> None:
     text = " ".join(__doc__.split())
     assert "**لا تُحسَب السقوفُ آليًّا**" in text
     assert "ولا يردُّ سقفًا مُصرَّحًا خطأً" in text
-    assert "**اثنان وعشرون شرطًا في خمسةَ عشرَ ملفًّا**" in text
-    assert "**يُرى ولا ينمو**" in text
+    assert "**ولا دَينَ أعمى**" in text
+    assert "**وأربعةٌ مُصنَّفةٌ بأسبابها**" in text
+    assert "**وذلك خلوٌّ يُصنَّف ولا يُصفَّر**" in text

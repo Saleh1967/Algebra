@@ -80,8 +80,8 @@ class SealedRerun:
 FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
     corpus="37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a",
     corpus_lines=6236,
-    compared=27,
-    matched=27,
+    compared=28,
+    matched=28,
     rows=(
         (
             "arabic_token_run.log",
@@ -157,6 +157,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "morph_residue_run.log",
             3194,
             "4f48cb31994928d2469b7e118e3ac957a3b8dc9001ff1ab0bb3e46d603880a0a",
+        ),
+        (
+            "nasib_particle_run.log",
+            2991,
+            "b3919ae7ef5bd9bc1b8d0895da69332b15492d56a122811e2efec65b26f4bc6b",
         ),
         (
             "number_ladder_run.log",

@@ -216,3 +216,50 @@ def test_the_signature_changes_no_measured_number() -> None:
     assert "٠٫٠٣٩٧" in text
     assert "0.0397" in morph
     assert "**فالتوقيعُ تبنٍّ لفرضٍ داخلَ هذا السقف، لا نقضٌ له.**" in " ".join(text.split())
+
+
+def test_the_signature_now_binds_the_tables_rulings_too() -> None:
+    """بصمةٌ ثانيةٌ على أحكام الجدول — **وكان غيابُها يُمرِّر تعديلًا صامتًا**.
+
+    **ما كشفه**: طُلِب توقيعٌ على إضافة قيدٍ إلى خانات «إعرابي». وقراءةُ
+    البناء أظهرت أنّ **التعديلَ لا يحتاج إذنًا ليمرّ**: البصمةُ كانت على
+    القراءات وحدَها، فحكمٌ يُبدَّل **والتوقيعُ يُقابَل فيمرّ**. فالنقصُ في
+    الربط لا في الإذن.
+    """
+
+    tool = _tool("bridge_signature.py")
+    record = tool.FROZEN_SIGNATURE
+    assert len(record.rulings) == 64
+    assert record.rulings != record.readings
+    assert tool.rederive_rulings_digest() == record.rulings
+    assert record.rulings in SIGNED.read_text(encoding="utf-8")
+
+
+def test_changing_one_ruling_breaks_the_signature_and_is_named() -> None:
+    """يُبدَّل حكمٌ واحدٌ فينكسر التوقيعُ **ويُسمّى موضعُه** — مفحوصًا لا موعودًا."""
+
+    tool = _tool("bridge_signature.py")
+    tables = _tool("write_bridge_tables.py")
+    first = next(iter(tables.IRAB))
+    ruling, unless = tables.IRAB[first]
+    bent = dict(tables.IRAB)
+    bent[first] = (ruling, unless + " وزيادةٌ لم تُوقَّع")
+    moved = tool.rederive_rulings_digest(irab=bent, sarf=tables.SARF)
+    assert moved != tool.FROZEN_SIGNATURE.rulings
+    # وكذلك زيادةُ القيد المقترَح: لو أُضيف إلى خانةٍ لانكسر التوقيع
+    asked = dict(tables.IRAB)
+    asked[first] = (ruling + " — والعاملُ خارجَ الوحدة", unless)
+    assert tool.rederive_rulings_digest(irab=asked, sarf=tables.SARF) != moved
+    assert tool.rederive_rulings_digest(irab=tables.IRAB, sarf=tables.SARF) == (
+        tool.FROZEN_SIGNATURE.rulings
+    )
+
+
+def test_the_readings_digest_did_not_move_when_the_rulings_were_bound() -> None:
+    """وما وُقِّع عليه من القراءات **لم يتبدّل** — والتبدّلُ في الحقول لا فيه."""
+
+    tool = _tool("bridge_signature.py")
+    assert tool.FROZEN_SIGNATURE.readings.startswith("20941c33")
+    text = SIGNED.read_text(encoding="utf-8")
+    assert "**والقراءاتُ باقيةٌ على بصمتها الأولى**" in text
+    assert "وتبدُّلُه\nمقصودٌ ومُعلَن" in text

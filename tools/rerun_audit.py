@@ -55,6 +55,7 @@ RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
     "markov_ladder": ("run_markov_ladder.py", (), True),
     "measured_ranking": ("run_measured_ranking.py", (), True),
     "morph_residue": ("run_morph_residue.py", (), True),
+    "nasib_particle": ("run_nasib_particle.py", (), True),
     "number_ladder": (
         "run_number_ladder.py",
         ("--rule", "deposits/number_rule_note.md"),

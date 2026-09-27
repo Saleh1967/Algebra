@@ -25,6 +25,19 @@
 كلّ قياس** — فيصير كسرُه عادةً فلا يُقرَأ. **وأمّا القراءةُ فإن بُدِّل
 حرفٌ منها انكسر التوقيعُ**، وذلك المقصود.
 
+`AND_BINDING_THE_READINGS_ALONE_LEFT_THE_RULINGS_UNBOUND`: **وكان ذلك
+الاختيارُ ثمنٌ لم يُدفَع**: البصمةُ على القراءات وحدَها، **فأحكامُ
+`bridge_tables.md` تبقى غيرَ مربوطة** — يُبدَّل نصُّ حكمٍ أو استثناءٍ
+**والتوقيعُ يُقابَل فيمرّ**. وكشفه طلبٌ لإضافة قيدٍ إلى خانات «إعرابي»:
+سُئِل التوقيعُ إذنًا، **والحقُّ أنّ التعديلَ لا يحتاج إذنًا ليمرّ** —
+وذلك عطلٌ لا إذن.
+
+**فتُربَط الأحكامُ ببصمةٍ ثانيةٍ**: `rulings` على صفوف `IRAB` و`SARF`
+بنصّها. فمن بدَّل حكمًا أو استثناءً **انكسر التوقيعُ وسُمِّي موضعُه**،
+ومن أراد التعديل **أعاد التوقيعَ ببصمةٍ جديدة** — وذلك فعلُ صاحب الحقّ لا
+تحريرُ سطر. **والقراءاتُ تبقى على بصمتها الأولى**، فلا يُكسَر ربطُها
+بنموِّ الوثيقة.
+
 `AND_WHAT_THE_SIGNATURE_DOES_NOT_COVER_IS_NAMED_IN_IT`: ولا تُرخَّص
 بالتوقيع **جداولُ لم تُودَع**. فكلُّ عائلةٍ في الجسر تُعلِن ما يُلزَمها
 (فهرسُ آياتٍ، جدولُ أبواب، جدولُ صرف) **وليس في المستودع واحدٌ منها**.
@@ -73,6 +86,7 @@ class SealedSignature:
     licenses: tuple[str, ...]
     withheld: tuple[str, ...]
     tables: str
+    rulings: str
 
     def __post_init__(self) -> None:
         if len(self.readings) != 64 or set(self.readings) - set(_HEX):
@@ -110,6 +124,10 @@ class SealedSignature:
             raise BridgeSignatureError(
                 "ترخيصٌ بلا جدولٍ مُودَع — والترخيصُ لا يقوم إلّا على جدول."
             )
+        if len(self.rulings) != 64 or set(self.rulings) - set(_HEX):
+            raise BridgeSignatureError(f"بصمةُ أحكامٍ ليست sha256: {self.rulings}")
+        if self.rulings == self.readings:
+            raise BridgeSignatureError("بصمةُ الأحكام هي بصمةُ القراءات — فلم تُربَط.")
         if len(self.withheld) < self.families:
             raise BridgeSignatureError("ما لا يُرخِّصه التوقيعُ يُسمّى لكلّ عائلةٍ — ولا يُطوى.")
         if "فرض" not in self.adopts_as:
@@ -154,6 +172,47 @@ def rederive_readings_digest(
     return hashlib.sha256(readings_bytes(families)).hexdigest()
 
 
+def _tables() -> Any:
+    path = REPOSITORY / "tools" / "write_bridge_tables.py"
+    spec = importlib.util.spec_from_file_location("write_bridge_tables", path)
+    if spec is None or spec.loader is None:
+        raise BridgeSignatureError("لا قارئَ لمولّد الجدول")
+    module = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = module
+    spec.loader.exec_module(module)
+    return module
+
+
+def rulings_bytes(
+    irab: dict[str, tuple[str, str]] | None = None,
+    sarf: dict[str, tuple[str, str]] | None = None,
+) -> bytes:
+    """تسلسلٌ قانونيٌّ لأحكام الجدول — **الحكمُ واستثناؤه بنصّهما**.
+
+    **وتُمرَّر أو تُقرَأ** كالقراءات: تُقرَأ من المولّد في العمل، وتُمرَّر
+    في الفحص، **فيُفحَص الكسرُ ولا يبقى دعوًى**.
+    """
+
+    tool = _tables() if irab is None or sarf is None else None
+    first = irab if irab is not None else tool.IRAB
+    second = sarf if sarf is not None else tool.SARF
+    rows = [
+        _FIELD_SEPARATOR.join((kind, key, ruling, unless))
+        for kind, table in (("IRAB", first), ("SARF", second))
+        for key, (ruling, unless) in table.items()
+    ]
+    return _RECORD_SEPARATOR.join(rows).encode("utf-8")
+
+
+def rederive_rulings_digest(
+    irab: dict[str, tuple[str, str]] | None = None,
+    sarf: dict[str, tuple[str, str]] | None = None,
+) -> str:
+    """بصمةُ الأحكام **الآن** — وتبديلُ حرفٍ فيها يكسر التوقيع."""
+
+    return hashlib.sha256(rulings_bytes(irab, sarf)).hexdigest()
+
+
 FROZEN_SIGNATURE: Final[SealedSignature] = SealedSignature(
     signer="آلةُ القياس",
     capacity="وكيلٌ بتفويضٍ، لا أصيلٌ — والأصلُ صاحبُ المستودع",
@@ -175,6 +234,7 @@ FROZEN_SIGNATURE: Final[SealedSignature] = SealedSignature(
         "حرفُ خاتمةِ السابق",
     ),
     tables=TABLES,
+    rulings="220c4278a7aa3b5837cffa1865e71e6dc3a161b8b5c01e01eb1e1490d74640e6",
     withheld=(
         "«آخرُ السطر»: المُودَعُ حدُّ السطر لا حكمُ الوقف — ولا فهرسَ وقوفٍ",
         "«حالُ السابق»: العلامةُ الواحدةُ تحمل حكمين — والجدولُ يُعلِن ذلك استثناءً",
@@ -214,6 +274,12 @@ def verify_against_logs(record: SealedSignature = FROZEN_SIGNATURE) -> list[str]
         complaints.append(
             f"القراءاتُ بُدِّلت بعد التوقيع: بصمتُها {found[:16]}"
             f" والموقَّعُ عليه {record.readings[:16]}"
+        )
+    ruled = rederive_rulings_digest()
+    if ruled != record.rulings:
+        complaints.append(
+            f"أحكامُ الجدول بُدِّلت بعد التوقيع: بصمتُها {ruled[:16]}"
+            f" والموقَّعُ عليه {record.rulings[:16]}"
         )
     families = _bridge().FAMILIES
     if len(families) != record.families:

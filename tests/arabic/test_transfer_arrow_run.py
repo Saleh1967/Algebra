@@ -98,6 +98,20 @@ FORBIDDEN = (
 )
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ظ٧": (
+        Fraction(36723, 10000),
+        "فرقُ مقياسين لا يفوق أكبرَهما، وكلٌّ دون إنتروبيا هدفه؛ "
+        "وأكبرُهما `H(الحرف)` ٣٫٦٧٢٣",
+    ),
+    "ظ٩": (
+        Fraction(26106, 10000),
+        "`T(ر⟶ح) ≤ H(ح)` مبرهنةً، و`H(الحال)` ٢٫٦١٠٦",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

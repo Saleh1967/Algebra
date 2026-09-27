@@ -68,6 +68,18 @@ BIAS_AT_TWO = 0.0174
 UNCONDITIONED = 1.9518
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "س٤": (
+        Fraction(1),
+        "المقامُ في `ladder_step` **يستثني المواضعَ بلا سابقَين أصلًا** "
+        "(`range(order, len(units))`)، والبسطُ منها ما سياقُه ≥ ٣٠. "
+        "**فلا ممتنعَ في المقام**: لو بلغ كلُّ سياقٍ ثلاثين بلغ "
+        "النصيبُ الواحد",
+    ),
+}
+
+
 def _reader() -> object:
     spec = importlib.util.spec_from_file_location("run_vowel_ladder", READER)
     assert spec is not None and spec.loader is not None

@@ -14,6 +14,15 @@
 `tools/corpus_seal.py`، والمقبولُ منها ما طابقت بصمتُه `37633090…`. فملفٌّ
 باسم المدوّنة ببايتاتٍ أخرى **لا يفتح البوّابة**، وملفٌّ ببايتاتها في غير
 موضعها **يفتحها** — والاسمُ عنوانٌ والبصمةُ دليل.
+
+`AND_A_SECOND_TEXT_NEEDS_A_SECOND_GATE`: ومتنٌ ثانٍ يُقرَأ ههنا وليس
+المدوّنة: جدولُ المقاييس `maqayis_by_root_csv_999.csv` — خمسةُ ميغابايتٍ
+ونصف، **متنٌ لا شفرة، فلم يُنقَل**. وكانت بوّابتُه **قائمةً مكتوبةً** في
+`conftest.py` تُسمّي أربعةً وعشرين فحصًا بأسمائها، **فلم تنمُ مع الشجرة**:
+أُضيف `test_root_projection_run` بعدها ولم يُضَفّ إليها، فسقط أربعةُ فحوصٍ
+بـ`FileNotFoundError` على نسخةٍ نظيفةٍ — **والعطلُ ٢٨ بنصّه**. فالشرطُ
+ههنا **بجانب ما يشترطه** لا في قائمةٍ مركزيّة، ويحرسه
+`tests/arabic/test_root_table_gates_are_declared.py`.
 """
 
 from __future__ import annotations
@@ -52,3 +61,11 @@ ABSENT = "بايتاتُ المدوّنة المُجمَّدة (37633090…) ل�
 
 requires_corpus = pytest.mark.skipif(not HELD, reason=ABSENT)
 """بوّابةٌ واحدةٌ لكلّ فحصٍ يقيس المدوّنة؛ وسببُ تخطّيه يُسمّي الحوامل."""
+
+ROOT_TABLE: Path = REPOSITORY / "maqayis_by_root_csv_999.csv"
+"""جدولُ المقاييس — متنٌ لم يُنقَل؛ وحضورُه يُسأل ولا يُفترَض."""
+
+TABLE_ABSENT = f"متنٌ لم يُنقَل: {ROOT_TABLE.name} — نُقِلت الشفرةُ وحدَها"
+
+requires_root_table = pytest.mark.skipif(not ROOT_TABLE.is_file(), reason=TABLE_ABSENT)
+"""بوّابةُ كلّ فحصٍ يقرأ جدولَ المقاييس — **توضَع عند الفحص لا في قائمة**."""

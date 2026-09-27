@@ -93,6 +93,25 @@ BARE_SHARE = 0.3108
 FIELD_ENTROPY = 2.6106
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦، مقروءًا من سجلّ هذا التشغيل.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ط٧": (
+        Fraction(26319, 10000),
+        "`I ≤ H(التالي)` مبرهنةً، وهي ٢٫٦٣١٩ ههنا؛ والمُصحَّحةُ بميلر–مادو "
+        "دون الخام فلا تفوقه",
+    ),
+    "ط١٠": (
+        Fraction(1),
+        "كلُّ هيكلٍ ذي خمسِ وقوعاتٍ فأكثرَ يقبل أن يكون ثابتَ الحال",
+    ),
+    "ط١٢": (
+        Fraction(597, 606),
+        "**تسعةٌ من ٦٠٦ غائبةٌ عن النصف الفرديّ بالكلّيّة فتمتنع بالبناء**؛ "
+        "وشاهدُه `deposits/ceiling_census_witness.log`",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

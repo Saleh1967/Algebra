@@ -43,8 +43,20 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
     "arabic/measure_sifa_candidate.py": (),
     "arabic/read_slgae_separation.py": (),
     "hawk_dove/run_hawk_dove.py": (),
+    "rasm/run_lumping_barrier.py": (),
+    "rasm/run_markov_ceiling.py": (),
     "rasm/run_number_ladder.py": (
         "--rule",
+        "deposits/number_rule_note.md",
+    ),
+    "rasm/run_hasr_audit.py": (
+        "--rule",
+        "deposits/hasr_rule_note.md",
+    ),
+    "rasm/run_stirling_greedy.py": (
+        "--hasr",
+        "deposits/hasr_rule_note.md",
+        "--numbers",
         "deposits/number_rule_note.md",
     ),
     "irab/run_harf_measurement.py": ("--smoke", "--defer", "error"),
@@ -54,6 +66,24 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
 
 # مثالٌ يحتاج مدوّنةً لم تُودَع ههنا؛ يُعَدّ ويُفحَص رفضُه، ولا يُشغَّل
 NEEDS_A_CORPUS: dict[str, str] = {
+    "rasm/run_ceiling_census.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس سقفَ «الباقي ثابتًا» في المسندين"
+    ),
+    "rasm/run_gemination_ceiling.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس سقفَ الساكن بفكّ المشدَّد"
+    ),
+    "rasm/run_table_consequence.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس لازمَ الجدول المُودَع على مسندين"
+    ),
+    "rasm/run_morph_residue.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس ما تحدّده صورةُ اللفظ نفسِها"
+    ),
+    "rasm/run_pausal_split.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس البتّاتَ نفسَها على مسندين"
+    ),
+    "rasm/run_pausal_witness.py": (
+        "يحتاج المدوّنةَ المُقفَلة؛ ويقيس أواخرَ الأسطر ويُقابلها بالطرح"
+    ),
     "rasm/run_final_vowel_entropy.py": (
         "يحتاج المحاذاةَ المشكولةَ (`--aligned`) وهي متنٌ لم يُودَع"
     ),
@@ -173,6 +203,28 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة؛ ويقيس أربعةَ مستوياتٍ من الوحدة إلى "
         "السطر ملحَقًا ومحجوزًا، ويصنّف ما فوقها، على ختم 248f10df…"
     ),
+    "rasm/run_nasib_particle.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويقيس حالَ الوحدة الأخيرة من اللفظ "
+        "التالي لمتتالية 0625 0650 0646 0651 064E — ثلاثةُ نِصَبٍ "
+        "بالبايتات، على ختم 89cba549…"
+    ),
+    "rasm/run_folding_proof.py": (
+        "يحتاج المدوّنةَ المشكولة؛ **ويطوي مجرى الحالات إلى أعدادٍ صحيحةٍ "
+        "ويفكُّه فيرجع حالةً بحالة** — تقابلٌ مبرهَنٌ في `algebra.folding`، "
+        "ولا ختمَ له لأنّ دعواه **الاسترجاعُ** لا مقدارٌ يُقاس"
+    ),
+    "rasm/run_markov_order.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويقيس رتبَ ماركوف ٠..٦ **محجوزةً بلا "
+        "أرضيّة** على قناة الحال، ويحسب حاجزَ ستيرلنغ فوقها، على ختم 0fdd08b2…"
+    ),
+    "rasm/run_surah_index.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويحلّ حدودَ السور بهيكل البسملة "
+        "الرباعيّ — ١١٣ رأسًا — ويصنّف الرابعَ عشرَ، على ختم eb26eef8…"
+    ),
+    "rasm/run_context_depth.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويرفع سقفَ سلّم السياق **في الذاكرة** "
+        "ليبلغ سقفَه المادّيَّ، ويقابل الأولى بالمُودَع، على ختم 3fbbac9a…"
+    ),
     "rasm/run_word_escalation.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويعدّ الكلمَ والهياكلَ الغامضة ويصعد "
         "جشعًا بقيدِ حدّ الكلمة ويسعّر الدَّينين على ختم 2a849c9a…"
@@ -225,7 +277,7 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """تسعةَ عشرَ مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """أربعةٌ وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)

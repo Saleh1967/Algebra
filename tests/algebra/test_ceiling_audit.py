@@ -1,0 +1,178 @@
+"""المانعُ هـ) — العطل ٢٦: **حدٌّ فوق سقفٍ شرطٌ لا يُختبَر**.
+
+**العطل**: نسبةٌ أو مقدارٌ بسطُه لا يقبل كلَّ ما في مقامه — لأنّ فيه ما
+**يمتنع بالبناء** — سقفُه دون الواحد. فإن كُتِب حدُّه فوق ذلك السقف **لم
+يكن قابلًا للتحقّق من أصله**، **وسقوطُه لا يخبر عن المادّة بشيء**.
+
+**والحكمُ الصحيحُ عندها `Vacancy.IMPOSSIBLE` لا `FALSIFIED`** — وليس
+الفرقُ لفظيًّا: الساقطُ يُسجَّل خبرًا عن المادّة، **والممتنعُ يُسجَّل في
+رصيد ما لم يُختبَر**.
+
+**وكيف انكشف**: من تعليقِ طلب الدمج ‎#45 — شرطٌ يوجب أن تكون «تْ» آخرَ
+لفظها بنسبةٍ ما، **ومقامُه يحمل ٨١٧ شطرَ شدّةٍ لا يكون واحدٌ منها آخرًا
+بحكم البناء**. فسقفُ نسبته `٠٫٤٥٥٠`، **فإن كان حدُّه فوقه فالشرطُ ممتنع**.
+وقد حُقِّق ذلك في `deposits/gemination_ceiling_witness.log`.
+
+**وحدُّ هذا المانعِ مُعلَنٌ صريحًا**: **لا تُحسَب السقوفُ آليًّا** — فحسابُ
+سقفِ إحصاءٍ كيفما كان متعذّر. **فيُلزِم المانعُ التصريحَ** بالسقف ويفحص
+`الحدُّ ≤ السقف`، ويفحص أنّ المقيسَ لا يفوقه. **فيردُّ الصمتَ وحدًّا فوق
+سقفٍ مُصرَّحٍ به، ولا يردُّ سقفًا مُصرَّحًا خطأً.**
+
+**ولا دَينَ بعدُ ولا أعمى**: صُرِّح بسقفِ **الاثنين والأربعين** كلِّها،
+و`CEILING_NEEDS_DERIVATION` **خالية**. وآخرُ الداخلين ذ٩ — نصيبُ الدرجة
+الأولى من كسب سلّم السياق — **صُرِّح بسقفه في ختمه نفسِه** (الواحد: الكسبُ
+كلُّه قد يجتمع في درجةٍ واحدة)، **فلم يُولَد دَينٌ جديدٌ بختمٍ جديد**.
+
+وآخرُ ما سُدَّ ي٥ — ثمنُ هروبٍ وهجاءٍ لا
+يحدُّه الواحد — سُدَّ بحدٍّ ابتدائيٍّ على عمق شجرة هفمان (`≤ k − ١`)
+مُشتَقًّا من السجلّ المُودَع، **لا بتشغيلٍ جديد**.
+
+**وثلاثةُ سقوفٍ بعيدةٌ عن مقيسها، ويُقال**: و٤ و١٦٫٢٥٥٧، وك١٢ و١٧٫٢٥٥٧
+(حدُّ لابلاس)، وي٥ و١٧٬٩١٥٫٨٠٧ (عمقُ هفمان). **وحدٌّ بعيدٌ يمنع العطلَ
+ولا يُقرَأ قياسًا** — وبُعدُ كلٍّ مطبوعٌ في شاهده، فلا يُقرَأ تقديرًا.
+وكلُّ ختمٍ جديدٍ يلزمه التصريح، **والقائمةُ الخاليةُ تبقى مكتوبةً** كي
+يُرى امتلاؤها إن امتلأت. وما دخلها يومًا **يُسمّى بسببه**: **وذلك خلوٌّ
+يُصنَّف ولا يُصفَّر**، ولا يُصرَّح بسقفٍ لم يُفحَص مقامُه.
+"""
+
+from __future__ import annotations
+
+from fractions import Fraction
+
+from sealed_reading import read_all
+
+from algebra.ceiling import (
+    CeilingError,
+    attainable_ceiling,
+    threshold_is_reachable,
+    verdict_or_vacancy,
+)
+from algebra.results import Vacancy
+from algebra.signified import Direction
+
+# **ولا دَينَ بعدُ**: الخمسةُ والثلاثون كلُّها مُصرَّحٌ بسقفها. وتبقى هذه
+# القائمةُ مكتوبةً **خاليةً** — فقائمةٌ تُحذَف لا يُرى امتلاؤها، وقائمةٌ
+# خاليةٌ يُرى. وما يُضاف إليها **يُسمّى بسببه** ولا يُصفَّر.
+CEILING_NEEDS_DERIVATION: dict[str, tuple[tuple[str, str], ...]] = {}
+"""**خاليةٌ اليوم** — وتبقى مكتوبةً كي يُرى امتلاؤها إن امتلأت.
+
+وكان فيها ي٥: «`longest` ليست في السجلّ». وسُدَّ **بحدٍّ ابتدائيٍّ لا
+بقراءة**: عمقُ شجرة هفمان على `k` رمزًا ≤ `k − ١` بالبناء، والأبجديّاتُ
+في السجلّ. **فما احتاج اشتقاقًا اشتُقّ، ولم يُشطَب مُصنَّفًا.**
+"""
+
+CLASSIFIED = 0
+
+LEAST_REASON = 25
+
+
+def _bounded() -> list[tuple[str, str, Fraction]]:
+    """(الملفّ، الشرط، الحدّ) لكلّ شرطٍ «لا يقلّ عن» حدُّه بين صفرٍ وواحد."""
+
+    found: list[tuple[str, str, Fraction]] = []
+    for one in read_all():
+        for two in one.predictions:
+            if two.direction is Direction.AT_LEAST and (
+                Fraction(0) < two.threshold < Fraction(1)
+            ):
+                found.append((one.run.name, two.identifier, two.threshold))
+    return found
+
+
+def test_the_ceiling_is_arithmetic_and_a_threshold_above_it_is_impossible() -> None:
+    """المبرهنةُ الصغيرة: `(المقام − الممتنع) ÷ المقام`، وفوقَها امتناع."""
+
+    assert attainable_ceiling(1_499, 817) == Fraction(682, 1_499)
+    assert attainable_ceiling(10, 0) == Fraction(1)
+    assert attainable_ceiling(10, 10) == Fraction(0)
+    ceiling = attainable_ceiling(1_499, 817)
+    assert not threshold_is_reachable(Fraction(1, 2), ceiling)
+    assert threshold_is_reachable(Fraction(1, 4), ceiling)
+    assert (
+        verdict_or_vacancy(Fraction(1, 2), ceiling, Fraction(0)) is Vacancy.IMPOSSIBLE
+    )
+    assert verdict_or_vacancy(Fraction(1, 4), ceiling, Fraction(1, 5)) is None
+    for bad in ((0, 0), (10, 11), (10, -1)):
+        try:
+            attainable_ceiling(*bad)
+        except CeilingError:
+            continue
+        raise AssertionError(bad)
+
+
+def test_a_measured_value_above_its_ceiling_is_refused() -> None:
+    """مقيسٌ فوق سقفه يعني أنّ أحدَ الرقمين خطأ — فيُردّ ولا يُمرَّر."""
+
+    ceiling = attainable_ceiling(100, 40)
+    try:
+        verdict_or_vacancy(Fraction(1, 2), ceiling, Fraction(7, 10))
+    except CeilingError as complaint:
+        assert "فوق سقفه" in str(complaint)
+        return
+    raise AssertionError("مرَّ مقيسٌ فوق سقفه")
+
+
+def test_every_bounded_condition_declares_its_ceiling_or_is_owed() -> None:
+    """كلُّ شرطٍ محدودٍ إمّا صرَّح بسقفه **وإمّا معروضٌ دَينًا** — ولا ثالث."""
+
+    astray: dict[str, list[str]] = {}
+    stale: dict[str, list[str]] = {}
+    for name in {one for one, _, _ in _bounded()}:
+        module = __import__(name.removesuffix(".py"))
+        declared = set(getattr(module, "CEILINGS", {}))
+        here = {two for one, two, _ in _bounded() if one == name}
+        owed = set({one for one, _ in CEILING_NEEDS_DERIVATION.get(name, ())})
+        missing = sorted(here - declared - owed)
+        if missing:
+            astray[name] = missing
+        both = sorted(declared & owed)
+        if both:
+            stale[name] = both
+    assert not astray, astray
+    assert not stale, stale  # ولا يُترَك في الدَّين ما صُرِّح به
+    assert sum(len(one) for one in CEILING_NEEDS_DERIVATION.values()) == CLASSIFIED
+
+
+def test_no_owed_entry_names_a_condition_that_is_not_bounded() -> None:
+    """ولا يُحشَى الدَّينُ بشرطٍ ليس محدودًا — فالجدولُ يُقابَل بالشجرة."""
+
+    real = {(one, two) for one, two, _ in _bounded()}
+    for name, owing in CEILING_NEEDS_DERIVATION.items():
+        for one, why in owing:
+            assert (name, one) in real, (name, one)
+            assert len(why) >= LEAST_REASON, (name, one, why)
+
+
+def test_every_declared_ceiling_holds_its_threshold_and_is_reasoned() -> None:
+    """السقفُ المُصرَّحُ يفوق حدَّه، **ولكلٍّ سببٌ مكتوبٌ لا صمت**."""
+
+    seen = 0
+    for name, identifier, threshold in _bounded():
+        module = __import__(name.removesuffix(".py"))
+        table = getattr(module, "CEILINGS", {})
+        if identifier not in table:
+            continue
+        ceiling, why = table[identifier]
+        assert isinstance(ceiling, Fraction), (name, identifier)
+        assert ceiling > 0, (name, identifier)
+        assert threshold_is_reachable(threshold, min(ceiling, Fraction(1))) or (
+            ceiling > 1
+        ), (name, identifier, threshold, ceiling)
+        assert threshold <= ceiling, (name, identifier, threshold, ceiling)
+        assert len(why) >= LEAST_REASON, (name, identifier, why)
+        seen += 1
+    assert seen == len(_bounded()) - CLASSIFIED
+    assert seen == len(_bounded()) - CLASSIFIED
+    assert seen == 42
+
+
+def test_the_guard_says_what_it_does_not_do() -> None:
+    """حدُّ المانعِ مُعلَن: يردُّ الصمتَ وحدًّا فوق سقفٍ، لا سقفًا خاطئًا."""
+
+    assert __doc__ is not None
+    text = " ".join(__doc__.split())
+    assert "**لا تُحسَب السقوفُ آليًّا**" in text
+    assert "ولا يردُّ سقفًا مُصرَّحًا خطأً" in text
+    assert "**ولا دَينَ بعدُ ولا أعمى**" in text
+    assert "`CEILING_NEEDS_DERIVATION` **خالية**" in text
+    assert "**وذلك خلوٌّ يُصنَّف ولا يُصفَّر**" in text

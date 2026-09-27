@@ -42,7 +42,7 @@ from collections import Counter
 from fractions import Fraction
 from pathlib import Path
 
-from frozen_corpus import CORPUS, requires_corpus
+from frozen_corpus import CORPUS, requires_corpus, requires_root_table
 
 REPOSITORY = Path(__file__).resolve().parents[2]
 READER = REPOSITORY / "examples" / "rasm" / "run_root_projection.py"
@@ -77,6 +77,7 @@ def _survey() -> tuple[Counter[int], frozenset[str], frozenset[str]]:
     )
 
 
+@requires_root_table
 def test_the_run_reproduces_the_recorded_counts() -> None:
     """السجلُّ يُعاد اشتقاقُه من الشيفرة لا يُنقَل."""
 
@@ -89,6 +90,7 @@ def test_the_run_reproduces_the_recorded_counts() -> None:
     assert len(bare) == UNANCHORED
 
 
+@requires_root_table
 def test_the_projection_is_not_a_function_on_a_third_of_what_it_reaches() -> None:
     """١٤٬١٠٥ توكنًا بأكثرَ من جذر — ولا فاصلَ في الإيداع."""
 
@@ -100,6 +102,7 @@ def test_the_projection_is_not_a_function_on_a_third_of_what_it_reaches() -> Non
     assert spread[2] + spread[3] + spread[4] == 12_513
 
 
+@requires_root_table
 def test_the_reached_roots_include_the_right_one_and_four_others() -> None:
     """«العالمين» → علم وأربعةٌ معها، والقرارُ لا يرجّح."""
 
@@ -111,6 +114,7 @@ def test_the_reached_roots_include_the_right_one_and_four_others() -> None:
     assert reached >= {"علم", "علن", "عين", "لعن"}
 
 
+@requires_root_table
 def test_unanchored_roots_are_classified_not_declared_impossible() -> None:
     """٢٣٠ جذرًا بلا حرفٍ يمتنع حذفُه — انعدامُ دليلٍ لا امتناعُ بلوغ."""
 

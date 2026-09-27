@@ -58,6 +58,19 @@ RATIO = 1.7644
 LOG2E = 1.4427
 
 
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ب٤": (
+        Fraction(1),
+        "معاملُ الارتباط لا يفوق الواحدَ مبرهنةً",
+    ),
+    "ب٦": (
+        Fraction(1),
+        "نسبةٌ تامّة: كلُّ ما في المقام يقبل الدخولَ في البسط، فلا ممتنعَ فيه",
+    ),
+}
+
+
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)
 

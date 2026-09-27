@@ -38,6 +38,7 @@ CORPUS_LINES = 6_236
 RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
     "arabic_token": ("run_state_cycle.py", ("--arabic-only",), True),
     "basmala_lifted": ("run_basmala_lifted.py", (), True),
+    "context_depth": ("run_context_depth.py", (), True),
     "context_ladder": ("run_context_ladder.py", (), True),
     "discovered_ascent": ("run_discovered_ascent.py", (), True),
     "greedy_algebra": ("run_greedy_algebra.py", (), True),
@@ -77,6 +78,7 @@ RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
         ),
         False,
     ),
+    "surah_index": ("run_surah_index.py", (), True),
     "table_consequence": ("run_table_consequence.py", (), True),
     "temporary_marking": ("run_temporary_marking.py", (), True),
     "transfer_arrow": ("run_transfer_arrow.py", (), True),

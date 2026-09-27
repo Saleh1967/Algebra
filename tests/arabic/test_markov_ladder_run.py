@@ -48,6 +48,21 @@ FLOW = (1.2874, 4.3798, 8.1255, 12.4475)
 MISSING = (0.0000, 0.0020, 0.1972, 0.9699)
 COUNTS = (364_747, 135_603, 78_245, 6_236)
 
+WITNESS = REPOSITORY / "deposits" / "markov_ceiling_witness.log"
+
+# **سقفُ كلّ شرطٍ محدود** — العطل ٢٦.
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ي٥": (
+        Fraction(17915807355, 1_000_000),
+        "ثمنُ الوحدة محجوزًا ≤ `أطول + ١ + log₂ ١١٢`، و`w ≥ ١` أسوأُ "
+        "الحالات؛ وعمقُ شجرة هفمان على `k` رمزًا **≤ k − ١ بالبناء**، "
+        "وأكبرُ أبجديّةٍ في السلّم ١٧٬٩٠٩ — فالسقفُ ١٧٬٩١٥٫٨٠٧٣٥٥. "
+        "**وهو حدٌّ سليمٌ بعيدٌ جدًّا**، وبُعدُه مطبوعٌ في "
+        "`deposits/markov_ceiling_witness.log`: المقيسُ دونه ٦٬٥٧٤٫٥×. "
+        "وحدٌّ أحكمُ (٣٢٫٨٠٧) يحتاج مبرهنةً **منقولةً** فلا يُبنى عليه",
+    ),
+}
+
 
 def _one(identifier: str) -> object:
     return next(one for one in PREDICTIONS if one.identifier == identifier)

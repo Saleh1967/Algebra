@@ -80,8 +80,8 @@ class SealedRerun:
 FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
     corpus="37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a",
     corpus_lines=6236,
-    compared=25,
-    matched=25,
+    compared=27,
+    matched=27,
     rows=(
         (
             "arabic_token_run.log",
@@ -92,6 +92,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "basmala_lifted_run.log",
             1725,
             "921e166a764f1e96a497fa8d8b178a007c09dc9b792ee47ceb46eccc9127cd13",
+        ),
+        (
+            "context_depth_run.log",
+            8187,
+            "b556915c1f6f283eb6e5fc945b87d195c43fbef0025cfc0eea908ad94e48fada",
         ),
         (
             "context_ladder_run.log",
@@ -182,6 +187,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "stirling_greedy_run.log",
             4060,
             "d46c801c6406633ea2ac3167b07c0d0fcf3b488ee5098de87ee80612a5d4735c",
+        ),
+        (
+            "surah_index_run.log",
+            3476,
+            "73b766d7a43eadbaee8865be817b786b68ccb220458574d5f10267b4bcc8d6e1",
         ),
         (
             "table_consequence_run.log",

@@ -192,6 +192,11 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة؛ ويقيس أربعةَ مستوياتٍ من الوحدة إلى "
         "السطر ملحَقًا ومحجوزًا، ويصنّف ما فوقها، على ختم 248f10df…"
     ),
+    "rasm/run_nasib_particle.py": (
+        "يحتاج المدوّنةَ المشكولة؛ ويقيس حالَ الوحدة الأخيرة من اللفظ "
+        "التالي لمتتالية 0625 0650 0646 0651 064E — ثلاثةُ نِصَبٍ "
+        "بالبايتات، على ختم 89cba549…"
+    ),
     "rasm/run_surah_index.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويحلّ حدودَ السور بهيكل البسملة "
         "الرباعيّ — ١١٣ رأسًا — ويصنّف الرابعَ عشرَ، على ختم eb26eef8…"
@@ -252,16 +257,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """واحدٌ وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """اثنان وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 61
+    assert len(found) == 62
     assert len(RUNNABLE) == 16
-    assert len(NEEDS_A_CORPUS) == 45
+    assert len(NEEDS_A_CORPUS) == 46
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -301,7 +306,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 51
+    assert len(_examples()) - len(foreign) == 52
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

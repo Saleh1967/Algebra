@@ -165,7 +165,7 @@ def test_every_run_either_binds_its_conditions_or_is_named_out_of_reach() -> Non
     assert read, "لم يُقرَأ تشغيلٌ واحد — القراءةُ نفسُها معطوبة"
     assert read | OUT_OF_REACH == every, sorted(every - (read | OUT_OF_REACH))
     assert not read & OUT_OF_REACH, sorted(read & OUT_OF_REACH)
-    assert len(read) == 47
+    assert len(read) == 48
 
 
 def test_every_sealed_condition_is_judged_in_its_own_run() -> None:
@@ -208,6 +208,7 @@ def test_every_run_names_the_reasoning_its_measurement_did_not_support() -> None
         "test_zawaid_letters_run.py": ("س١",),
         "test_root_template_run.py": ("ن٠",),
         "test_wazn_run.py": ("و٠",),
+        "test_ilal_run.py": ("ع٠",),
         "test_ladder_segmentation_run.py": ("س١",),
     }, named
 
@@ -243,7 +244,7 @@ def test_every_fallen_condition_quotes_what_fell_with_it() -> None:
         if bad:
             unquoted[one.run.name] = bad
     assert not unquoted, unquoted
-    assert sum(len(one.falsified()) for one in read_all()) == 80
+    assert sum(len(one.falsified()) for one in read_all()) == 81
 
 
 def test_every_claim_of_isolation_answers_whether_its_bound_binds_alike() -> None:

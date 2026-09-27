@@ -57,6 +57,7 @@ ABLE = 11
 ABLE_BARE = 9
 HELD = 99
 HELD_BARE = 78
+REPLICATES = 20_000
 TOLD = 1 / 20_001
 
 
@@ -140,6 +141,7 @@ def test_the_uniformity_is_priced_and_the_single_surface_frames_are_barred() -> 
     rows = run.vowel_rows(reader, tokens, frames)
     met, able, held = run.uniform(run.grouped(rows))
     assert (met, able, held) == (ABLE, ABLE, HELD)
+    assert run.REPLICATES == REPLICATES  # ٢٠٬٠٠٠ مُعادةً — والرقمُ مشهودٌ ههنا
     assert able < FRAMES  # فالمطروحُ ذو السطح الواحد، وطرحُه يضرّ لا ينفع
     told = run.null_reading(rows, met)
     assert abs(told - TOLD) < 1e-9

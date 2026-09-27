@@ -104,6 +104,9 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المجمَّدة؛ ويقرأ أزواجَ التنافر الثلاثةَ قراءةً "
         "موازيةً لختم d44f23ce… الذي لا تُستوفى مادّتُه"
     ),
+    "rasm/run_naqis_witness.py": (
+        "الأُطُرُ المناوِبةُ للامِ الناقص تُقام من ألفاظ المدوّنة نفسِها"
+    ),
     "rasm/run_deletion_witness.py": (
         "يحتاج المدوّنةَ المجمَّدة؛ ويقيس أنّ الإطارَ لا يسترجع المحذوف "
         "وأنّ حركةَ الجذع المقصور دالّةٌ عليه، ويُسعّر ذلك بنموذجٍ عدميّ"
@@ -229,9 +232,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 51
+    assert len(found) == 52
     assert len(RUNNABLE) == 12
-    assert len(NEEDS_A_CORPUS) == 39
+    assert len(NEEDS_A_CORPUS) == 40
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -271,7 +274,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 41
+    assert len(_examples()) - len(foreign) == 42
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

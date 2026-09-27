@@ -52,6 +52,7 @@ RUNS: dict[str, tuple[str, tuple[str, ...], bool]] = {
     "lifted_bit": ("run_lifted_bit.py", (), True),
     "lumping_barrier": ("run_lumping_barrier.py", (), False),
     "marking_contrast": ("run_marking_contrast.py", (), True),
+    "markov_order": ("run_markov_order.py", (), True),
     "markov_ladder": ("run_markov_ladder.py", (), True),
     "measured_ranking": ("run_measured_ranking.py", (), True),
     "morph_residue": ("run_morph_residue.py", (), True),

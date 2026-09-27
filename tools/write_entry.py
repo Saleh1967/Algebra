@@ -71,6 +71,14 @@ STANDING: tuple[tuple[str, str, str], ...] = (
         "النقل-والسهم.md",
     ),
     (
+        "ما لا يُفَكّ لا يُسمّى برهانًا",
+        "الإنتروبيا والثمنُ المحجوز **لا يُستَرجَع منهما سطرٌ واحد**. "
+        "و`algebra.folding` **تقابلٌ مبرهَنٌ** يُطوى به المجمَّدُ ويُفَكّ "
+        "فيرجع **حالةً بحالة** — ٦٬٢٣٦ سطرًا، صفرُ مخالفة، **٣٫٧٢٥٠ بتّة "
+        "للحالة مكتوبةً لا مقدَّرة**. **والقياسُ يُقاس والتقابلُ يُبرهَن.**",
+        "الطيُّ-والفكّ.md",
+    ),
+    (
         "ما نُقِل من خارجٍ يُودَع غيرَ موقَّع ويُعاد حسابُه لا قياسُه",
         "ثلاثةُ أنابيبَ خارجيّةٍ أُودِعت بنصّها: يُعاد **كلُّ رقمٍ يسمح "
         "منشورُها بإعادة اشتقاقه**، ويُحَدُّ ما لا يسمح **بحدّين**، "
@@ -107,10 +115,15 @@ def generated() -> list[tuple[str, str]]:
     found: list[tuple[str, str]] = []
     for path in sorted(TOOLS.glob("write_*.py")):
         text = path.read_text(encoding="utf-8")
-        hit = re.search(r'^(?:PAPER|INDEX|ENTRY) = DOCS / "(.+?)"', text, re.MULTILINE)
+        # **والتنويعُ في الإعلان لا يُخفي وثيقة**: `PAPER = DOCS / "…"` أو
+        # `PAPER: Final[Path] = DOCS / "…"` سواءٌ. وكان المُكتشِفُ يردُّ
+        # المُوسَّمَ بنوعٍ فيمرُّ مولَّدٌ **خارجَ الفهرس** — وردَّه
+        # `tests/algebra/test_repository_coherence.py` أوّلَ نصبه.
+        head = r"^(?:PAPER|INDEX|ENTRY)(?:\s*:\s*[^=]+)? = "
+        hit = re.search(head + r'DOCS / "(.+?)"', text, re.MULTILINE)
         if hit is None:
             hit = re.search(
-                r'^(?:PAPER|INDEX|ENTRY) = REPOSITORY / "docs" / "(.+?)"',
+                head + r'REPOSITORY / "docs" / "(.+?)"',
                 text,
                 re.MULTILINE,
             )

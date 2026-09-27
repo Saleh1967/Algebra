@@ -80,8 +80,8 @@ class SealedRerun:
 FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
     corpus="37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a",
     corpus_lines=6236,
-    compared=28,
-    matched=28,
+    compared=29,
+    matched=29,
     rows=(
         (
             "arabic_token_run.log",
@@ -147,6 +147,11 @@ FROZEN_RERUN: Final[SealedRerun] = SealedRerun(
             "markov_ladder_run.log",
             1986,
             "aba88b38afc14c18d9fd159e536b5047bc4a71db3d0d0404256fa5969d5bf029",
+        ),
+        (
+            "markov_order_run.log",
+            3971,
+            "54a2690ba109f50561e609eb55969396522b235fd30346f8dcfbe992dd37853e",
         ),
         (
             "measured_ranking_run.log",

@@ -1,0 +1,239 @@
+"""أداةُ التعدّي — مودَعةٌ نصًّا قبل ختم المقارنة بـQAC. تُنفَّذ بـexec مع TEXT وRASM معرَّفين."""
+"""استكشافٌ لا ختم: التعدّي واللزوم من الرسم — الوزن، والمبنيّ للمجهول، والضمير المفعول، وماركوف."""
+import sys,importlib.util,re,json,math
+from collections import Counter,defaultdict
+spec=importlib.util.spec_from_file_location("rj",RASM+"/run_jazm_zero.py");m=importlib.util.module_from_spec(spec);sys.modules["rj"]=m;spec.loader.exec_module(m)
+F,D,K,SK="َ","ُ","ِ","ْ"
+V={F:"a",D:"u",K:"i"}
+def render(tok):
+    u=m.units(tok); out=[]; prev=None
+    for (l,s),e in u:
+        if l in "اوي" and s not in V and prev in V and e.get("شدّة")!="نعم":
+            out.append({"ا":"A","و":"U","ي":"I"}[l])
+        else: out.append(l+V.get(s,"0"))
+        prev=s
+    return "".join(out)
+C="([^AUI0aiu])"
+P="([ايتن])"
+T=[ # (form, voice, tense, regex)  — مرتّبةً من الأطول
+ ("I","فاعل","مضارع",r"^"+P+"a"+C+"[iau]"+C+"(?:[aiu0]|uU|iI|aA)?(.*)$","w1"),
+ ("I","فاعل","أمر",r"^"+C+"[uia]"+C+"0?()$","w2"),
+ ("I","فاعل","أمر",r"^"+C+"[uia]"+C+"(?:uUA|iI|aA)(.*)$","w2"),
+ ("I","فاعل","أمر",r"^ا0?"+C+"0"+C+"[uia]"+C+"(.*)$"),
+ ("IV","فاعل","ماض",r"^اa"+C+"0"+C+"a(?:A|و0|ي0|I)(.*)$","w3"),
+ ("IV","فاعل","أمر",r"^اa"+C+"iI"+C+"(.*)$","w2"),
+ ("IV","فاعل","أمر",r"^اa"+C+"0"+C+"i"+C+"(.*)$"),
+ ("II","فاعل","أمر",r"^"+C+"a"+C+"0\\2i"+C+"(.*)$"),
+ ("III","فاعل","أمر",r"^"+C+"aA"+C+"i"+C+"(.*)$"),
+ ("I","فاعل","مضارع",r"^"+P+"a"+C+"[uia]"+C+"0(.*)$","w2"),
+ ("X","فاعل","ماض",r"^ا0س0تa"+C+"0"+C+"a"+C+"(.*)$"),
+ ("VIII","فاعل","ماض",r"^ا0"+C+"0[تطد]a"+C+"a"+C+"(.*)$"),
+ ("VII","فاعل","ماض",r"^ا0ن0"+C+"a"+C+"a"+C+"(.*)$"),
+ ("VI","فاعل","ماض",r"^تa"+C+"aA"+C+"a"+C+"(.*)$"),
+ ("V","فاعل","ماض",r"^تa"+C+"a"+C+"0\\2a"+C+"(.*)$"),
+ ("IV","فاعل","ماض",r"^اa"+C+"0"+C+"a"+C+"(.*)$"),
+ ("IV","فاعل","ماض",r"^اa"+C+"aA"+C+"(.*)$","w2"),
+ ("II","فاعل","ماض",r"^"+C+"a"+C+"0\\2a"+C+"(.*)$"),
+ ("III","فاعل","ماض",r"^"+C+"aA"+C+"a"+C+"(.*)$"),
+ ("I","فاعل","ماض",r"^"+C+"a"+C+"([aiu])"+C+"(.*)$"),
+ ("I","فاعل","ماض",r"^"+C+"aA"+C+"(.*)$","w2"),
+ ("I","فاعل","ماض",r"^"+C+"a"+C+"a(?:A|و0|ي0|I)(.*)$","w3"),
+ ("IV","مفعول","ماض",r"^اu"+C+"0"+C+"i"+C+"(.*)$"),
+ ("II","مفعول","ماض",r"^"+C+"u"+C+"0\\2i"+C+"(.*)$"),
+ ("I","مفعول","ماض",r"^"+C+"u"+C+"i"+C+"(.*)$"),
+ ("I","مفعول","ماض",r"^"+C+"iI"+C+"a(.*)$","w2"),
+ ("X","مفعول","مضارع",r"^"+P+"uس0تa"+C+"0"+C+"a"+C+"(.*)$"),
+ ("VIII","مفعول","مضارع",r"^"+P+"u"+C+"0[تطد]a"+C+"a"+C+"(.*)$"),
+ ("V","مفعول","مضارع",r"^"+P+"uتa"+C+"a"+C+"0\\3a"+C+"(.*)$"),
+ ("III","مفعول","مضارع",r"^"+P+"u"+C+"aA"+C+"a"+C+"(.*)$"),
+ ("X","مفعول","ماض",r"^ا0?س0تu"+C+"0"+C+"i"+C+"(.*)$"),
+ ("VIII","مفعول","ماض",r"^ا[0u]?"+C+"0[تطد]u"+C+"i"+C+"(.*)$"),
+ ("III","مفعول","ماض",r"^"+C+"uU"+C+"i"+C+"(.*)$"),
+ ("X","فاعل","مضارع",r"^"+P+"aس0تa"+C+"0"+C+"i"+C+"(.*)$"),
+ ("VIII","فاعل","مضارع",r"^"+P+"a"+C+"0[تطد]a"+C+"i"+C+"(.*)$"),
+ ("VII","فاعل","مضارع",r"^"+P+"aن0"+C+"a"+C+"i"+C+"(.*)$"),
+ ("VI","فاعل","مضارع",r"^"+P+"aتa"+C+"aA"+C+"a"+C+"(.*)$"),
+ ("V","فاعل","مضارع",r"^"+P+"aتa"+C+"a"+C+"0\\3a"+C+"(.*)$"),
+ ("II","مفعول","مضارع",r"^"+P+"u"+C+"a"+C+"0\\3a"+C+"(.*)$"),
+ ("II","فاعل","مضارع",r"^"+P+"u"+C+"a"+C+"0\\3i"+C+"(.*)$"),
+ ("III","فاعل","مضارع",r"^"+P+"u"+C+"aA"+C+"i"+C+"(.*)$"),
+ ("IV","فاعل","مضارع",r"^"+P+"u"+C+"0"+C+"i"+C+"(.*)$"),
+ ("IV","فاعل","مضارع",r"^"+P+"u"+C+"iI"+C+"(.*)$","w2"),
+ ("I/IV","مفعول","مضارع",r"^"+P+"u"+C+"0"+C+"a"+C+"(.*)$"),
+ ("I/IV","مفعول","مضارع",r"^"+P+"u"+C+"aA"+C+"(?!iI)(.*)$","w2"),
+ ("III","فاعل","مضارع",r"^"+P+"u"+C+"aA"+C+"iI(.*)$","w3"),
+ ("VIII","فاعل","مضارع",r"^"+P+"a"+C+"0[تطد]a"+C+"(?:uU|iI|aA)(.*)$","w3"),
+ ("VIII","فاعل","ماض",r"^ا0"+C+"0[تطد]a"+C+"a(?:A|و0|ي0|I)(.*)$","w3"),
+ ("I","فاعل","مضارع",r"^"+P+"a"+C+"0"+C+"([aiu])"+C+"(.*)$"),
+ ("I","فاعل","مضارع",r"^"+P+"a"+C+"(?:uU|iI|aA)"+C+"(.*)$","w2"),
+ ("I","فاعل","مضارع",r"^"+P+"a"+C+"0"+C+"(?:uU|iI|aA)(.*)$","w3"),
+ ("IV","فاعل","مضارع",r"^"+P+"u"+C+"0"+C+"(?:iI|I)(.*)$","w3"),
+]
+_imp=[t for t in T if t[2]=="أمر"]
+_w1=[t for t in T if len(t)>4 and t[4]=="w1"]
+_one=[t for t in T if t[0]=="I" and t not in _imp and t not in _w1]
+T=[t for t in T if t[0]!="I" and t not in _imp]+_one+_w1+_imp
+SUBJ=["تموا","تمو","تما","تم","تن","ت","نا","وا","ون","ان","ين","ا","ن","و","ي","نن"]
+OBJ=["هما","هم","هن","ها","ه","كما","كم","كن","ك","نا","ني","ي"]
+def letters(r): return re.sub("[0aiu]","",r).replace("A","ا").replace("U","و").replace("I","ي")
+def parse_suffix(s, radical_vowel):
+    """(صحيح؟، عددُ الضمائر المفعولة)."""
+    L=letters(s)
+    if L=="": return True,0
+    best=None
+    for subj in [""]+SUBJ:
+        if not L.startswith(subj): continue
+        rest=L[len(subj):]
+        # subject «نا/ت/تم» بعد ساكن؛ و«نا» بعد متحرّك مفعول
+        objs=[]; r=rest; ok=True
+        while r:
+            hit=next((o for o in OBJ if r.startswith(o)),None)
+            if hit is None: ok=False;break
+            objs.append(hit); r=r[len(hit):]
+        if not ok or len(objs)>2: continue
+        if subj=="" and objs and objs[0] in ("نا",) and radical_vowel=="0": continue
+        if subj in ("نا","ت","تم","تما","تن","ن") and radical_vowel not in ("0",None): continue
+        if objs==["ي"] and subj=="": continue   # ياءُ المخاطبة أو لام الكلمة
+        cand=(len(objs), subj)
+        if best is None or len(subj)>len(best[1]): best=cand
+    if best is None: return False,0
+    return True,best[0]
+PREF=[("وa",),("فa",),("لa",),("لi",),("سa",),("اa",)]
+PREP={"من","في","عن","علا","الا","ب","ل","عند","مع","حتا"}
+FUNC=set("أجمعين أجمعون أحكم لفي بلى وبلى إنا أنا فإنا وإنا كذلك وكذلك ماذا فماذا أما وأما فأما فبأي بأي أيها كأنما إنما كلما ربما لما على إلى الى في من عن لا ما إن أن ان لكن لكنّ إذا إذ اذا ثم أو أم بل قد لقد كلا هل لم لن لما حتى حتى إلا الا لو لولا كي ليت لعل يا أيها أين كيف متى ذلك تلك هذا هذه هؤلاء أولئك الذي التي الذين هو هي هم هن أنت أنتم نحن أنا إنما أنما عليه عليها عليهم عليكم علينا إليه إليهم إليكم لدى لدن عند عندنا بعد قبل بين حين يوم إذن".split())
+PRON_TAIL=("ه","ها","هم","هما","هن","ك","كم","كما","كن","نا","ي","ني")
+NOUN_STEMS=set()
+def stem_keys(u):
+    ks={m.key(u)}
+    L=m.skeleton(u)
+    for p in PRON_TAIL:
+        if L.endswith(p) and len(u)>len(p)+1: ks.add(m.key(u[:len(u)-len(p)]))
+    return ks
+def analyse(tok):
+    r=render(tok); cands=[r]
+    for p in ("وa","فa"):
+        if r.startswith(p): cands.append(r[len(p):])
+    more=[]
+    for c in cands:
+        for p in ("لa","لi","سa"):
+            if c.startswith(p): more.append(c[len(p):])
+    cands+=more
+    found=[]
+    for c in cands:
+        for t in T:
+            form,voice,tense,rx=t[:4]; weak=t[4] if len(t)>4 else None
+            mm=re.match(rx,c)
+            if not mm: continue
+            g=[x for x in mm.groups()]
+            suffix=g[-1]
+            rad=[x for x in g[:-1] if x and len(x)==1 and x not in "aiu"]
+            if tense=="مضارع": rad=rad[1:]
+            before=c[:len(c)-len(suffix)]
+            rv=before[-1] if before and before[-1] in "0aiu" else None
+            ok,nobj=parse_suffix(suffix,rv)
+            if not ok: continue
+            if weak=="w1": rad=["٭"]+rad[:2]
+            elif weak=="w2": rad=[rad[0],"٭",rad[-1]]
+            elif weak=="w3": rad=rad[:2]+["٭"]
+            found.append((len(letters(suffix)),len(c),dict(form=form,voice=voice,tense=tense,root="".join(rad[:3]),obj=nobj,core=c)))
+    if not found: return None
+    rest=corpus.is_mudari(tok)
+    mud=rest is not None and rest[0][0][0] in "يتن"
+    found.sort(key=lambda x:((x[2]["tense"]=="مضارع")!=mud,x[1],x[2]["tense"]=="أمر",-x[0]))
+    return found[0][2]
+text=TEXT
+corpus=m.Corpus(text)
+for line in text.split("\n"):
+    toks=line.replace("<sel>"," ").split(); prev=None
+    for tok in toks:
+        u=m.units(tok)
+        if u and (m._after_al(tok,u) is not None or any(e.get("تنوين") for e in m.PEELER.peel(tok)[1]) or (prev is not None and m.GOVERNED.kind(*m.PEELER.peel(prev),m.PEELER.STRUCTURE)=="جر")):
+            NOUN_STEMS.update(stem_keys(u))
+            a=m._after_al(tok,u)
+            if a: NOUN_STEMS.update(stem_keys(a))
+        prev=tok
+def is_noun(tok):
+    u=m.units(tok)
+    return bool(u) and (m._after_al(tok,u) is not None or any(e.get("تنوين") for e in m.PEELER.peel(tok)[1]) or m.key(u) in corpus.nouns)
+def nstate(tok):
+    u=m.units(tok)
+    if not u: return None
+    s=u[-1][0][1]
+    return {F:"فتحة",D:"ضمة",K:"كسرة"}.get(s,"سكون/عارٍ")
+stats=defaultdict(lambda: Counter())
+nextprof=defaultdict(Counter)
+examples=defaultdict(Counter)
+tokens_verbs=0
+TOKENS=[]
+for LINE_NO,line in enumerate(text.split("\n"),1):
+    toks=line.replace("<sel>"," ").split()
+    for i,tok in enumerate(toks):
+        # الأفعال المضارعة: لا يُعدّ اسمًا
+        if m.Corpus.is_mudari is None: pass
+        a=analyse(tok)
+        if not a: continue
+        rr=m.raw(tok)
+        core_r=rr
+        for _ in range(2):
+            if core_r[:1] in "وفأ" and len(core_r)>2 and core_r[1:] in FUNC|{"لم","لما","فلا","لا","لم","ما","إن","لن","ألا","كما","مما","لأن","لئن","لكي","كيلا","أنى","إذا"}: core_r=core_r[1:]
+        if rr in FUNC or core_r in FUNC|{"لم","لما","فلا","لا","ما","إن","لن","ألا","كما","مما","لأن","لئن","لكي","كيلا","أنى","إذا","ولم","أفلا","ألم","أولم"}: continue
+        if re.fullmatch(r"[وفأ]?[بلك]?(ما|من|مم|عم|فيم|مما|ممن|عما|لم|لما|بم|كم|كما)",rr): continue
+        if re.fullmatch(r"[وف]?(ل|ب|ك|عل|علي|إلي|الي|من|عن|عند|لد|لدي|مع|في|فيه|إن|أن|لكن|كأن|ليت|لعل)(ه|ها|هم|هما|هن|ك|كم|كما|كن|نا|ي|ني)",rr): continue
+        u=m.units(tok)
+        if stem_keys(u)&NOUN_STEMS or (u and m._after_al(tok,u) is not None): continue
+        if any(e.get("تنوين") for e in m.PEELER.peel(tok)[1]): continue
+        if m.skeleton(u) in m.BUILT: continue
+        rc=render(tok)
+        nxt0=toks[i+1] if i+1<len(toks) else ""
+        if re.match(r"^(?:وa|فa|بi|لa)?اa[^AUI0aiu]0[^AUI0aiu]a[^AUI0aiu][au](?:ه|ك|ن)?",rc) and (m.raw(nxt0)[:1]=="ب" or m.raw(nxt0) in ("من","مما","ممن")): continue
+        if re.match(r"^(?:وa|فa)?اa[^AUI0aiu]0[^AUI0aiu]a[^AUI0aiu]u(?:ه|ك|ن)",rc): continue
+        tokens_verbs+=1
+        TOKENS.append((LINE_NO,i+1,tok,a))
+        k=(a["root"],a["form"])
+        st=stats[k]; st["n"]+=1
+        if a["voice"]=="مفعول": st["passive"]+=1
+        else: st["active"]+=1
+        if a["obj"]>=1 and a["voice"]=="فاعل": st["objsuf"]+=1
+        if a["obj"]>=2: st["double"]+=1
+        nxt=toks[i+1] if i+1<len(toks) else None
+        nraw=m.raw(nxt) if nxt else ""
+        if a["voice"]=="فاعل" and a["obj"]>=1 and nxt and nraw.startswith("ال") and nstate(nxt)=="فتحة":
+            st["obj+noun"]+=1
+        if a["voice"]=="مفعول" and nxt and nraw.startswith("ال") and nstate(nxt)=="فتحة":
+            st["pass+noun"]+=1
+        if a["voice"]=="مفعول" and nxt and m.raw(nxt).lstrip("وف") in PREP|{"عليهم","عليه","عليكم","لهم","له","به","بهم","فيه","فيها","عنه","عنها","إليه","إليهم","إليكم","اليه"}:
+            st["pass+prep"]+=1
+        if a["voice"]=="فاعل" and a["obj"]==0 and nxt and a["tense"]!="أمر":
+            if nraw.lstrip("وف") in PREP or nraw[:1] in "بل" and m.units(nxt) and m.units(nxt)[0][0][1]==K: kind="جارّ"
+            elif is_noun(nxt): kind="اسم "+(nstate(nxt) or "")
+            else: kind="غيره"
+            st["next:"+kind]+=1
+        examples[k][tok]+=1
+
+# ═══ التصنيف ═══
+st={"|".join(k):dict(vv) for k,vv in stats.items()}
+root_pass=Counter(); root_passnoun=Counter(); root_passprep=Counter()
+for k,v in st.items():
+    r,f=k.split("|")
+    if f=="I/IV": root_pass[r]+=v.get("passive",0); root_passnoun[r]+=v.get("pass+noun",0); root_passprep[r]+=v.get("pass+prep",0)
+def cls(k,v):
+    r,f=k.split("|")
+    if f=="I/IV": return None
+    n=v["n"]; act=v.get("active",0)
+    p=v.get("passive",0)+(root_pass[r] if f in("I","IV") else 0)
+    pn=v.get("pass+noun",0)+(root_passnoun[r] if f in("I","IV") else 0)
+    pp=v.get("pass+prep",0)+(root_passprep[r] if f in("I","IV") else 0)
+    o=v.get("objsuf",0); on=v.get("obj+noun",0); d=v.get("double",0)
+    nxt={kk[5:]:vv for kk,vv in v.items() if kk.startswith("next:")}
+    nn=sum(nxt.values())
+    if d+pn+on>=2: return "متعدٍّ لاثنين"
+    if o>0 or (p>0 and p>pp): return "متعدٍّ لواحد"
+    if n<5: return "قليل"
+    if p>0 and pp>=p: return "لازمٌ بحرف (مجهولُه بالجارّ)"
+    if nn and nxt.get("جارّ",0)/nn>=0.3: return "لازمٌ بحرف"
+    return "لازم"
+res={}; byform=defaultdict(Counter); tokform=defaultdict(Counter)
+for k,v in st.items():
+    c=cls(k,v)
+    if c is None: continue
+    res[k]=c; f=k.split("|")[1]; byform[f][c]+=1; tokform[f][c]+=v["n"]

@@ -163,7 +163,7 @@ def test_every_declared_ceiling_holds_its_threshold_and_is_reasoned() -> None:
         seen += 1
     assert seen == len(_bounded()) - CLASSIFIED
     assert seen == len(_bounded()) - CLASSIFIED
-    assert seen == 42
+    assert seen == 46
 
 
 def test_the_guard_says_what_it_does_not_do() -> None:

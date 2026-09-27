@@ -134,6 +134,17 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المجمَّدة؛ ويقرأ أزواجَ التنافر الثلاثةَ قراءةً "
         "موازيةً لختم d44f23ce… الذي لا تُستوفى مادّتُه"
     ),
+    "rasm/run_naqis_witness.py": (
+        "الأُطُرُ المناوِبةُ للامِ الناقص تُقام من ألفاظ المدوّنة نفسِها"
+    ),
+    "rasm/run_deletion_witness.py": (
+        "يحتاج المدوّنةَ المجمَّدة؛ ويقيس أنّ الإطارَ لا يسترجع المحذوف "
+        "وأنّ حركةَ الجذع المقصور دالّةٌ عليه، ويُسعّر ذلك بنموذجٍ عدميّ"
+    ),
+    "rasm/run_neutral_witness.py": (
+        "يحتاج المدوّنةَ المجمَّدة؛ ويفرز الجوفَ بالمناوبة المشهودة لا بقلع "
+        "حرفٍ، ويُدخل ∅ في العدّ، ويرشّح بلا ذكر المتطفّل ثمّ يعدّه"
+    ),
     "rasm/run_cv_peel.py": (
         "يحتاج المدوّنةَ المشكولة؛ ويقشّرها إلى ١١٢ وحدةً ويعيد بناءها "
         "بايتةً بايتة ويعرض دفترَ البتّات"
@@ -266,16 +277,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """أربعةٌ وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """سبعةٌ وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 64
+    assert len(found) == 67
     assert len(RUNNABLE) == 16
-    assert len(NEEDS_A_CORPUS) == 48
+    assert len(NEEDS_A_CORPUS) == 51
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -315,7 +326,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 54
+    assert len(_examples()) - len(foreign) == 57
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

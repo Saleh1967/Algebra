@@ -165,7 +165,7 @@ def test_every_run_either_binds_its_conditions_or_is_named_out_of_reach() -> Non
     assert read, "لم يُقرَأ تشغيلٌ واحد — القراءةُ نفسُها معطوبة"
     assert read | OUT_OF_REACH == every, sorted(every - (read | OUT_OF_REACH))
     assert not read & OUT_OF_REACH, sorted(read & OUT_OF_REACH)
-    assert len(read) == 31
+    assert len(read) == 32
 
 
 def test_every_sealed_condition_is_judged_in_its_own_run() -> None:
@@ -204,6 +204,7 @@ def test_every_run_names_the_reasoning_its_measurement_did_not_support() -> None
         "test_context_ladder_run.py": ("ق٦",),
         "test_state_cycle_run.py": ("ح٣", "ح٤"),
         "test_transfer_arrow_run.py": ("ظ٧",),
+        "test_minimal_pairs_run.py": ("م١",),
     }, named
 
 
@@ -262,8 +263,8 @@ def test_every_claim_of_isolation_answers_whether_its_bound_binds_alike() -> Non
             continue
         answered[one.run.name] = answer
     assert not silent, silent
-    assert len(answered) == 4, sorted(answered)
-    assert sum(one is False for one in answered.values()) == 3
+    assert len(answered) == 5, sorted(answered)
+    assert sum(one is False for one in answered.values()) == 4
     assert sum(one is True for one in answered.values()) == 1
 
 

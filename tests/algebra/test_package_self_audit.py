@@ -78,14 +78,15 @@ def test_the_share_that_constrains_in_its_constructor_is_reported() -> None:
 
     وكانت ستًّا وثلاثين من إحدى وأربعين، ثمّ زاد `Taught` و`Segment`، ثمّ
     `ClusteredSample`، ثمّ `Corpus` و`Reading`، ثمّ `ClusterProfile`
-    و`EffectReading`، ثمّ `Layer` و`ContextReading` و`LumpabilityReading`.
+    و`EffectReading`، ثمّ `Layer` و`ContextReading` و`LumpabilityReading`، ثمّ
+    `Guarded` — وهي تقيّد في مُنشئها كذلك.
     وكلُّها تقيّد في مُنشئها، والعدُّ يُعاد عند كلّ زيادة.
     """
 
     classes = _data_classes()
     guarded = [name for name, node in classes if _has_post_init(node)]
-    assert len(classes) == 51
-    assert len(guarded) == 46
+    assert len(classes) == 52
+    assert len(guarded) == 47
     assert len(classes) - len(guarded) == len(
         COMPOSED_OF_CONSTRAINED_PARTS | RAW_READINGS
     )

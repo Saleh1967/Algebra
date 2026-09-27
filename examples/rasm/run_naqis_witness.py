@@ -134,25 +134,30 @@ DROPPED_LAM: Final[re.Pattern[str]] = re.compile(
 """
 
 BARE_DROPPED: Final[re.Pattern[str]] = re.compile(
-    "^"
-    + f"({_SOUND})"
-    + _HARAKA
-    + f"({_SOUND})"
-    + FATHA
-    + TAA
-    + SUKUN
-    + OBJECT
-    + "$"
+    "^" + f"({_SOUND})" + _HARAKA + f"({_SOUND})" + FATHA + TAA + SUKUN + OBJECT + "$"
 )
 """الوجهُ المحذوفُ بلا سابقةٍ تُقلَع — وهو القراءةُ التي لا تحتمل غيرَها."""
 
 LAM_PLACE: Final[re.Pattern[str]] = re.compile(
-    "^" + PROCLITICS + f"({_SOUND})" + _HARAKA + f"({_SOUND})" + f"{_HARAKA}?" + "(.)$"
+    "^"
+    + PROCLITICS
+    + f"({_SOUND})"
+    + _HARAKA
+    + f"({_SOUND})"
+    + f"{_HARAKA}?"
+    + f"({_CONSONANT})$"
 )
-"""مسحُ موضع اللام: أيُّ حرفٍ وقع بعد صامتَي الإطار — ولا شرطَ على جنسه.
+"""مسحُ موضع اللام: أيُّ **حرفٍ** وقع بعد صامتَي الإطار — ولا شرطَ على جنسه.
 
 وهذا هو العدّادُ الذي **يجوز أن يسقط**: لا يذكر حروفَ العلّة في شرطه،
 فما وقع فيه من غيرها متطفّلٌ مرصودٌ يُسمّى بعينه.
+
+**والحركةُ ليست شاغلًا لهذا الموضع**: الفتحةُ والتنوينُ علامتان على الحرف
+الذي قبلهما، لا حرفان يقعان بعده. وكان الموضعُ أوّلَ ما كُتِب `(.)` فالتقط
+فتحةَ `كَسَبَ` وتنوينَ `كَبَدٍ` وعدَّهما «متطفّلَين» — وذاك **خطأُ فئةٍ في
+المحارف لا خبرٌ في اللغة**، وهو عطلُ عرضٍ من جنس الوحدة التي طُبِعت فراغًا.
+فحُصِر الموضعُ في كتلة الحروف `\u0621-\u064a`، **ولم يُذكَر حرفُ علّةٍ في
+الشرط** — فالعدّادُ باقٍ على قابليّته للسقوط، وما يسقط به حرفٌ لا علامة.
 """
 
 PARTICLES: Final[tuple[str, ...]] = (
@@ -323,8 +328,7 @@ def main() -> int:
         print(f"الغالب: {leader} — {lead}/{held} = {lead / held:.4f}")
         print(f"ا − و = {witness['ا'] - witness['و']}")
     print(
-        f"المتطفّل: {strayed}/{total}"
-        + (f" = {strayed / total:.4f}" if total else ""),
+        f"المتطفّل: {strayed}/{total}" + (f" = {strayed / total:.4f}" if total else ""),
         dict(intruder.most_common()),
     )
     print(

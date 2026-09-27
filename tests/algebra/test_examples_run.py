@@ -194,6 +194,10 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "يحتاج المدوّنةَ المشكولة وملفَّ QAC؛ ويمتحن خاصّيةَ الاختيار الجشع في "
         "قرارات أداة الإعراب، على ختم 9390b473…"
     ),
+    "rasm/run_online_lexicon.py": (
+        "يحتاج المدوّنةَ المشكولة وملفَّ QAC؛ ويقابل المعجمَ الفوريّ بغير الفوريّ "
+        "في قرار الضمير، على ختم 363ee517…"
+    ),
     "rasm/run_letter_roles.py": (
         "يحتاج المدوّنةَ المشكولة والجدولَ المُودَع؛ ويعدّ أدوارَ حروف "
         "«سألتمونيها» الممكنةَ في خانة الموقع والحال، على ختم 72b39b4c…"
@@ -273,9 +277,9 @@ def test_every_example_is_declared_and_none_is_left_out() -> None:
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 62
+    assert len(found) == 63
     assert len(RUNNABLE) == 12
-    assert len(NEEDS_A_CORPUS) == 50
+    assert len(NEEDS_A_CORPUS) == 51
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -316,7 +320,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 51
+    assert len(_examples()) - len(foreign) == 52
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

@@ -95,7 +95,7 @@ def test_the_standing_caveats_are_carried_not_buried() -> None:
 
     entry = _tool("write_entry.py")
     written = ENTRY.read_text(encoding="utf-8")
-    assert len(entry.STANDING) == 8
+    assert len(entry.STANDING) == 9
     for title, _body, where in entry.STANDING:
         assert title in written, title
         assert (DOCS / where).resolve().is_file(), where
@@ -103,3 +103,4 @@ def test_the_standing_caveats_are_carried_not_buried() -> None:
     assert "ولا يُسمّى السطرُ جملةً ولا اللفظُ كلمة" in written
     assert "والنقلُ ليس السببيّة" in written  # ولا يُقرأ سببًا يومًا
     assert "ولا يُوقَّع تأويلٌ ولا يُنقَل رقمٌ بين مقامين" in written
+    assert "**والقياسُ يُقاس والتقابلُ يُبرهَن.**" in written

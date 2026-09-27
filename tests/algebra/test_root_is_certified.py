@@ -171,8 +171,8 @@ def test_what_is_withheld_is_as_wide_as_what_is_adopted() -> None:
     """لا يُوقَّع على سبعةٍ ويُستثنى واحد — والنطاقان يُقرآن معًا."""
 
     sealed = _tool("root_certificate.py").FROZEN_ADOPTION
-    assert len(sealed.certifies) == 7
-    assert len(sealed.withheld) == 7
+    assert len(sealed.certifies) == 8
+    assert len(sealed.withheld) == 8
     for one in sealed.withheld:
         assert len(one) > 60, one
 

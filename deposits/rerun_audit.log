@@ -1,6 +1,6 @@
 — المدوّنة: 37633090743d403886b334d12dd911d1994e49767faa9f2be0f01fd48b466c5a | أسطرٌ 6236
 — حدُّ المقابلة: sha256 على البايتات كلِّها — لا سطرًا ولا عينًا
-— المُقابَل: 28 سجلًّا
+— المُقابَل: 29 سجلًّا
 
   السجلّ | البايتات | بصمةُ المودَع | بصمةُ المُعاد | الحكم
   arabic_token | 2702 | 1bac65d2d938c814 | 1bac65d2d938c814 | مطابق
@@ -16,6 +16,7 @@
   lumping_barrier | 4122 | 573f9509bb8444ed | 573f9509bb8444ed | مطابق
   marking_contrast | 2661 | 12743a6449217b35 | 12743a6449217b35 | مطابق
   markov_ladder | 1986 | aba88b38afc14c18 | aba88b38afc14c18 | مطابق
+  markov_order | 3971 | 54a2690ba109f505 | 54a2690ba109f505 | مطابق
   measured_ranking | 3951 | 6de8bba98f9289e4 | 6de8bba98f9289e4 | مطابق
   morph_residue | 3194 | 4f48cb31994928d2 | 4f48cb31994928d2 | مطابق
   nasib_particle | 2991 | b3919ae7ef5bd9bc | b3919ae7ef5bd9bc | مطابق
@@ -32,9 +33,9 @@
   verse_ending | 8168 | 37e2558e1b5fcb57 | 37e2558e1b5fcb57 | مطابق
   word_escalation | 2682 | 9190c2d4e4a206d5 | 9190c2d4e4a206d5 | مطابق
 
-— مطابقٌ بتّاً ببتّ: 28
+— مطابقٌ بتّاً ببتّ: 29
 — مخالف: 0
-— بايتاتٌ قُوبِلت: 145517
+— بايتاتٌ قُوبِلت: 149488
 
 — المختصَرُ من كاملٍ مودَعٍ إلى جانبه:
     temporary_marking_run.log: 56 سطرًا، قُوبِل بـtemporary_marking_full.log — أسطرٌ مفقودةٌ منه 0
@@ -53,6 +54,7 @@
     lumping_barrier: run_lumping_barrier.py
     marking_contrast: run_marking_contrast.py --text <المدوّنة>
     markov_ladder: run_markov_ladder.py --text <المدوّنة>
+    markov_order: run_markov_order.py --text <المدوّنة>
     measured_ranking: run_measured_ranking.py --text <المدوّنة>
     morph_residue: run_morph_residue.py --text <المدوّنة>
     nasib_particle: run_nasib_particle.py --text <المدوّنة>

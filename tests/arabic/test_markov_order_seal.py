@@ -228,7 +228,7 @@ def test_the_deposited_ladder_is_named_as_a_different_support() -> None:
     assert "لا يُقابَلان" in THE_FLOOR_IS_REMOVED_AND_THAT_IS_THE_POINT
     assert __doc__ is not None
     text = " ".join(__doc__.split())
-    assert "**فههنا لا أرضيّة**" in text
+    assert "فههنا **لا أرضيّة**" in text
     assert "ولا يُستبعَد" in text
 
 
@@ -240,7 +240,7 @@ def test_the_proved_inequality_is_a_machine_condition_not_a_claim() -> None:
     assert "مبرهَنةٌ" in proved.falsifies
     assert "عطلُ حسابٍ لا خبرُ مادّة" in proved.falsifies
     assert __doc__ is not None
-    assert "**والمحجوزُ حرٌّ أن يرتفع**" in " ".join(__doc__.split())
+    assert "والمحجوزُ **حرٌّ أن يرتفع**" in " ".join(__doc__.split())
 
 
 def test_stirling_bounds_knowledge_not_computation() -> None:

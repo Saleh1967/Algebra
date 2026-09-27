@@ -51,6 +51,7 @@ from typing import Any
 
 from frozen_corpus import CORPUS, requires_corpus
 from test_naqis_witness_seal import BREAK_EVEN, DIGEST, ORACLE, PREDICTIONS
+from test_neutral_witness_run import LEAD_SHARE as HOLLOW_LEAD
 
 from algebra.signified import Prediction, Verdict, seal
 
@@ -73,6 +74,7 @@ BARE_HELD = 28
 BARE_ZERO = 17
 BARE_ALIF = 11
 LEAD_SHARE = 0.6667
+HOLLOW_ALIF = 0.8110
 BORROWED_SHARE = 0.3333
 SHADOW = 0.9183
 ROOF = 1.0235
@@ -162,6 +164,8 @@ def test_the_deletion_wins_here_unlike_the_hollow_and_the_particles_stay_out() -
     reader, _, frames, _, (witness, _, _, _) = _measured()
     leader, lead = witness.most_common(1)[0]
     assert leader == reader.DELETION  # وفي الأجوف كان الألف — فالبابان يفترقان
+    assert HOLLOW_ALIF == HOLLOW_LEAD  # ونصيبُ الألف هناك مأخوذٌ من تشغيله لا منقول
+    assert lead / HELD < HOLLOW_LEAD
     assert abs(lead / HELD - LEAD_SHARE) < 5e-5
     assert _one("ق٣").verdict(Fraction(witness[reader.DELETION])) is Verdict.MET
     assert _one("ق٤").verdict(Fraction(witness["ا"] - witness["و"])) is Verdict.MET

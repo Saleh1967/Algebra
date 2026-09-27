@@ -67,6 +67,22 @@ SHADOW = 0.9744
 ROOF = 1.6839
 SQUEEZE = 0.5787
 
+_ALTERNATION_CEILING = Fraction(HELD - FRAMES, HELD)
+CEILINGS: dict[str, tuple[Fraction, str]] = {
+    "ش٣": (
+        _ALTERNATION_CEILING,
+        "نصيبٌ لا يبلغ الواحدَ بالبناء: الإطارُ لا يُقبَل إلّا إن رُئي "
+        "ممدودًا **وَ**مقصورًا، فلكلٍّ من الثمانية عشرَ سطحٌ ممدودٌ واحدٌ "
+        "على الأقلّ يمتنع أن يكون ∅ — فالمقامُ ١٬٣٦٠ وممتنعُه ١٨",
+    ),
+    "ش٤": (
+        _ALTERNATION_CEILING,
+        "والعكسُ بعينه: لكلّ إطارٍ سطحٌ مقصورٌ واحدٌ على الأقلّ شاهدُه ∅ "
+        "يمتنع أن يكون «ا» — فسقفُ «ا» هو سقفُ ∅ نفسُه، ١٬٣٤٢ من ١٬٣٦٠",
+    ),
+}
+"""**سقفُ كلّ شرطٍ محدود** — العطل ٢٦. ومقامُهما مرصودٌ لا مفترَض."""
+
 
 def _one(identifier: str) -> Prediction:
     return next(one for one in PREDICTIONS if one.identifier == identifier)

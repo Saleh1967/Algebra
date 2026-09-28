@@ -72,6 +72,41 @@
 `fold` تقابلٌ فـ`unfold(fold(w)) = w` لكلّ `w` جائزة،
 و`fold(unfold(k)) = k` لكلّ `k < T(n)`. ∎
 
+## المبرهنة ٤ — الطيُّ بلا طولٍ يُمرَّر من خارج
+
+**وعطلٌ في المبرهنة ٣ يُقال**: `fold` تقابلٌ **على الجائزات الطولِ `n`
+وحدَه**، و`unfold` **تطلب `n`**. فمن طوى كلمةً ثمّ فكَّها **بطولٍ يعرفه
+من خارج** فقد استرجع **بدليلٍ وطول**، لا بدليلٍ وحدَه. **وذلك ليس طيًّا
+تامًّا للكلمة** — والطولُ معلومةٌ لم تُحسَب في الثمن.
+
+**والإصلاحُ مبرهَن**. ليكن `off(n) = Σ_{m<n} T(m)`. فالمُعرَّف
+
+    foldany(w) = off(|w|) + fold(w)
+
+**تقابلٌ من الجائزات على كلّ الأطوال إلى `ℕ` كلِّها.**
+
+**البرهان.** الفتراتُ `[off(n), off(n+1))` لكلّ `n ≥ 0` **تقسم `ℕ`**:
+متتاليةٌ متلاصقةٌ متباينةٌ، وسعةُ كلٍّ `T(n)`، ومجموعُها يتباعد لأنّ
+`T(n) ≥ 1`. وبالمبرهنة ٣ فـ`fold` تقابلٌ من جائزات الطولِ `n` على
+`{0,…,T(n)−1}`، فـ`off(n) + fold(·)` تقابلٌ عليها على الفترةِ `n`. فاجتماعُ
+تقابلاتٍ على أقسامٍ تقسم `ℕ` تقابلٌ على `ℕ`. ∎
+
+**ويلزم أنّ `unfoldany` معرَّفةٌ بلا طول**: يُبحَث `n` الذي
+`off(n) ≤ k < off(n+1)` — وهو وحيدٌ لأنّ الفتراتَ تقسم — ثمّ
+`unfold(k − off(n), n)`. ∎
+
+**فهذا هو الطيُّ الذي لا يستعير شيئًا من خارجه.**
+
+## المبرهنة ٥ — الصعودُ يتركّب
+
+وإذ صار كلُّ لفظٍ **عددًا واحدًا** في `{0,…,A(L)−1}` حيث
+`A(L) = Σ_{n≤L} T(n)` و`L` أطولُ لفظ، **فمتتاليةُ الألفاظ كلمةٌ على
+أبجديّةٍ سعتُها `A(L)` بلا حارس**. فتُطوى بالمبرهنة ٤ نفسِها عند
+`f = A(L)` و`b = 0`. **فالتقابلُ يتركّب على نفسه**، والسطرُ يصير عددًا
+واحدًا، **ويُفَكّ فيرجع ألفاظًا ثمّ حالاتٍ**. ∎
+
+**ولا يُستعار طولٌ في مستوًى من المستويات** — وذلك المقصود.
+
 ════════════════════════════════════════════════════════════════════
 
 `NO_FLOAT_ENTERS_THE_FOLD`: كلُّ ما في الطيّ والفكّ **أعدادٌ صحيحةٌ
@@ -97,9 +132,12 @@ __all__ = [
     "admissible_count",
     "completions",
     "fold",
+    "fold_any",
     "growth_root",
+    "offset",
     "ratio_gap",
     "unfold",
+    "unfold_any",
 ]
 
 THIS_MODULE_CLAIMS_NOTHING_ABOUT_ANY_LANGUAGE: Final[str] = (
@@ -180,10 +218,15 @@ def fold(shape: Guarded, word: tuple[int, ...]) -> int:
         if not shape.admits(symbol, after_blocked):
             raise FoldingError(f"محجورٌ بعد محجورٍ في الموضع {place}")
         rest = length - place - 1
-        for smaller in range(symbol):
-            if not shape.admits(smaller, after_blocked):
-                continue
-            index += completions(shape, rest, shape.is_free(smaller))
+        # **والمجموعُ مُغلَقٌ لا حلقة**: الأحرارُ دون `symbol` عددُهم
+        # `min(symbol, f)` ولكلٍّ `S(rest, True)`؛ والمحجورون دونه
+        # `max(symbol − f, 0)` ولكلٍّ `S(rest, False)` — **وإن جاز**.
+        # وذلك مطابقٌ للحلقة حرفًا، ومفحوصٌ بالعدّ المباشر في
+        # `tests/algebra/test_folding.py`؛ **ولولاه لكان الطيُّ
+        # `O(حجم الأبجديّة)`** فيتعذّر على أبجديّةٍ كبيرة.
+        index += min(symbol, shape.free) * completions(shape, rest, True)
+        if not after_blocked and symbol > shape.free:
+            index += (symbol - shape.free) * completions(shape, rest, False)
         after_blocked = not shape.is_free(symbol)
     return index
 
@@ -199,20 +242,58 @@ def unfold(shape: Guarded, index: int, length: int) -> tuple[int, ...]:
     left = index
     after_blocked = False
     built: list[int] = []
-    for place in range(length):
-        rest = length - place - 1
-        for symbol in range(shape.size):
-            if not shape.admits(symbol, after_blocked):
-                continue
-            here = completions(shape, rest, shape.is_free(symbol))
-            if left < here:
-                built.append(symbol)
-                after_blocked = not shape.is_free(symbol)
-                break
-            left -= here
-        else:  # pragma: no cover - يمنعه التقابل المبرهَن
-            raise FoldingError(f"لا رمزَ يستوعب الباقي عند {place}")
+    for _place in range(length):
+        rest = length - len(built) - 1
+        free_each = completions(shape, rest, True)
+        free_block = shape.free * free_each
+        if left < free_block:
+            symbol = left // free_each
+            left -= symbol * free_each
+        else:
+            if after_blocked:  # pragma: no cover - يمنعه التقابل المبرهَن
+                raise FoldingError("باقٍ فوق كتلةِ الأحرار بعد محجور")
+            left -= free_block
+            blocked_each = completions(shape, rest, False)
+            symbol = shape.free + left // blocked_each
+            left -= (symbol - shape.free) * blocked_each
+        built.append(symbol)
+        after_blocked = not shape.is_free(symbol)
     return tuple(built)
+
+
+@cache
+def offset(shape: Guarded, length: int) -> int:
+    """`off(n) = Σ_{m<n} T(m)` — بدايةُ فترةِ الطولِ `n` في `ℕ`."""
+
+    if length < 0:
+        raise FoldingError(f"طولٌ سالب: {length}")
+    if length == 0:
+        return 0
+    return offset(shape, length - 1) + admissible_count(shape, length - 1)
+
+
+def fold_any(shape: Guarded, word: tuple[int, ...]) -> int:
+    """الطيُّ بلا طول: كلمةٌ جائزةٌ **أيَّ طولٍ كانت** ← عددٌ في `ℕ`.
+
+    وهو تقابلٌ على `ℕ` كلِّها (المبرهنة ٤)، **فلا يُمرَّر طولٌ في الفكّ**.
+    """
+
+    return offset(shape, len(word)) + fold(shape, word)
+
+
+def unfold_any(shape: Guarded, index: int) -> tuple[int, ...]:
+    """الفكُّ بلا طول: عددٌ ← الكلمةُ بعينها، **وطولُها من العدد نفسِه**."""
+
+    if index < 0:
+        raise FoldingError(f"دليلٌ سالب: {index}")
+    length = 0
+    left = index
+    while True:
+        here = admissible_count(shape, length)
+        if left < here:
+            return unfold(shape, left, length)
+        left -= here
+        length += 1
 
 
 def bits_exactly(shape: Guarded, length: int) -> int:

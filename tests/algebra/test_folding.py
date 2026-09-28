@@ -32,10 +32,13 @@ from algebra.folding import (
     admissible_count,
     bits_exactly,
     fold,
+    fold_any,
     growth_root,
+    offset,
     ratio_gap,
     recurrence_holds,
     unfold,
+    unfold_any,
 )
 
 SHAPES = (
@@ -230,3 +233,65 @@ def test_the_module_claims_nothing_about_a_language() -> None:
     text = " ".join(folding.__doc__.split())
     assert "لا يُستَرجَع سطرٌ واحدٌ من `H = 2.6283`" in text
     assert "**تقابلٌ مبرهَنٌ**" in text
+
+
+def test_folding_without_a_borrowed_length_is_a_bijection_onto_the_naturals() -> None:
+    """المبرهنة ٤: `fold_any` تقابلٌ على `ℕ` — **ولا يُمرَّر طولٌ في الفكّ**.
+
+    **والعطلُ الذي يُصلَحه**: `fold` تقابلٌ على الجائزات الطولِ `n` **وحدَه**،
+    و`unfold` **تطلب `n`**. فمن فكَّ بطولٍ يعرفه من خارجٍ فقد استرجع
+    **بدليلٍ وطول** — والطولُ معلومةٌ لم تُحسَب في الثمن.
+    """
+
+    for shape in SHAPES:
+        whole = admissible_count(shape, 0) + admissible_count(shape, 1)
+        upto = whole + admissible_count(shape, 2)
+        seen: dict[int, tuple[int, ...]] = {}
+        for index in range(min(upto, 400)):
+            word = unfold_any(shape, index)
+            assert fold_any(shape, word) == index, (shape, index)
+            assert word not in seen.values(), (shape, word)
+            seen[index] = word
+        assert unfold_any(shape, 0) == (), shape
+        assert set(len(one) for one in seen.values()) >= {0, 1}, shape
+
+
+def test_the_blocks_of_each_length_are_consecutive_and_exact() -> None:
+    """والفتراتُ `[off(n), off(n+1))` تقسم `ℕ` بسعةِ `T(n)` — وذلك البرهان."""
+
+    for shape in SHAPES:
+        for length in range(0, 6):
+            low = offset(shape, length)
+            high = offset(shape, length + 1)
+            assert high - low == admissible_count(shape, length), (shape, length)
+            for index in range(low, min(high, low + 60)):
+                assert len(unfold_any(shape, index)) == length, (shape, index)
+
+
+def test_every_admissible_word_folds_without_a_length_and_returns() -> None:
+    """وكلُّ جائزةٍ حتّى الطول الخامس تُطوى بلا طولٍ وترجع — استيفاءً."""
+
+    for shape in SHAPES:
+        for length in range(0, 6):
+            if shape.size**length > MOST_WORDS:
+                continue
+            for word in _all_admissible(shape, length):
+                index = fold_any(shape, word)
+                assert unfold_any(shape, index) == word, (shape, word)
+                assert offset(shape, length) <= index < offset(shape, length + 1)
+
+
+def test_the_ascent_composes_on_itself() -> None:
+    """المبرهنة ٥: الألفاظُ أعدادٌ، فمتتاليتُها كلمةٌ تُطوى بالتقابل نفسِه."""
+
+    unit = Guarded(free=3, blocked=1)
+    longest = 4
+    radix = offset(unit, longest + 1)
+    above = Guarded(free=radix, blocked=0)
+    words = [(0, 3, 0), (), (1,), (2, 2, 2, 2)]
+    indices = tuple(fold_any(unit, one) for one in words)
+    assert all(one < radix for one in indices)
+    packed = fold_any(above, indices)
+    assert unfold_any(above, packed) == indices
+    rebuilt = [unfold_any(unit, one) for one in unfold_any(above, packed)]
+    assert rebuilt == words

@@ -11,6 +11,7 @@ REPOSITORY: Final[Path] = Path(__file__).resolve().parents[1]
 DOCS: Final[Path] = REPOSITORY / "docs"
 PAPER: Final[Path] = DOCS / "الطيُّ-والفكّ.md"
 WITNESS: Final[Path] = REPOSITORY / "deposits" / "folding_proof_witness.log"
+ASCENT: Final[Path] = REPOSITORY / "deposits" / "folding_ascent_witness.log"
 MODULE: Final[Path] = REPOSITORY / "src" / "algebra" / "folding.py"
 GUARD: Final[Path] = REPOSITORY / "tests" / "algebra" / "test_folding.py"
 EASTERN: Final[dict[int, int]] = str.maketrans("0123456789.", "٠١٢٣٤٥٦٧٨٩٫")
@@ -31,12 +32,16 @@ def _folding() -> Any:
     return folding
 
 
-def grab(pattern: str) -> str:
-    text = WITNESS.read_text(encoding="utf-8")
+def grab(pattern: str, where: Path = WITNESS) -> str:
+    text = where.read_text(encoding="utf-8")
     found = re.search(pattern, text, re.M)
     if found is None:
-        raise SystemExit(f"لا شاهدَ في السجلّ لـ{pattern}")
+        raise SystemExit(f"لا شاهدَ في {where.name} لـ{pattern}")
     return found.group(1)
+
+
+def rose(pattern: str) -> str:
+    return grab(pattern, ASCENT)
 
 
 def render() -> str:
@@ -149,6 +154,51 @@ def render() -> str:
     add("  ولا قسمة، **وتُكتَب وتُقرَأ**.")
     add("")
     add("**فالأولى تُقاس والثانيةُ تُبرهَن**، ولا يُطرَح أحدُهما من الآخر.")
+    add("")
+    add("## والصعودُ: اللفظُ والسطرُ بالتقابل نفسِه")
+    add("")
+    add("**وعطلٌ في التشغيل الأوّل يُقال** (العطل ٣٢): كان يفكُّ بـ")
+    add("`unfold(shape, index, len(word))` — **فالطولُ مُمرَّرٌ من خارج**،")
+    add("والاسترجاعُ **بدليلٍ وطولٍ** لا بدليلٍ وحدَه.")
+    add("")
+    add("**والمبرهنة ٤ تُزيله**: `foldany(w) = off(|w|) + fold(w)` **تقابلٌ**")
+    add("**على `ℕ` كلِّها**، فالطولُ يُقرَأ من العدد نفسِه. **والمبرهنة ٥**")
+    add("**تُركّب**: كلُّ لفظٍ عددٌ، فمتتاليةُ الألفاظ كلمةٌ على أبجديّةٍ")
+    add("سعتُها `A(L)` بلا حارس، فتُطوى بالتقابل نفسِه.")
+    add("")
+    words = int(rose(r"ألفاظٌ طُوِيت واسترجعت تامّةً: (\d+) من"))
+    longest_word = int(rose(r"أطولُ لفظٍ: (\d+) حالة"))
+    radix = int(rose(r"فسعةُ أبجديّةِ الألفاظ A\(L\) = (\d+)"))
+    width = int(rose(r"وعرضُها: (\d+) بتّة"))
+    rows = int(rose(r"أسطرٌ طُوِيت واسترجعت تامّةً \*\*إلى الحالات\*\*: (\d+)"))
+    per_line = int(rose(r"أطولُ سطرٍ: (\d+) لفظًا"))
+    fixed = int(rose(r"بتّة × \d+: (\d+) بتّة"))
+    above = int(rose(r"والسطرُ عددًا واحدًا فوق الألفاظ: (\d+) بتّة"))
+    straight = int(rose(r"على الحالات مباشرةً: (\d+) بتّة"))
+    boundary = int(rose(r"= (\d+) بتّة$"))
+    each = rose(r"وللفظِ الواحد: ([\d.]+) بتّة")
+    add(f"**فطُوِيت {grouped(words)} لفظًا واسترجعت تامّةً**، وأطولُها")
+    add(f"{grouped(longest_word)} حالة، فسعةُ أبجديّةِ الألفاظ")
+    add(f"`A(L) = {grouped(radix)}` وعرضُها **{grouped(width)}** بتّة.")
+    add("")
+    add(f"**وطُوِيت {grouped(rows)} سطرًا عددًا واحدًا لكلٍّ، واسترجعت**")
+    add("**تامّةً إلى الحالات** — يُفَكّ السطرُ فيرجع ألفاظًا ثمّ حالاتٍ،")
+    add(f"وأطولُ سطرٍ {grouped(per_line)} لفظًا.")
+    add("")
+    add("| ما يُكتَب فعلًا | بتّات |")
+    add("|---|---:|")
+    add(f"| اللفظُ بعرضٍ ثابتٍ {grouped(width)} بتّة | {grouped(fixed)} |")
+    add(f"| السطرُ عددًا واحدًا **فوق الألفاظ** | {grouped(above)} |")
+    add(f"| السطرُ عددًا واحدًا **على الحالات مباشرةً** | **{grouped(straight)}** |")
+    add("")
+    add(f"**فثمنُ حملِ حدودِ الألفاظ {grouped(boundary)} بتّة** —")
+    add(f"**{eastern(each)} بتّة للفظ الواحد**. **فالتقطيعُ يزيد ما يُكتَب**")
+    add("**ولا يُنقِصه**، والزيادةُ هي الحدودُ نفسُها. **وذلك عددٌ لا وصف.**")
+    add("")
+    add("**وقيدٌ يُقال**: `bit_length` عددٍ واحدٍ طولُه بالضبط، **ومجموعُ**")
+    add("**أطوالِ أعدادٍ كثيرةٍ ليس طولَ شفرةٍ لمجراها** — لا يُفَكّ تلاصقُها")
+    add("بلا فاصلٍ أو عرضٍ ثابت. فما يُسمّى شفرةً أعلاه **العرضُ الثابتُ أو**")
+    add("**العددُ الواحد**.")
     add("")
     add("## ما لا يُدَّعى")
     add("")

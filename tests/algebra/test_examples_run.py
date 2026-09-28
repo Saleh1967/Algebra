@@ -197,6 +197,11 @@ NEEDS_A_CORPUS: dict[str, str] = {
         "التالي لمتتالية 0625 0650 0646 0651 064E — ثلاثةُ نِصَبٍ "
         "بالبايتات، على ختم 89cba549…"
     ),
+    "rasm/run_folding_ascent.py": (
+        "يحتاج المدوّنةَ المشكولة؛ **ويطوي اللفظَ والسطرَ بالتقابل نفسِه "
+        "بلا طولٍ مستعار** (المبرهنتان ٤ و٥)، ويُخرِج ثمنَ حدودِ الألفاظ "
+        "عددًا — ولا ختمَ له لأنّ دعواه **الاسترجاعُ** لا مقدارٌ يُقاس"
+    ),
     "rasm/run_folding_proof.py": (
         "يحتاج المدوّنةَ المشكولة؛ **ويطوي مجرى الحالات إلى أعدادٍ صحيحةٍ "
         "ويفكُّه فيرجع حالةً بحالة** — تقابلٌ مبرهَنٌ في `algebra.folding`، "
@@ -266,16 +271,16 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """أربعةٌ وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """خمسةٌ وستّون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 64
+    assert len(found) == 65
     assert len(RUNNABLE) == 16
-    assert len(NEEDS_A_CORPUS) == 48
+    assert len(NEEDS_A_CORPUS) == 49
 
 
 @pytest.mark.parametrize("name", sorted(RUNNABLE))
@@ -315,7 +320,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 54
+    assert len(_examples()) - len(foreign) == 55
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

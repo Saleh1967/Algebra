@@ -61,6 +61,7 @@ RUNNABLE: dict[str, tuple[str, ...]] = {
     ),
     "irab/run_harf_measurement.py": ("--smoke", "--defer", "error"),
     "isnad/run_ittifaq.py": ("--smoke",),
+    "kernel/run_bit_answers.py": (),
     "maana/run_imtihan.py": ("--smoke",),
 }
 
@@ -294,15 +295,15 @@ def _imports_foreign(path: Path) -> bool:
 
 
 def test_every_example_is_declared_and_none_is_left_out() -> None:
-    """سبعون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
+    """إحدى وسبعون مثالًا، كلُّها في أحد الجدولين — ولا يمرّ جديدٌ صامتًا."""
 
     found = set(_examples())
     declared = set(RUNNABLE) | set(NEEDS_A_CORPUS)
     assert not (found - declared), sorted(found - declared)
     assert not (declared - found), sorted(declared - found)
     assert not (set(RUNNABLE) & set(NEEDS_A_CORPUS))
-    assert len(found) == 70
-    assert len(RUNNABLE) == 16
+    assert len(found) == 71
+    assert len(RUNNABLE) == 17
     assert len(NEEDS_A_CORPUS) == 54
 
 
@@ -343,7 +344,7 @@ def test_ten_examples_import_the_ported_package_and_all_of_them_run() -> None:
     assert set(reading_deposits) <= set(NEEDS_A_CORPUS)
 
     # والتسعةُ الباقيةُ لا تستوردها ألبتّة
-    assert len(_examples()) - len(foreign) == 60
+    assert len(_examples()) - len(foreign) == 61
 
 
 @pytest.mark.parametrize("name", sorted(NEEDS_A_CORPUS))

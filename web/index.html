@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>الطيُّ والفكُّ بـBigInt</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main>
+
+<h1>الطيُّ والفكُّ بـ<code>BigInt</code></h1>
+<p class="lead">
+صفحةٌ ساكنةٌ تعمل من القرصِ وحدَه: لا خادمَ، ولا بناءَ، ولا تابعًا من الشبكة.
+وكلُّ عددٍ فيها <code>BigInt</code> — <strong>لأنّ <code>Number</code> في
+JavaScript هو <code>float64</code> بعينه، فيكذب صامتًا فوق ٢⁵³.</strong>
+</p>
+
+<h2>العدُّ</h2>
+<div class="grid">
+  <div><label for="free">الأحرار <code>f</code></label><input id="free" value="5" inputmode="numeric"></div>
+  <div><label for="blocked">المحجورون <code>b</code></label><input id="blocked" value="3" inputmode="numeric"></div>
+</div>
+<label for="length">الطول <code>n</code></label>
+<input id="length" value="20" inputmode="numeric">
+<button id="do-count">احسب <code>T(n)</code> — وقابِله بـ<code>Number</code></button>
+<div class="out" id="out-count">—</div>
+
+<h2>الطيّ</h2>
+<label for="word">كلمةٌ جائزةٌ برموزٍ مفصولةٍ بفاصلة (الأحرارُ <code>0…f−1</code>، المحجورون <code>f…f+b−1</code>، ولا محجوران متجاوران)</label>
+<input id="word" value="0,5,1,6,2">
+<button id="do-fold">اطوِ ثمّ افكُك</button>
+<div class="out" id="out-fold">—</div>
+
+<h2>الفكُّ بلا طول</h2>
+<label for="index">عددٌ في <code>ℕ</code> — أيَّ كِبَرٍ كان</label>
+<input id="index" value="1361129467683753853853498429727072845823">
+<button id="do-unfold">افكُك</button>
+<div class="out" id="out-unfold">—</div>
+
+<h2>حيثُ يفارق <code>Number</code></h2>
+<p>
+المجدولُ أدناه محسوبٌ في المتصفّحِ عند التحميل: أوّلُ طولٍ يفارق عنده
+<code>Number</code> قيمةَ <code>BigInt</code> لكلّ شكل.
+<strong>وليس هذا تقريبًا يُحتمَل، بل سقوطٌ صامتٌ لا يرفع خطأً.</strong>
+</p>
+<table id="divergence">
+  <thead><tr><th>الشكل</th><th><code>n</code></th><th><code>BigInt</code></th><th><code>Number</code></th></tr></thead>
+  <tbody></tbody>
+</table>
+
+<footer>
+مولَّدٌ من <code>web/fold.js</code>، وهو نقلٌ حرفيٌّ لـ<code>src/algebra/folding.py</code>.
+والتطابقُ مقيسٌ بتشغيلِ التنفيذَين على المُدخَلاتِ نفسِها في
+<code>tests/algebra/test_javascript_fold.py</code> — <strong>فلا يُقال «مطابق» بلا قياس.</strong>
+</footer>
+
+</main>
+<script type="module" src="page.js"></script>
+</body>
+</html>

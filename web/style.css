@@ -1,0 +1,59 @@
+/* صفحةٌ ساكنة: لا تابعَ خارجيًّا، ولا خطًّا من الشبكة، ولا بناء. */
+:root {
+  --ink: #16181d;
+  --paper: #fbfaf7;
+  --rule: #d8d4cb;
+  --mark: #7a1f1f;
+  --dim: #5d6168;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  padding: 2rem 1.25rem 4rem;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Amiri", "Scheherazade New", serif;
+  font-size: 1.15rem;
+  line-height: 1.9;
+  direction: rtl;
+}
+main { max-width: 46rem; margin: 0 auto; }
+h1 { font-size: 1.9rem; margin: 0 0 .25rem; }
+h2 { font-size: 1.35rem; margin: 2.25rem 0 .75rem; border-bottom: 1px solid var(--rule); padding-bottom: .3rem; }
+p.lead { color: var(--dim); margin: 0 0 1.5rem; }
+label { display: block; margin: .9rem 0 .25rem; font-size: .95rem; color: var(--dim); }
+input, button {
+  font: inherit;
+  padding: .45rem .7rem;
+  border: 1px solid var(--rule);
+  border-radius: .3rem;
+  background: #fff;
+  color: var(--ink);
+}
+input { width: 100%; direction: ltr; text-align: left; font-family: ui-monospace, monospace; font-size: .95rem; }
+button { cursor: pointer; margin-top: 1rem; background: var(--ink); color: var(--paper); border-color: var(--ink); }
+button:hover { background: var(--mark); border-color: var(--mark); }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0 1rem; }
+@media (max-width: 34rem) { .grid { grid-template-columns: 1fr; } }
+output, .out {
+  display: block;
+  margin-top: 1rem;
+  padding: .8rem 1rem;
+  background: #fff;
+  border: 1px solid var(--rule);
+  border-radius: .3rem;
+  direction: ltr;
+  text-align: left;
+  font-family: ui-monospace, monospace;
+  font-size: .92rem;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.bad { color: var(--mark); }
+table { border-collapse: collapse; width: 100%; margin-top: 1rem; font-size: .95rem; }
+th, td { border: 1px solid var(--rule); padding: .35rem .6rem; text-align: right; }
+th { background: #f2efe9; font-weight: 600; }
+td.n { direction: ltr; text-align: left; font-family: ui-monospace, monospace; font-size: .85rem; overflow-wrap: anywhere; }
+code { background: #f2efe9; padding: .05em .3em; border-radius: .2rem; font-size: .9em; }
+footer { margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--rule); color: var(--dim); font-size: .9rem; }

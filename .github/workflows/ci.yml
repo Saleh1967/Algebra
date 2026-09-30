@@ -13,6 +13,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # **وبلا هذا يسقط حارسُ سلسلةِ الأختام كلُّه.**
+          # `actions/checkout@v4` يستنسخ بعمقٍ واحدٍ افتراضًا، فيُنشئ
+          # `.git/shallow`. وأربعةُ فحوصٍ مشروطةٌ بنفيه: اثنان في
+          # `tests/algebra/test_seal_chain.py` واثنان في
+          # `tests/algebra/test_message_guard.py` — وهي التي تُثبِت أنّ
+          # الختمَ سبقَ التشغيل، **وهي حجّةُ المنهجِ كلِّها**. فكانت
+          # تُتخطّى على البوّابةِ التي تحكم الدمجَ وحدَها، بسببٍ مكتوبٍ
+          # لا صامتًا — **لكنّها كانت تُتخطّى**. و`0` تعني التاريخَ
+          # كلَّه، فيصير الشرطُ كاذبًا وتعمل الأربعة.
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.10"

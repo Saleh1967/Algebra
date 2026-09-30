@@ -144,6 +144,57 @@ def test_no_step_is_added_without_being_counted() -> None:
     assert "actions/setup-python@v5" in text
 
 
+def test_the_skip_reasons_are_printed_so_a_vacancy_is_classified() -> None:
+    """`-rs` في البوّابة — **فالفجوةُ تُسمّى ولا تُعَدّ وحدَها**.
+
+    والعطلُ الذي قاسه الطلبُ ٦٠: Runner يتخطّى ٣٦ والقرصُ يتخطّى واحدًا،
+    ولا يُعرَف من السجلِّ أيُّها ولا لماذا. **وفجوةٌ معدودةٌ بلا اسمٍ
+    فجوةٌ مطويّةٌ بعدد.**
+
+    والصورةُ المكذِّبة: يُحذَف العَلَمُ في نسخةٍ في الذاكرة **فتُرَدّ**.
+    """
+
+    body = LOCAL.read_text(encoding="utf-8")
+    found = [one for one in local_gates() if kind_of(one) == "pytest"]
+    assert len(found) == 1, found
+    assert "-rs" in found[0].split(), found[0]
+    # ولو حُذِف العَلَمُ لَما بقي في الأمرِ ما يطبع السبب
+    hurt = body.replace("pytest -q -rs", "pytest -q")
+    loose = re.findall(r'^"\$PY"\s+-m\s+(pytest.+)$', hurt, re.MULTILINE)
+    assert loose == ["pytest -q"], loose
+    assert "-rs" not in loose[0].split()
+
+
+def test_the_checkout_is_not_shallow_or_the_history_guards_vanish() -> None:
+    """`fetch-depth: 0` — **وبلا هذا يسقط حارسُ سلسلةِ الأختام كلُّه**.
+
+    فأربعةُ فحوصٍ مشروطةٌ بنفيِ الضحالة، وهي التي تُثبِت أنّ الختمَ سبقَ
+    التشغيل. **وهي حجّةُ المنهجِ كلِّها**، فكانت تُتخطّى على البوّابةِ
+    التي تحكم الدمجَ وحدَها.
+
+    ويقيس هذا الفحصُ شيئين لا واحدًا: أنّ العمقَ صفرٌ في الوصف، **وأنّ
+    الأربعةَ ما زالت موجودةً ومشروطةً بالضحالة** — فلو حُذِف شرطُها
+    يومًا لَصار هذا الفحصُ يحرس عمقًا لا يحرسه أحد.
+    """
+
+    text = _workflow()
+    found = re.search(r"^\s*fetch-depth:\s*(\S+)\s*$", text, re.MULTILINE)
+    assert found is not None, "الاستنساخُ ضحلٌ افتراضًا، فالعمقُ يُكتَب صريحًا"
+    assert found.group(1) == "0", found.group(1)
+    # وموضعُه تحتَ `checkout` لا تحتَ `setup-python`
+    before = text[: found.start()]
+    assert before.rfind("actions/checkout@v4") > before.rfind("actions/setup-python@v5")
+
+    guarded = {
+        "tests/algebra/test_seal_chain.py": 2,
+        "tests/algebra/test_message_guard.py": 2,
+    }
+    for name, how_many in guarded.items():
+        body = (REPOSITORY / name).read_text(encoding="utf-8")
+        assert "pytest.mark.skipif(" in body and "hallow" in body, name
+        assert body.count("@needs_history") == how_many, name
+
+
 def test_the_guard_says_what_it_does_not_do() -> None:
     """حدُّه مكتوب: نصٌّ لا YAML، وحضورُ البوّابات لا صحّةُ الوصف."""
 

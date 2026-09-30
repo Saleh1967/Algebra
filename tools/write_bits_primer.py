@@ -85,10 +85,23 @@ def render() -> str:
     add("## ٢) المدوّنةُ بايتاتٍ")
     add("")
     raw = CORPUS.read_bytes()
-    text = raw.decode("utf-8").replace("<sel>", " ")
+    whole = raw.decode("utf-8")
+    text = whole.replace("<sel>", " ")
     points = sorted({one for one in text if one not in " \n"})
+    # **والمطروحُ يُذكَر**: كانت الشفرةُ تطرح `<sel>` ولا تقوله الوثيقة،
+    # فيقرأ القارئُ «٤٤ في الأبجديّة» ولا يعلم أنّ في المتنِ وسمًا ولا
+    # كم نقطةً استُثنيت. **وحدٌّ في الشفرةِ لا يبلغ السجلَّ لا يقرؤه من
+    # يقرأ النتيجة** (العطل ٣٦).
+    every = sorted({one for one in whole if not one.isspace()})
+    dropped = [one for one in every if one not in points]
     add(f"- بايتات: **{grouped(len(raw))}** · بِتّات: **{grouped(len(raw) * 8)}**")
-    add(f"- نقاطٌ متمايزةٌ في الأبجديّة: **{grouped(len(points))}**")
+    add(f"- نقاطٌ متمايزةٌ غيرُ فراغٍ في المِلفّ: **{grouped(len(every))}**")
+    add(f"- منها في الأبجديّة: **{grouped(len(points))}**")
+    add(
+        f"- **والمطروحُ: {grouped(len(dropped))}** — "
+        + "، ".join(f"`U+{ord(one):04X}`" for one in dropped)
+        + " — وهي محارفُ الوسم `<sel>` في المتن، تُطرَح قبلَ العدّ."
+    )
     letters = grouped(int(grab(r"حروفُ الرسم: (\d+)", nun)))
     add(f"- حروفُ الرسم (فئة `Lo`): **{letters}**")
     add("")

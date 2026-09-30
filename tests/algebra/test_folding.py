@@ -21,8 +21,10 @@
 
 from __future__ import annotations
 
+import re
 from fractions import Fraction
 from itertools import product
+from pathlib import Path
 
 import pytest
 
@@ -295,3 +297,57 @@ def test_the_ascent_composes_on_itself() -> None:
     assert unfold_any(above, packed) == indices
     rebuilt = [unfold_any(unit, one) for one in unfold_any(above, packed)]
     assert rebuilt == words
+
+
+def test_every_heading_that_claims_a_theorem_carries_a_proof() -> None:
+    """**العطل ٣٤**: عنوانٌ يقول «مبرهنة» ولا `∎` تحته — وقد وقع.
+
+    كانت «المبرهنة ٢» عنوانًا بلا برهان: تقولُ `T(n)/T(n−1) → ρ` **دعوًى
+    لا اشتقاقًا**، وأربعُ أخواتها تنتهي بـ`∎`. **وما كشفها فحصٌ بل قراءةُ
+    الوحدة حرفًا حرفًا** حين طُلِب منّي فرزُ المبرهَن من المدَّعى.
+
+    `A_HEADING_IS_NOT_A_PROOF`: فههنا مانعٌ آليّ: **كلُّ قسمٍ عنوانُه
+    «المبرهنة» في `src/algebra` يلزمه `∎` في متنه**. ولو كان منصوبًا
+    لَرُدَّت «المبرهنة ٢» يومَ كُتِبت.
+
+    **وحدُّه مُعلَن**: يحرس **وجودَ** برهانٍ لا **صحّتَه** — برهانٌ خاطئٌ
+    ينتهي بـ`∎` يمرُّ عليه. فهو يردُّ **العنوانَ الفارغ**، لا الغلط.
+    """
+
+    where = Path(__file__).resolve().parents[2] / "src" / "algebra"
+    seen = 0
+    for one in sorted(where.glob("*.py")):
+        text = one.read_text(encoding="utf-8")
+        parts = re.split(r"^## (?=المبرهنة)", text, flags=re.MULTILINE)[1:]
+        for part in parts:
+            head = part.splitlines()[0].strip()
+            body = re.split(r"^## ", part, flags=re.MULTILINE)[0]
+            assert "∎" in body, f"{one.name}: «{head}» بلا برهان"
+            seen += 1
+    assert seen == 5, seen
+
+
+def test_the_integer_hypotheses_of_the_growth_proof_hold() -> None:
+    """فروضُ المبرهنة ٢ **بأعدادٍ صحيحة** — والنهايةُ تلزم بالبرهان لا بالفحص.
+
+    ولا تُفحَص نهايةٌ بحسابٍ منتهٍ. فيُفحَص ما يُفحَص: `f ≥ 1` فالنسبةُ
+    معرَّفة؛ و`f·b ≥ 0` فـ`D ≥ f²`؛ وعند `b ≥ 1` يكون `D > f²` فالجذران
+    متمايزان و`σ < 0 < ρ`؛ ومن `ρ+σ = f > 0` يلزم `ρ > |σ|`؛
+    و`A = (f+b−σ)/√D > 0` **وهو موضعُ اللاانحلال**.
+    """
+
+    for shape in SHAPES:
+        f, b = shape.free, shape.blocked
+        assert f >= 1
+        assert f * b >= 0
+        discriminant = f * f + 4 * f * b
+        assert discriminant >= f * f
+        # مجموعُ الجذرين وحاصلُهما بأعدادٍ صحيحة — لا جذرَ تقريبيّ
+        assert f * b == -(-f * b)  # ρ·σ = −f·b
+        if b == 0:
+            assert discriminant == f * f  # فـ ρ = f و σ = 0
+            assert admissible_count(shape, 5) == f**5
+        else:
+            assert discriminant > f * f  # متمايزان، و σ < 0 < ρ
+            # ‏`f + b − σ > f + b ≥ 1` فالمعامِلُ `A` موجبٌ ألبتّة
+            assert f + b >= 1

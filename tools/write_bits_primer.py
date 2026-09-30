@@ -137,17 +137,22 @@ def render() -> str:
     add(f"  **{back}**")
     add("")
 
-    add("## ٦) وبوّابتان يجب أن تتّفقا")
+    add("## ٦) وبوّابةٌ واحدةٌ في ملفٍّ واحد")
     add("")
-    add("| البوّابة | محلّيًّا | على Runner |")
-    add("|---|---|---|")
     described = WORKFLOW.read_text(encoding="utf-8")
-    on_runner = {guard.kind_of(one): one for one in guard.runs(described)}
     here = {guard.kind_of(one): one for one in guard.local_gates()}
+    add("| البوّابة | أمرُها في `tools/verify.sh` |")
+    add("|---|---|")
     for gate in guard.GATES:
-        add(f"| `{gate}` | `{here[gate]}` | `{on_runner[gate]}` |")
+        add(f"| `{gate}` | `{here[gate]}` |")
     add("")
-    add(f"**وخلافاتٌ مُسجَّلةٌ بسببها: {eastern(len(guard.DECLARED))}** — وما زاد يُرَدّ.")
+    add("**وRunner يُشغِّل الملفَّ نفسَه** بمفسّره عبر `PY`:")
+    add("")
+    runner = [one for one in guard.runs(described) if "verify.sh" in one]
+    add(f"    {runner[0] if runner else 'لا سطرَ يستدعيها'}")
+    add("")
+    add("فما لا يُكتَب مرّتين لا يختلف، **والخلافاتُ المسجَّلة:**")
+    add(f"**{eastern(len(guard.DECLARED))}** — وامتلاؤها عودةُ الازدواج (العطل ٣٥).")
     add("")
     add("## ٧) والقاعدةُ التي تحكم الدروسَ كلَّها")
     add("")

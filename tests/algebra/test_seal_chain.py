@@ -158,3 +158,57 @@ def test_the_guard_says_what_it_does_not_do() -> None:
     tool = (REPOSITORY / "tools" / "seal_chain.py").read_text(encoding="utf-8")
     assert "`AND_WHAT_THE_CHAIN_DOES_NOT_PROVE`" in tool
     assert "**لا تُثبت أنّ التشغيل جرى بعد الختم**" in tool
+
+
+def test_the_ring_digest_does_not_depend_on_the_git_date_rendering() -> None:
+    """العطلُ ٣٧: `%cI` يرسم الصفرَ `+00:00` في git 2.43 و`Z` في 2.55.
+
+    والتاريخُ **يدخل في بصمةِ الحلقة**، فاختلفت بصماتُ السلسلةِ كلُّها
+    بين قرصي وRunner، واختلفت بصمةُ الخاتمة: `626e2437…` مقابل
+    `2fbde69e…`. **فالسلسلةُ التي تُثبِت الترتيبَ لم تكن قابلةً للإعادة
+    عبرَ البيئات** — ولم يظهر ذلك حتّى عمل الفحصُ على Runner أوّلَ مرّة.
+
+    ويُقاس ههنا شيئان: **أنّ الخطرَ واقعٌ** (الصيغتان الخامّتان تُعطيان
+    بصمتين مختلفتين)، **وأنّ المعياريّةَ ترفعه** (بعد الردِّ تتّحدان).
+    فحصٌ يُثبت الإصلاحَ بلا إثباتِ العطلِ لا يُثبت شيئًا.
+    """
+
+    naked = "2026-09-27T22:11:55Z"
+    spelled = "2026-09-27T22:11:55+00:00"
+    parts = ("0" * 64, "a" * 40, "الاسم", "{}")
+
+    # ١. الخطرُ واقع: الخامّتان تفترقان
+    raw_one = TOOL.ring_digest(parts[0], parts[1], naked, parts[2], parts[3])
+    raw_two = TOOL.ring_digest(parts[0], parts[1], spelled, parts[2], parts[3])
+    assert raw_one != raw_two
+
+    # ٢. والمعياريّةُ ترفعه: بعد الردِّ تتّحدان
+    fixed_one = TOOL.ring_digest(
+        parts[0], parts[1], TOOL.canonical_date(naked), parts[2], parts[3]
+    )
+    fixed_two = TOOL.ring_digest(
+        parts[0], parts[1], TOOL.canonical_date(spelled), parts[2], parts[3]
+    )
+    assert fixed_one == fixed_two == raw_two
+
+    # ٣. **والردُّ إلى المنشورِ لا العكس**: `+00:00` هي ما حُسِبت به
+    #    البصماتُ المُودَعة، فلا يُبطِلها الإصلاح.
+    assert TOOL.canonical_date(naked) == spelled
+    # وإزاحةٌ غيرُ الصفرِ لا تُمَسّ — و٦١ دفعةً في هذا التاريخ بـ`+03:00`
+    assert TOOL.canonical_date("2026-09-27T22:11:55+03:00").endswith("+03:00")
+
+
+@needs_history
+def test_no_anchor_date_derived_now_carries_the_bare_zulu_form() -> None:
+    """ولا تاريخَ مُشتَقًّا الآنَ ينتهي بـ`Z` — **مهما كان إصدارُ git**.
+
+    وهذا هو الشرطُ الذي يُبقي البصمةَ واحدةً في كلّ بيئة، مقيسًا على
+    السلسلةِ المبنيّةِ من التاريخِ لا على المُودَعِ في الملفّ.
+    """
+
+    built = TOOL.build()
+    for one in built["الحلقات"]:
+        assert not one["تاريخ_المرساة"].endswith("Z"), one["الاسم"]
+        assert one["تاريخ_المرساة"][-6] in "+-", one["الاسم"]
+        if one["تاريخ_مرساة_السجل"]:
+            assert not one["تاريخ_مرساة_السجل"].endswith("Z"), one["الاسم"]

@@ -185,8 +185,11 @@ def test_the_checkout_is_not_shallow_or_the_history_guards_vanish() -> None:
     before = text[: found.start()]
     assert before.rfind("actions/checkout@v4") > before.rfind("actions/setup-python@v5")
 
+    # وعددُها مُثبَتٌ لا مُقدَّر: **فحصٌ يُنزَع من الحمايةِ يُرى**.
+    # وصار ثلاثةً في `test_seal_chain.py` بعد العطل ٣٧ — والحارسُ هو
+    # ما أظهر الزيادةَ، فلم تمرَّ صامتة.
     guarded = {
-        "tests/algebra/test_seal_chain.py": 2,
+        "tests/algebra/test_seal_chain.py": 3,
         "tests/algebra/test_message_guard.py": 2,
     }
     for name, how_many in guarded.items():

@@ -85,6 +85,28 @@ def _git(*argument: str) -> str:
     return done.stdout.strip()
 
 
+def canonical_date(dated: str) -> str:
+    """تاريخُ المرساةِ في صيغةٍ **واحدةٍ لا تتبع إصدارَ git**.
+
+    **العطلُ الذي عالجه** (العطل ٣٧): `%cI` يرسم إزاحةَ UTC صفرًا
+    `+00:00` في git 2.43، و`Z` في git 2.55. والتاريخُ **يدخل في بصمةِ
+    الحلقة**، فاختلفت بصماتُ السلسلةِ كلُّها بين قرصي وRunner واختلفت
+    بصمةُ الخاتمة — **فالسلسلةُ التي تُثبِت الترتيبَ لم تكن قابلةً
+    للإعادةِ عبرَ البيئات**. ولم يظهر ذلك حتّى عمل الفحصُ على Runner
+    أوّلَ مرّة، إذ كان يُتخطّى للاستنساخِ الضحل.
+
+    **والاختيارُ مقصودٌ ومُعلَن**: تُردُّ `Z` إلى `+00:00`، لا العكس.
+    فبصماتُ السلسلةِ المُودَعةُ في الشجرةِ حُسِبت بـ`+00:00`، **فالردُّ
+    إليها يُبقي كلَّ بصمةٍ منشورةٍ صحيحةً** — ولو عُكِس لتغيّرت البصماتُ
+    كلُّها وبطل ما كُتِب. **ولا تُصلَح البصمةُ بتغييرِ ما نُشِر.**
+
+    وإزاحةٌ غيرُ الصفرِ لا تتأثّر: في هذا التاريخ ٢٦٧ دفعةً بـ`+00:00`
+    و٦١ بـ`+03:00`، و`Z` لا تُرسَم إلّا للصفر.
+    """
+
+    return dated[:-1] + "+00:00" if dated.endswith("Z") else dated
+
+
 def anchor_of(digest: str, where: list[str]) -> tuple[str, str]:
     """أوّلُ دفعةٍ أدخلت البصمةَ، بتاريخها — ويُبحَث في مواضعها لا في الكلّ."""
 
@@ -94,7 +116,7 @@ def anchor_of(digest: str, where: list[str]) -> tuple[str, str]:
     if not found:
         raise ChainError(f"بصمةٌ بلا مرساةٍ في التاريخ: {digest[:8]}")
     head, _, dated = found[0].partition(" ")
-    return head, dated
+    return head, canonical_date(dated)
 
 
 SUFFIXES = ("_seal", "_preregistration", "_prereg")
@@ -161,7 +183,8 @@ def build() -> dict[str, Any]:
         for log in logs:
             found = _git("log", "--reverse", "--format=%H %cI", "--", log).splitlines()
             if found:
-                run, _, run_dated = found[0].partition(" ")
+                run, _, raw_dated = found[0].partition(" ")
+                run_dated = canonical_date(raw_dated)
                 break
         raw.append(
             {

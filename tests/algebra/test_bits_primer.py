@@ -55,8 +55,8 @@ def test_every_number_in_it_comes_from_the_tree_not_from_memory() -> None:
     assert tool.grouped(corpus) in written
 
 
-def test_the_two_gates_table_matches_the_files_it_describes() -> None:
-    """وجدولُ البوّابتين يُقرَأ من `ci.yml` و`verify.sh` لا يُكتَب ههنا."""
+def test_the_gate_table_matches_the_one_file_it_describes() -> None:
+    """وجدولُ البوّابة يُقرَأ من `verify.sh`، واستدعاءُ Runner من `ci.yml`."""
 
     guard = importlib.util.spec_from_file_location(
         "ciguard", REPOSITORY / "tests" / "algebra" / "test_ci_workflow.py"
@@ -68,9 +68,9 @@ def test_the_two_gates_table_matches_the_files_it_describes() -> None:
     written = PAPER.read_text(encoding="utf-8")
     for one in module.local_gates():
         assert f"`{one}`" in written, one
-    for one in module.runs(module._workflow()):
-        if module.kind_of(one):
-            assert f"`{one}`" in written, one
+    # ولا بوّابةَ مكتوبةً في `ci.yml` — فالمولَّدُ يعرض استدعاءَها وحدَه
+    assert not [one for one in module.runs(module._workflow()) if module.kind_of(one)]
+    assert "bash tools/verify.sh" in written
 
 
 def test_it_carries_no_western_digit_in_its_measured_numbers() -> None:

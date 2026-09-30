@@ -11,13 +11,17 @@
 شبكةٍ نُصِبت لأنّه **وصفٌ لا عمل**: لو كان بايثون لقرأه فحصُ الحزمة مع
 إخوته.
 
-`THE_TWO_GATES_MUST_AGREE_OR_THE_DIVERGENCE_IS_NAMED`: **والقياسُ كشف
-خلافًا قائمًا**: `tools/verify.sh` يُشغّل `mypy --strict src tools`،
-و`ci.yml` يُشغّل `mypy src/algebra src/hawk_dove` — **فـCI أضعفُ في
-محورين**: بلا `--strict`، وبنطاقٍ لا يبلغ `tools/`. فخطأُ نوعٍ في
-`tools/` يمرُّ على Runner ويسقط محلّيًّا. **ولا يُخفى ههنا**: يُسجَّل في
-`DECLARED` بسببه، **وما زاد عليه يُرَدّ**. فالتسجيلُ سقفٌ يمنع الزيادة،
-لا إذنٌ بها.
+`ONE_GATE_IN_ONE_FILE_LEAVES_NO_ROOM_FOR_DIVERGENCE`: **وقد كان
+الخلافُ قائمًا فأُزيل**. سُجِّل في الدفعة السابقة أنّ mypy على Runner
+«أضعفُ في محورين: بلا `--strict` وبنطاقٍ لا يبلغ `tools/`» —
+**والشقُّ الأوّلُ من السبب كان خاطئًا** (العطل ٣٥): `pyproject` فيه
+`strict = true`، فالفحصُ صارمٌ في الحالين. **والخلافُ نطاقٌ وحدَه**:
+٢٨ ملفًّا على Runner مقابل ١٠٧ محلّيًّا.
+
+**والإصلاحُ لم يكن ترقيعَ سطر**: صار Runner يُشغِّل `tools/verify.sh`
+**نفسَه** بمفسّره عبر `PY`. **فالبوّابةُ ملفٌّ واحدٌ لا ملفّان**، ولا
+يبقى موضعٌ لخلافٍ يُسجَّل — فجدولُ `DECLARED` **خالٍ**، وامتلاؤه يعني
+عودةَ الازدواج.
 
 `AND_THE_READING_IS_TEXT_NOT_YAML`: **وحدُّه مُعلَن**: يقرأ الملفَّ
 **نصًّا** لا بمفسّر YAML — إذ لا مفسّرَ في المسموح، ولا يُستورَد تابعٌ
@@ -36,21 +40,8 @@ LOCAL = REPOSITORY / "tools" / "verify.sh"
 
 GATES = ("pytest", "ruff check", "ruff format", "mypy")
 
-DECLARED: dict[str, tuple[str, str, str]] = {
-    "mypy": (
-        "mypy --strict src tools",
-        "mypy src/algebra src/hawk_dove",
-        "بوّابةُ Runner أضعفُ: بلا --strict وبنطاقٍ لا يبلغ tools/ — "
-        "فخطأُ نوعٍ في tools يمرُّ عليها ويسقط محلّيًّا",
-    ),
-    "pytest": (
-        "pytest -q",
-        "pytest",
-        "خلافُ إسهابٍ لا اختيار: `-q` يُقصِّر المخرَج ولا يُغيِّر ما "
-        "يُجمَع ولا ما يُشغَّل — **فالمقيسُ واحدٌ والمطبوعُ مختصر**",
-    ),
-}
-"""خلافٌ قائمٌ بين البوّابتين، **مُسمًّى بطرفيه وسببه** — وما زاد يُرَدّ."""
+DECLARED: dict[str, tuple[str, str, str]] = {}
+"""خلافاتٌ باقيةٌ بين البوّابتين — **خالٍ بعد التوحيد**، وامتلاؤه ازدواج."""
 
 
 def _workflow() -> str:
@@ -91,42 +82,35 @@ def test_the_workflow_exists_and_is_read_as_text() -> None:
     assert _workflow().startswith("name: CI")
 
 
-def test_every_gate_is_present_in_both_files() -> None:
-    """أربعُ بوّاباتٍ في الملفّين كليهما — ولا بوّابةَ تسقط من أحدهما."""
+def test_the_runner_invokes_the_one_gate_script() -> None:
+    """Runner يُشغِّل `tools/verify.sh` نفسَه — **فالبوّابةُ ملفٌّ واحد**."""
 
-    on_runner = {kind_of(one) for one in runs(_workflow())} - {None}
-    here = {kind_of(one) for one in local_gates()} - {None}
-    assert set(GATES) <= on_runner, sorted(set(GATES) - on_runner)
-    assert set(GATES) <= here, sorted(set(GATES) - here)
+    text = _workflow()
+    assert "bash tools/verify.sh" in text, runs(text)
+    assert "PY=python" in text, "المفسّرُ لا يُمرَّر، فالبوّابةُ تسقط على Runner"
+    assert set(GATES) <= {kind_of(one) for one in local_gates()} - {None}
 
 
 def test_a_removed_gate_is_refused() -> None:
-    """الصورةُ المكذِّبة: تُحذَف خطوةٌ في نسخةٍ بالذاكرة **فتُرَدّ**."""
+    """الصورةُ المكذِّبة: تُحذَف بوّابةٌ من `verify.sh` **فتُرَدّ**."""
 
+    body = LOCAL.read_text(encoding="utf-8")
     for gate in GATES:
-        hurt = "\n".join(
-            one for one in _workflow().splitlines() if f"run: {gate}" not in one
-        )
-        missing = set(GATES) - ({kind_of(one) for one in runs(hurt)} - {None})
-        assert gate in missing, gate
+        hurt = "\n".join(one for one in body.splitlines() if gate not in one)
+        found = {
+            kind_of(one.strip())
+            for one in re.findall(r'^"\$PY"\s+-m\s+(.+)$', hurt, re.MULTILINE)
+        } - {None}
+        assert gate not in found, gate
 
 
-def test_the_divergence_between_the_gates_is_declared_not_silent() -> None:
-    """وكلُّ خلافٍ في الوسائط **مُسجَّلٌ بطرفيه** — وما زاد عليه يُرَدّ."""
+def test_no_gate_is_spelled_twice_so_no_divergence_can_exist() -> None:
+    """ولا بوّابةَ مكتوبةً مرّتين — **فالازدواجُ ممتنعٌ بناءً لا محروسًا**."""
 
-    on_runner = {kind_of(one): one for one in runs(_workflow()) if kind_of(one)}
-    here = {kind_of(one): one for one in local_gates() if kind_of(one)}
-    found: dict[str, tuple[str, str]] = {}
-    for gate in GATES:
-        mine, theirs = here[gate], on_runner[gate]
-        if mine.split() != theirs.split():
-            found[gate] = (mine, theirs)
-    assert set(found) == set(DECLARED), (sorted(found), sorted(DECLARED))
-    for gate, (mine, theirs) in found.items():
-        said_mine, said_theirs, why = DECLARED[gate]
-        assert mine == said_mine, (gate, mine)
-        assert theirs == said_theirs, (gate, theirs)
-        assert len(why) > 40, gate
+    text = _workflow()
+    spelled = {kind_of(one) for one in runs(text)} - {None}
+    assert spelled == set(), sorted(spelled)
+    assert DECLARED == {}, DECLARED
 
 
 def test_the_python_version_is_quoted_against_the_float_trap() -> None:
@@ -154,7 +138,7 @@ def test_no_step_is_added_without_being_counted() -> None:
     """وعددُ الخطوات مُثبَت — فلا خطوةٌ تُدَسّ ولا تُحذَف صامتة."""
 
     text = _workflow()
-    assert len(runs(text)) == 5
+    assert len(runs(text)) == 2
     assert len(re.findall(r"^\s*-\s*uses:\s*(\S+)", text, re.MULTILINE)) == 2
     assert "actions/checkout@v4" in text
     assert "actions/setup-python@v5" in text
@@ -166,4 +150,5 @@ def test_the_guard_says_what_it_does_not_do() -> None:
     here = Path(__file__).read_text(encoding="utf-8")
     assert "`AND_THE_READING_IS_TEXT_NOT_YAML`" in here
     assert "**فلا يحرس صحّةَ YAML نحويًّا**" in here
-    assert "`THE_TWO_GATES_MUST_AGREE_OR_THE_DIVERGENCE_IS_NAMED`" in here
+    assert "`ONE_GATE_IN_ONE_FILE_LEAVES_NO_ROOM_FOR_DIVERGENCE`" in here
+    assert "**والشقُّ الأوّلُ من السبب كان خاطئًا**" in here

@@ -17,4 +17,6 @@ jobs:
           python-version: "3.12"
       - name: السجلُّ مطابقٌ للشجرة والحارسُ بلا خرق
         run: python3 tools/gen_registry.py --check && python3 tools/guard.py
+      - name: الشجرةُ المرخَّصة مطابقةٌ للشجرة (ADR ٢)
+        run: python3 tools/gen_tree_index.py --check
       - run: pip install pytest && python3 -m pytest tests/ -q

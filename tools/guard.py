@@ -3,7 +3,8 @@
 
 يمشي على كلّ `.py` خارج `suspended/` و`tests/` ويرفض: `open`/`read_text`/`write_text`/`decode`/
 `encode`/`normalize`/`json.load`/`csv.reader`، و`print`/`input`/`sys.argv`/`stdin`، واستيرادَ `suspended`.
-القائمةُ البيضاء: `tools/gen_registry.py` و`tools/guard.py` نفسُه.
+القائمةُ البيضاء: `tools/gen_registry.py` و`tools/guard.py` نفسُه و`tools/gen_tree_index.py`
+(يقرأ من git أسماءً وبصماتٍ لا نصًّا؛ ADR ٢).
 """
 
 from __future__ import annotations
@@ -14,7 +15,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EXEMPT_DIRS = ("suspended", "tests", ".git", "__pycache__", ".pytest_cache")
-EXEMPT_FILES = ("tools/gen_registry.py", "tools/guard.py")
+# الأخير: يقرأ من git أسماءً وبصماتٍ لا نصًّا (ADR ٢)
+EXEMPT_FILES = ("tools/gen_registry.py", "tools/guard.py", "tools/gen_tree_index.py")
 IO_ATTRS = frozenset(
     {
         "read_text", "read_bytes", "write_text", "write_bytes", "open", "decode", "encode",

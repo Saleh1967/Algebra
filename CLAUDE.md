@@ -209,11 +209,12 @@
 
 - الوحداتُ أعلاه ومعها اختباراتُها (265) و`tools/verify.sh` وملفّاتُ الحزم نُقلت إلى `suspended/` — 496 وحدةً في `SUSPENDED_REGISTRY.json` المولَّد بـ`python3 tools/gen_registry.py`؛ لكلّ وحدةٍ دعواها ونوعُ مخالفتها وطريقُ عودتها.
 - الحارسُ `tools/guard.py`، والمدخلُ الوحيد `src/entry.py`، وCI: السجلُّ والحارسُ ثمّ pytest.
+- (2026-10-12، ADR ٢) الشجرةُ المرخَّصة: `tools/gen_tree_index.py` يقسم كلَّ ملفٍّ بالبصمة ومقارنًا بالغانم المثبَّت (`deposits/alghanem-tree.json`) قسمةً تامّة؛ المخرجُ `TREE_INDEX.md` و`docs/tree/tree.json`، ويُعاد توليدُه بعد `git add` كلَّما تغيّر ملفّ.
 
 ## قبل أن تقول «تمّ»
 
 ```sh
-python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 -m pytest tests -q   # 5 اختبارات
+python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 12 اختبارًا
 ```
 
 ## الخطوة التالية المأذونة

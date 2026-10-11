@@ -1,0 +1,3956 @@
+{
+"alghanem_rev": "5d769d19c4f40725c7595fc9e3c7aa0a0a81b6d6",
+"by_top": {
+"بقية": {
+".claude": 1,
+".github": 1,
+"deposits": 73,
+"docs": 35,
+"gflk-ocp-markov-adhlaqi-2026-09-4.md": 1,
+"src": 1,
+"tests": 1,
+"tools": 2,
+"web": 5
+},
+"فارغ": {
+"case_data": 5,
+"corpora": 1,
+"examples": 15,
+"fonts": 1,
+"gloss_data": 1,
+"suspended": 49
+},
+"مختلف_عن_الغانم": {
+".gitignore": 1,
+"CLAUDE.md": 1,
+"README.md": 1,
+"SUSPENDED_REGISTRY.json": 1,
+"docs": 1,
+"pyproject.toml": 1,
+"suspended": 6,
+"tests": 1,
+"tools": 1
+},
+"مطابق_للغانم": {
+"LICENSE": 1,
+"quran-simple-enhanced.txt": 1,
+"suspended": 14
+},
+"معلق": {
+"suspended": 428
+},
+"مكرر_داخلي": {}
+},
+"classes": {
+"بقية": 120,
+"فارغ": 72,
+"مختلف_عن_الغانم": 14,
+"مطابق_للغانم": 16,
+"معلق": 428,
+"مكرر_داخلي": 0
+},
+"distinct_blobs": 579,
+"files": [
+{
+"blob": "bf04f091d5424558aa64a7e11bf283b60a5eef85",
+"class": "بقية",
+"origin": "",
+"path": ".claude/settings.json"
+},
+{
+"blob": "aedb8c9dbb9326a68932040f2c1b5ec3324fcbbe",
+"class": "بقية",
+"origin": "",
+"path": ".github/workflows/ci.yml"
+},
+{
+"blob": "c0d7f457897cb59751e1cd9b79966634aec7dda3",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": ".gitignore"
+},
+{
+"blob": "4809e63974a25e2934b9a35158e4dbc8f5097f62",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "CLAUDE.md"
+},
+{
+"blob": "7458ca7e45883f1c31fb9eeb253d2baeb1f86237",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "LICENSE"
+},
+{
+"blob": "382d8044e936b45229b9a4e6da78eff0b130abad",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "README.md"
+},
+{
+"blob": "9e22d990b33aa935c0bad07d525908f141fbc445",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "SUSPENDED_REGISTRY.json"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "case_data/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "case_data/cases/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "case_data/expectations/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "case_data/invalid/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "case_data/seam/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "corpora/.gitkeep"
+},
+{
+"blob": "c4c0605aae94de46bf4fde70f8cf44d6e8bde648",
+"class": "بقية",
+"origin": "",
+"path": "deposits/absorption_detector_spec.md"
+},
+{
+"blob": "72d5227fb6bc6aa83ae08b0425769c3f46982ada",
+"class": "بقية",
+"origin": "",
+"path": "deposits/algebraic_recovery_proof.md"
+},
+{
+"blob": "8d195a83ef288088ef4c3cfccc44ab6354a11dc6",
+"class": "بقية",
+"origin": "",
+"path": "deposits/alghanem-tree.json"
+},
+{
+"blob": "23c2b4596290205393b9ba25f83589b874a8f878",
+"class": "بقية",
+"origin": "",
+"path": "deposits/arabic_token_run.log"
+},
+{
+"blob": "a730a19aad57965322001f3c41104097ced58fb4",
+"class": "بقية",
+"origin": "",
+"path": "deposits/awzan_proof.md"
+},
+{
+"blob": "bf1fe034d4a519f52f7194e113835c8ef1b163f8",
+"class": "بقية",
+"origin": "",
+"path": "deposits/basmala_lifted_run.log"
+},
+{
+"blob": "c32a4f061d505267c806dcf6b4535edbd5fb12d7",
+"class": "بقية",
+"origin": "",
+"path": "deposits/bridge_signature.md"
+},
+{
+"blob": "a731d5a3fb85897df0b02fa75441277aa01b9f80",
+"class": "بقية",
+"origin": "",
+"path": "deposits/bridge_tables.md"
+},
+{
+"blob": "7b3a7d1064e549df953dc44da3592da2a2e9f243",
+"class": "بقية",
+"origin": "",
+"path": "deposits/ceiling_census_witness.log"
+},
+{
+"blob": "5b8a402154507333c49d32f94152adef858cd78e",
+"class": "بقية",
+"origin": "",
+"path": "deposits/context_depth_run.log"
+},
+{
+"blob": "6830ac28d641596404fe3dbaf5c4c1f5973a9b68",
+"class": "بقية",
+"origin": "",
+"path": "deposits/context_ladder_run.log"
+},
+{
+"blob": "d47f11c7f1f9e3082d783082e17d4f82b925f96d",
+"class": "بقية",
+"origin": "",
+"path": "deposits/discovered_ascent_run.log"
+},
+{
+"blob": "7216614cee7b9361ecaa0b7d8214e3ea31e7e3de",
+"class": "بقية",
+"origin": "",
+"path": "deposits/folding_ascent_witness.log"
+},
+{
+"blob": "52c89f2315443eee2f12427671070c3a412be2e1",
+"class": "بقية",
+"origin": "",
+"path": "deposits/folding_proof_witness.log"
+},
+{
+"blob": "043c607eaf1455bf5a1256c266aed741c0e70447",
+"class": "بقية",
+"origin": "",
+"path": "deposits/foreign_asalib_out.txt"
+},
+{
+"blob": "00f4bb5c23c4ddf6b9babfe488f4429a6afa971b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/foreign_asalib_pred.txt"
+},
+{
+"blob": "7e7c7f6244dc4dd740f4cba33674fd17e678fbce",
+"class": "بقية",
+"origin": "",
+"path": "deposits/foreign_bunud_out.txt"
+},
+{
+"blob": "f72052809deb0420b0a5faf9d489cc4fc79f340b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/foreign_bunud_pred.txt"
+},
+{
+"blob": "df43f2188af9f75acacfba2df63a14a72e6dfc5b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/foreign_ledger_note.md"
+},
+{
+"blob": "fcd9ab0bc2603e14c8715c54d3632965f1a1f38f",
+"class": "بقية",
+"origin": "",
+"path": "deposits/gemination_ceiling_witness.log"
+},
+{
+"blob": "495c88cf3d30210ac3491aff7fc40b3faaec2f3a",
+"class": "بقية",
+"origin": "",
+"path": "deposits/greedy_algebra_run.log"
+},
+{
+"blob": "b514c66849fe9131a8a7ff97f79ca48747a54745",
+"class": "بقية",
+"origin": "",
+"path": "deposits/greedy_licence_refusal.log"
+},
+{
+"blob": "40879168e533e6febdc6f483a7f8de4478bb3294",
+"class": "بقية",
+"origin": "",
+"path": "deposits/greedy_licence_run.log"
+},
+{
+"blob": "991f842c2e220b252d784d4e6e2283ed9ffc6ede",
+"class": "بقية",
+"origin": "",
+"path": "deposits/hamil_hala_zaman_layers_v7.md"
+},
+{
+"blob": "a52c4820f7f798f4946d113d2425e82c56feee8a",
+"class": "بقية",
+"origin": "",
+"path": "deposits/hasr_audit_run.log"
+},
+{
+"blob": "4460ba8e54433de771a014342540122ea773c5ce",
+"class": "بقية",
+"origin": "",
+"path": "deposits/hasr_rule_note.md"
+},
+{
+"blob": "df5cad6bea899e55d7316921d061656b2de6b963",
+"class": "بقية",
+"origin": "",
+"path": "deposits/huffman_ascent_run.log"
+},
+{
+"blob": "0a4a768b70d85a35684e8ef31aada0d0948f5ab2",
+"class": "بقية",
+"origin": "",
+"path": "deposits/ifada_khabar_insha.md"
+},
+{
+"blob": "4553fd2fcd31b1152fc23fba6ba97a0eca01f90b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/ifada_khabar_insha_v2.md"
+},
+{
+"blob": "8db595361ac14eb2a31cc3a81d208a810ae33bc9",
+"class": "بقية",
+"origin": "",
+"path": "deposits/ladder_map.tsv"
+},
+{
+"blob": "8d8e7b2ccc578c164b8bf7a6e45a8346d6d7dbd1",
+"class": "بقية",
+"origin": "",
+"path": "deposits/lifted_bit_blank_display.log"
+},
+{
+"blob": "c693311d5380aed0352e699045acefb440bf8b82",
+"class": "بقية",
+"origin": "",
+"path": "deposits/lifted_bit_run.log"
+},
+{
+"blob": "ae26ea594fb8d90428e3e4abc546c566d5a936e2",
+"class": "بقية",
+"origin": "",
+"path": "deposits/lumping_barrier_run.log"
+},
+{
+"blob": "57d076d3fe7556c2ac3e303ea82ca28e1e50779f",
+"class": "بقية",
+"origin": "",
+"path": "deposits/marking_contrast_run.log"
+},
+{
+"blob": "f28c657c6c07cb9df8f9eb3959ab093cbc3d6cc7",
+"class": "بقية",
+"origin": "",
+"path": "deposits/markov_ceiling_witness.log"
+},
+{
+"blob": "b2abd838a33100e19dae1773af8c782054c630b8",
+"class": "بقية",
+"origin": "",
+"path": "deposits/markov_ladder_run.log"
+},
+{
+"blob": "1663b90ccab39514931c56683f10b306afb6d1e9",
+"class": "بقية",
+"origin": "",
+"path": "deposits/markov_logical_induction.md"
+},
+{
+"blob": "4ebc86efe8655b80b3af565dabb55c3dad9648df",
+"class": "بقية",
+"origin": "",
+"path": "deposits/markov_order_run.log"
+},
+{
+"blob": "53eec2d217bb4c54958323d9fb38712f7c6d991b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/measured_ranking_rank.log"
+},
+{
+"blob": "a5cd16a8cd09fed60d36aca50f41f3bad49771ec",
+"class": "بقية",
+"origin": "",
+"path": "deposits/measured_ranking_run.log"
+},
+{
+"blob": "c569a4ce12fe2f5918915e8304f7dc5465ca8a6d",
+"class": "بقية",
+"origin": "",
+"path": "deposits/morph_residue_run.log"
+},
+{
+"blob": "ad4fc0bd4be9c541bba81b95a4d90f924cd2c795",
+"class": "بقية",
+"origin": "",
+"path": "deposits/nasib_particle_run.log"
+},
+{
+"blob": "2f7c4e3fb751a1de42120cd5b2249c50e600b550",
+"class": "بقية",
+"origin": "",
+"path": "deposits/number_ladder_run.log"
+},
+{
+"blob": "8b14cb216f16d41513bbfd2633b1b8d880cddf21",
+"class": "بقية",
+"origin": "",
+"path": "deposits/number_rule_note.md"
+},
+{
+"blob": "bdc2383e56a6b39eaa7dfd00e646eb4449a38ef5",
+"class": "بقية",
+"origin": "",
+"path": "deposits/nun_ruling_witness.log"
+},
+{
+"blob": "b891895e95e8cd6cb26772b1d05bedd5e9859cc8",
+"class": "بقية",
+"origin": "",
+"path": "deposits/pausal_split_run.log"
+},
+{
+"blob": "ab8db26447174dd29d951daffa9d3fc92df86a7f",
+"class": "بقية",
+"origin": "",
+"path": "deposits/pausal_split_witness.log"
+},
+{
+"blob": "a8deca426b3037dcd99b12416647448c3be3f385",
+"class": "بقية",
+"origin": "",
+"path": "deposits/pr45_analysis.md"
+},
+{
+"blob": "205f886a3c951c7760a357ea90ab9413e1cf84f5",
+"class": "بقية",
+"origin": "",
+"path": "deposits/praise_blame_header_flaw.log"
+},
+{
+"blob": "cb20f3067ade91a0968a17dd3313b45251ea9563",
+"class": "بقية",
+"origin": "",
+"path": "deposits/praise_blame_rule.md"
+},
+{
+"blob": "9a8f336c8c4734ac85979fc73920fde3a4c80c1c",
+"class": "بقية",
+"origin": "",
+"path": "deposits/praise_blame_run.log"
+},
+{
+"blob": "153d6ec5d7db6546a77fa55eb578c2e08c6f0dfd",
+"class": "بقية",
+"origin": "",
+"path": "deposits/projection_specs.md"
+},
+{
+"blob": "2ff508cb4836675713d6c3dff0d6523e61689031",
+"class": "بقية",
+"origin": "",
+"path": "deposits/rerun_audit.log"
+},
+{
+"blob": "d0a0c12d2b613e8b0d85c16c8a8dad3bc1a6e61b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/rules_adoption.md"
+},
+{
+"blob": "c0a6c8a64a5978f5a105da464709eaef9ec0376d",
+"class": "بقية",
+"origin": "",
+"path": "deposits/seal_chain.json"
+},
+{
+"blob": "135b19a6c9d58bcff0e39ba6ddecdaa415ebcc1e",
+"class": "بقية",
+"origin": "",
+"path": "deposits/separation_rule.md"
+},
+{
+"blob": "0be4f81fd90fbc583051f6d407473019df3a4b19",
+"class": "بقية",
+"origin": "",
+"path": "deposits/separation_rule_run.log"
+},
+{
+"blob": "1ff4af30e29ecbb6c135247413fa54d06ec5be1d",
+"class": "بقية",
+"origin": "",
+"path": "deposits/state_cycle_bound_declared.log"
+},
+{
+"blob": "ece376a233a6aa3b7c76b244e5958689d34a928c",
+"class": "بقية",
+"origin": "",
+"path": "deposits/state_cycle_first_print.log"
+},
+{
+"blob": "ad8f1dcda660826c61c12c07dfcd1be50b350a2d",
+"class": "بقية",
+"origin": "",
+"path": "deposits/state_cycle_run.log"
+},
+{
+"blob": "24229d6a78611b6a2400feaa653eb945d8d0c08b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/stirling_greedy_run.log"
+},
+{
+"blob": "0ea721139c58b101dced83a5be2ec04eb9b979d2",
+"class": "بقية",
+"origin": "",
+"path": "deposits/stirling_greedy_witness.log"
+},
+{
+"blob": "6243e507a17b716641d0d4f08562c2a62b912776",
+"class": "بقية",
+"origin": "",
+"path": "deposits/surah_index_run.log"
+},
+{
+"blob": "ee2eeaf75085e19d39686c36c6a5629f489b4f77",
+"class": "بقية",
+"origin": "",
+"path": "deposits/table_consequence_run.log"
+},
+{
+"blob": "0313a4d9d72f20dc12e8afc936ff41c5feb9277b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/tashif_space_witness.log"
+},
+{
+"blob": "189c6eea1503304195f7c520d6394c78d657e73b",
+"class": "بقية",
+"origin": "",
+"path": "deposits/temporary_marking_full.log"
+},
+{
+"blob": "f5740fc8beaf4fdece443cfb8267687d1058cc45",
+"class": "بقية",
+"origin": "",
+"path": "deposits/temporary_marking_run.log"
+},
+{
+"blob": "4ba4388889bfd7ca30973238e4808ac497e73155",
+"class": "بقية",
+"origin": "",
+"path": "deposits/transfer_arrow_run.log"
+},
+{
+"blob": "c6f1d6ddfae80fa50cce5e6d6de280ab8b06f769",
+"class": "بقية",
+"origin": "",
+"path": "deposits/verse_ending_basmala.log"
+},
+{
+"blob": "8eb72e21c30a4e3cbddb8c3f9fa34e23d7180518",
+"class": "بقية",
+"origin": "",
+"path": "deposits/verse_ending_definitions.log"
+},
+{
+"blob": "6ee52d6a80e9eb1d9fabd4b786d49d4231c2c30f",
+"class": "بقية",
+"origin": "",
+"path": "deposits/verse_ending_run.log"
+},
+{
+"blob": "a84df3fb59ee3567a13c1e2cbe4c917f51fdd84f",
+"class": "بقية",
+"origin": "",
+"path": "deposits/word_escalation_definitions.log"
+},
+{
+"blob": "ea8cabd6c5968a3239247382db62ce6c12f9c014",
+"class": "بقية",
+"origin": "",
+"path": "deposits/word_escalation_run.log"
+},
+{
+"blob": "0b6b53f1550949ac68e580158c0829027843b942",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "docs/CONSTITUTION.md"
+},
+{
+"blob": "ed0184fe472c0a27ba8ac6921b60e3b436f12a3e",
+"class": "بقية",
+"origin": "",
+"path": "docs/STRUCTURE.md"
+},
+{
+"blob": "dc06cf057b499b0b2b0fa6362d8f55ad1197d141",
+"class": "بقية",
+"origin": "",
+"path": "docs/adr/0001-entry-only-through-the-gate.md"
+},
+{
+"blob": "395786d5ffa06426a5ae8bf4c8d1e7a76dbe177e",
+"class": "بقية",
+"origin": "",
+"path": "docs/adr/0002-licensed-tree.md"
+},
+{
+"blob": "09b411c4984f77b74c7699cd3eb99e56bc37581d",
+"class": "بقية",
+"origin": "",
+"path": "docs/reference/slgae_5k_identifier_disambiguation.md"
+},
+{
+"blob": "f1de6a6f9e9987eb8ddded76c1b20494031feca2",
+"class": "بقية",
+"origin": "",
+"path": "docs/reference/slgae_slot_licensing_algebra.md"
+},
+{
+"blob": "fe77ea2d6ce969a8ff2fbe5e71820e51eec131f6",
+"class": "بقية",
+"origin": "",
+"path": "docs/reference/slgae_slot_licensing_algebra_v2.md"
+},
+{
+"blob": "b9a803d9ce15189500090290a3c114a7f9f53aab",
+"class": "بقية",
+"origin": "",
+"path": "docs/reference/slgae_slot_licensing_algebra_v3.md"
+},
+{
+"blob": "83ab93b1b9496f17d3e5fdfb412028b960c0c5fa",
+"class": "بقية",
+"origin": "",
+"path": "docs/reference/slgae_slot_licensing_algebra_v4.md"
+},
+{
+"blob": "41b8e9fb04bac5d97a16936206eba05436732b80",
+"class": "بقية",
+"origin": "",
+"path": "docs/الأرقام-مرفوعة-البسملات.md"
+},
+{
+"blob": "613b11885915bc35b34a051ce679156d18305f25",
+"class": "بقية",
+"origin": "",
+"path": "docs/الانقلاب-المجمَّد.md"
+},
+{
+"blob": "b8c4004134ccc1f2058c74901d7882adc2f83fef",
+"class": "بقية",
+"origin": "",
+"path": "docs/الترخيص-بتّةً-بتّة.md"
+},
+{
+"blob": "c12561b9642c10c2d7d010f67410f72f421ec9cf",
+"class": "بقية",
+"origin": "",
+"path": "docs/الحصر-والاستثناء-حسابًا.md"
+},
+{
+"blob": "a282ef912adc256f6ab9dcca761821c1dba35db3",
+"class": "بقية",
+"origin": "",
+"path": "docs/السلّم-المجمَّد.md"
+},
+{
+"blob": "7a56c8de0e32334c70da4bcf874e5db68833c6b8",
+"class": "بقية",
+"origin": "",
+"path": "docs/الصعود-المكتشَف.md"
+},
+{
+"blob": "641a8d579e00d9eebc59d8e5b7e5934ac29ddab2",
+"class": "بقية",
+"origin": "",
+"path": "docs/الطيُّ-والفكّ.md"
+},
+{
+"blob": "166a9a10e263ee9745ecd33d406273a402164e72",
+"class": "بقية",
+"origin": "",
+"path": "docs/العدد-والمعدود-حسابًا.md"
+},
+{
+"blob": "e3433d191d2973a9bafa26d1ace7ab4fea41ab20",
+"class": "بقية",
+"origin": "",
+"path": "docs/النقل-والسهم.md"
+},
+{
+"blob": "c926b1470f742329493e64012f86fc54a425f499",
+"class": "بقية",
+"origin": "",
+"path": "docs/بايثون-بالبتّات.md"
+},
+{
+"blob": "7a3f954b09752f22a71636b6ba8c8afdd229ecf2",
+"class": "بقية",
+"origin": "",
+"path": "docs/برهان-أرضية-الرسم.md"
+},
+{
+"blob": "220c745512184ca1c6f95c312d304857883615b3",
+"class": "بقية",
+"origin": "",
+"path": "docs/تقرير-الإنجاز.md"
+},
+{
+"blob": "eb5fc5e3bfc4982a1ab41395aad1ea8ccd2662e4",
+"class": "بقية",
+"origin": "",
+"path": "docs/جبر-الربح.md"
+},
+{
+"blob": "5af1a6c800c27490bce02cdc11fa6ca5001fb891",
+"class": "بقية",
+"origin": "",
+"path": "docs/جسر-البتّات.md"
+},
+{
+"blob": "f2ac08a3a83bda3c35eb911305dbfc0895927a09",
+"class": "بقية",
+"origin": "",
+"path": "docs/دستور-القياس.md"
+},
+{
+"blob": "9036044784e9f240b3d250c59f0d637c7f613f8b",
+"class": "بقية",
+"origin": "",
+"path": "docs/دورة-الحال.md"
+},
+{
+"blob": "d82cd898d08b4d1b9433a5d042293336aaebd382",
+"class": "بقية",
+"origin": "",
+"path": "docs/ستيرلنغ-مع-الجشع.md"
+},
+{
+"blob": "ac52e3013b2ea76368ad27a156f519e4576d55bc",
+"class": "بقية",
+"origin": "",
+"path": "docs/سجل-الأعطال.md"
+},
+{
+"blob": "4756bd86e94bc43557b8dd6205ad39bd071b5de6",
+"class": "بقية",
+"origin": "",
+"path": "docs/سجلٌّ-من-أنبوبٍ-آخر.md"
+},
+{
+"blob": "e4c0c5c09e92a3452a7ca798d8c189578b7c4ef0",
+"class": "بقية",
+"origin": "",
+"path": "docs/سلسلةُ-الأختام.md"
+},
+{
+"blob": "2071cef4caee042f17cee4bb182e62d1d82acc09",
+"class": "بقية",
+"origin": "",
+"path": "docs/سلّم-السياق-بلا-تسريب.md"
+},
+{
+"blob": "c3026557f24bdf7ded2fe82d42af6e8f7e554e00",
+"class": "بقية",
+"origin": "",
+"path": "docs/فهرس-الأختام.md"
+},
+{
+"blob": "d889085348900489497fe148022cb2572d62cbcb",
+"class": "بقية",
+"origin": "",
+"path": "docs/لوازم-مسوّدة-منقولة.md"
+},
+{
+"blob": "830b40e9e29de02190e93103a9c707a37c6dbb71",
+"class": "بقية",
+"origin": "",
+"path": "docs/ما-بُرهن-وما-قِيس.md"
+},
+{
+"blob": "e945278b45dbeb68bbbd78da01da17cc5410b522",
+"class": "بقية",
+"origin": "",
+"path": "docs/مدخل.md"
+},
+{
+"blob": "095e79989e81edbed7eaaa84a728a7afd24ffe3c",
+"class": "بقية",
+"origin": "",
+"path": "docs/مدى-الإحاطة.md"
+},
+{
+"blob": "e7253483c414bd2feda0a3e42b3ba142d7f873c9",
+"class": "بقية",
+"origin": "",
+"path": "docs/وحدات-المعياريّة.md"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/arabic/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/capability/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/compression/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/evaluation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/external_audit/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/irab/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/kernel/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/letter_fingerprint/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/level_two_manat/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/prior_fiber/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/reference/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/sentence_card/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/state_evidence/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "examples/structural_dal/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "fonts/.gitkeep"
+},
+{
+"blob": "4687726a8604f9d74831debd59825e788efdfa4e",
+"class": "بقية",
+"origin": "",
+"path": "gflk-ocp-markov-adhlaqi-2026-09-4.md"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "gloss_data/.gitkeep"
+},
+{
+"blob": "c43fd022d01d5211e3b46c6b845df20181f28d07",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "pyproject.toml"
+},
+{
+"blob": "c2122d1d71f0ad8019593c2dcbf865ec0fb3c122",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "quran-simple-enhanced.txt"
+},
+{
+"blob": "9eb078dfdcb622719135a4c1ac34acf0cf70c21a",
+"class": "بقية",
+"origin": "",
+"path": "src/entry.py"
+},
+{
+"blob": "5f3f034de790fa7785edea3302cf25da25f1d179",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/__init__.py"
+},
+{
+"blob": "358d8da43194cbd25f89fe642819a83e2491b048",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/audit_slgae_markov.py"
+},
+{
+"blob": "a678204968cd3171b01d36b1b2631033c7e14150",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/audit_slgae_third_version.py"
+},
+{
+"blob": "4e5b32e4141091f5955ce9213d5a09ab50ba5ad9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/decode_makhraj_bits.py"
+},
+{
+"blob": "5b95b6eb96826c3bf17f17f21bca66b73003e489",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/decode_makhraj_haraka_bits.py"
+},
+{
+"blob": "635c36b8e37b514354ba8caa94e5c5ab399b2991",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/encode_arabic_units.py"
+},
+{
+"blob": "c91cb515e41a498c12f81c38c2010a359670e3b9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/measure_sifa_candidate.py"
+},
+{
+"blob": "6a0e11ca02c2e1d23f7ac54dd8366bd8e683b578",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/arabic/read_slgae_separation.py"
+},
+{
+"blob": "957d548685f17ddb3d263ccfd949cf3aea06a3be",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/hawk_dove/run_hawk_dove.py"
+},
+{
+"blob": "6e523448f19dbcb016c6b8df045cb041e9c51f64",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/irab/run_harf_measurement.py"
+},
+{
+"blob": "1f609cbc2f7d7995d3f8b956e00a2fb5dd70077c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/isnad/run_ittifaq.py"
+},
+{
+"blob": "2484c063acca57ff59798c726661e063a3d2bfa7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/maana/run_imtihan.py"
+},
+{
+"blob": "fd57f2860672b5c188be9bc5a915c08bdedd7687",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_adjacency_null.py"
+},
+{
+"blob": "5ee44abac2b6c7ff4b5dde0486fdd7dfdbdf8036",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_algebraic_ascent.py"
+},
+{
+"blob": "aa7b15fded35bcdcbc95afd9022fa6a184c6d3bb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_bare_census.py"
+},
+{
+"blob": "c1595120485823620f00f1377947fc9a371b6510",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_basmala_lifted.py"
+},
+{
+"blob": "400a2f3f78b25cee04171f65d7adc37d7965e4d2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_ceiling_census.py"
+},
+{
+"blob": "2e3913ce6d1b68fffdfa7e622f245a804c94a793",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_context_depth.py"
+},
+{
+"blob": "24ff20b2f543a0e4ae7347d9138253ac894357a5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_context_ladder.py"
+},
+{
+"blob": "15256605d84b0a5c91be07c4754c4bfeffe00b49",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_cv_peel.py"
+},
+{
+"blob": "1978e75c59e133fe4eeba694a9b74375de73a2e5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_deletion_witness.py"
+},
+{
+"blob": "2e23316cf7aa52d77fd5f25ce14b7b19b2180d73",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_discovered_ascent.py"
+},
+{
+"blob": "22c053b551df3bbd769ab7cf2b0dd2702b0b5071",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_encoding_audit.py"
+},
+{
+"blob": "1fbf4917a7c9a5c7b6a2e33f39c8c073898a3d8f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_final_vowel_entropy.py"
+},
+{
+"blob": "5be0aad4f527afe94043c009dabacbe379237ed7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_folding_ascent.py"
+},
+{
+"blob": "7474d6a2ce3865c8ee8f6a62d66046014636f730",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_folding_proof.py"
+},
+{
+"blob": "9e58527b93cda3c840321816d5cc8531921ca5a5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_gemination_ceiling.py"
+},
+{
+"blob": "e99213075abb52216b0623c6e35e73fcbd4f2859",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_greedy_algebra.py"
+},
+{
+"blob": "9ee833a786e87c914ba84c5e0e423ab12b54f6dc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_greedy_licence.py"
+},
+{
+"blob": "8e0e0a3b4491a1f49dbdabe42406c067251ad8d6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_hasr_audit.py"
+},
+{
+"blob": "701112cdb5820fe3f4e3ab793c39aabf7e94fda3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_heldout_ladder.py"
+},
+{
+"blob": "315996c8836ac1da4f8bb1abcc63f1d5d65ecab6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_huffman_ascent.py"
+},
+{
+"blob": "bfc7c7b4891f4f0ccb191d489a61a8453f9b6a7c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_layer_induction.py"
+},
+{
+"blob": "c914a03e7d2034ad7a949705c05c3482ca38bb7e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_layer_licence.py"
+},
+{
+"blob": "4477b152eea0b4681437454f2129bfdb8db93226",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_letter_transitions.py"
+},
+{
+"blob": "c40dfc4dd6978b1af3c2500e827f3ec0a56554a5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_lifted_bit.py"
+},
+{
+"blob": "046bc7cc8bce3841072706741ab0909a465792b5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_lumping_barrier.py"
+},
+{
+"blob": "b7ff46873e6a468b95b98ab37501a3618ff47c1f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_marked_contrast.py"
+},
+{
+"blob": "4bfa0453ab161a6483b4d3853237c1e685cdd273",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_marking_contrast.py"
+},
+{
+"blob": "37f47004607ae29a6caebcfc0433cbf39bf672ed",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_markov_ceiling.py"
+},
+{
+"blob": "70302d66558f58ac8bc6eff94fa020f2307a65ad",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_markov_ladder.py"
+},
+{
+"blob": "3a84bca8ef4430ae398f11016a978c6fa8d6d437",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_markov_order.py"
+},
+{
+"blob": "efbb7c309343ad73bb709b58ef4fc0b8a86a72b1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_measured_ranking.py"
+},
+{
+"blob": "2391149a714a518ee112065699c3dccc01a5f031",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_morph_residue.py"
+},
+{
+"blob": "1348177021fd25c6eee8747a1656a9a83d227df1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_naqis_witness.py"
+},
+{
+"blob": "552d89d2814221db8d10096b04b43632897e5370",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_nasib_particle.py"
+},
+{
+"blob": "865e61ca1acd863d166bcae73fb5fa42f592249b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_neutral_witness.py"
+},
+{
+"blob": "604b76a219797e60126f5c39b050215c7624ae06",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_number_ladder.py"
+},
+{
+"blob": "070c9ff29001d50faecb902c115f6840af461db3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_nun_ruling_witness.py"
+},
+{
+"blob": "a71757239320422f16663b094a776a3f2d4ed5f1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_pan_difference.py"
+},
+{
+"blob": "b77f7e071e755fe8b510a296adf990161d57aff1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_pausal_split.py"
+},
+{
+"blob": "489e411c0ae78364659d7ba5e8f4e9e8c32a1db7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_pausal_witness.py"
+},
+{
+"blob": "2ddce018070c4c572aa80e9b3989e899ed7ba127",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_praise_blame.py"
+},
+{
+"blob": "76f043b143250a62f0c65012f42dc9eba2d06b0a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_residue_derivation.py"
+},
+{
+"blob": "2ff8944b07fe8edf3960006c6aaf8fba8940f374",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_root_projection.py"
+},
+{
+"blob": "0f5773f0cd0995825989219470f41eb96c5074f9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_schema_transition_audit.py"
+},
+{
+"blob": "26c91d0f6e68405b165822c8225dc60781839867",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_script_floor.py"
+},
+{
+"blob": "0e3e1dad92887280ea52bab3d86262833c829027",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_separation_rule.py"
+},
+{
+"blob": "4bcc8d3cca924fdb99e3a5857e47c99d8927c29f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_state_cycle.py"
+},
+{
+"blob": "3e7457311afb1fa0d6e78fdf78315341f369246f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_stirling_greedy.py"
+},
+{
+"blob": "ea8fca22cdeeb1b385232f1ad4f25e496f591cfa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_surah_index.py"
+},
+{
+"blob": "c30148e530ca535827b661354ab596e9e2d521dd",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_table_consequence.py"
+},
+{
+"blob": "1f905b8bcfa9cc6c7cec710fefa648aa0e020cf3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_tanafur_pairs.py"
+},
+{
+"blob": "e0481a0966721a4777dd914b3d22b944c1f1f935",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_tashif_space_witness.py"
+},
+{
+"blob": "c1b97c7e1c394fd8537811e4cbb856eb53ae5153",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_temporary_marking.py"
+},
+{
+"blob": "48dc0638573f51c42db1fa2f911533d9c0c23a6f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_transfer_arrow.py"
+},
+{
+"blob": "42ebb5ad6ede8264d3528c822779c5a67e0fa32d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_unit_coverage.py"
+},
+{
+"blob": "545a7788f0144de804d3df021d11a76e825c422c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_verse_ending.py"
+},
+{
+"blob": "fec31b61672476cbc900e232e39fa560a818fcd7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_vowel_ladder.py"
+},
+{
+"blob": "f03160dee1b61a767024bd8ef142e339c7a13dae",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/rasm/run_word_escalation.py"
+},
+{
+"blob": "caacc5f3d2a54d59aadf4ffa0a02a3dba6983a29",
+"class": "معلق",
+"origin": "",
+"path": "suspended/examples/shahid/run_shahid.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/.gitkeep"
+},
+{
+"blob": "067f76084add3acf0082ad5d151c9b36ecbbe9d0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/__init__.py"
+},
+{
+"blob": "26734f4b27e49b12ab56c43dbc1d63105b4b4876",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/assignment.py"
+},
+{
+"blob": "3782b6e12bdb9b02fa9dccf310fca958c236eed1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/attainability.py"
+},
+{
+"blob": "0b69feae35d950e7a04b17749ab2171f120aa790",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/bridge.py"
+},
+{
+"blob": "997d64cc41f15e04d272f1d2b7d4964274ed1fa8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/ceiling.py"
+},
+{
+"blob": "6386ad7748682849a7c08333adbd198568af3a3e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/consolidation.py"
+},
+{
+"blob": "5c1c1711c502367d974b8faf1c3843637aa548a4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/contingency.py"
+},
+{
+"blob": "4cd6c80e0192bd14374fd9a13e2710add25c36fc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/decisions.py"
+},
+{
+"blob": "9217dd98f0b36f44fc54ddd0aa2ae5f3625060ea",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/design_effect.py"
+},
+{
+"blob": "2e88d29e2ff64cacfd8744e8748993d92ef3d7ed",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/evaluation.py"
+},
+{
+"blob": "12c3945b36a1bd08c1e0e6e4790a6396c907733b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/factor_language.py"
+},
+{
+"blob": "8cacb8c73f3ff05dbe7642c156ec173b59721e63",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/folding.py"
+},
+{
+"blob": "c29b429694e31a7f723c81fff8f938638cf1e8e4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/ladder.py"
+},
+{
+"blob": "37f97df6b23e9b079a868029bf0af1e803e39cef",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/lumping_loss.py"
+},
+{
+"blob": "35da934c4f2a3e37583ef73af64e7eb84ca77d1f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/markov_layers.py"
+},
+{
+"blob": "a6184b460c07bd2ab25ff9783e42bbe4bf9535f9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/partial_match.py"
+},
+{
+"blob": "b47d10bfec0537048cb7f6d370914f47d3104ba0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/provenance.py"
+},
+{
+"blob": "b34655d3113f98059a4a3fea6ad69d296af559fe",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/rasm.py"
+},
+{
+"blob": "ac41bfc402be874c4e4520126f6c970c707b2749",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/reconciliation.py"
+},
+{
+"blob": "c0a42fec2213345931472076cafa34e590858f7a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/results.py"
+},
+{
+"blob": "663362fc67650e2f7f8b479bdc2eec22a61abe40",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/selection.py"
+},
+{
+"blob": "71371df34032196598ff5b5d8b81582f3ef602e8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/signified.py"
+},
+{
+"blob": "ccad8a528c747231e561312cda90754cee64872d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/simplicial.py"
+},
+{
+"blob": "0f1736f54ab8670b68828ebe6de5b35e9f402aa2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/stipulation.py"
+},
+{
+"blob": "9c2f264946337dba87f0f8fc0e02402959a60125",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/stirling.py"
+},
+{
+"blob": "fe5392783054d660987d6694bdc08d2c892f7259",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/algebra/witness.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/.gitkeep"
+},
+{
+"blob": "c1e724933c66bf367461cd35ccdf8aaf0d196d6f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/PORT_MANIFEST.json"
+},
+{
+"blob": "c11cef398dd72d44c437736919fe2d2e8472c85c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/TRANSFER_NOTICE.md"
+},
+{
+"blob": "6da096e27b4f53970ad01fbd3d38329723005b02",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/__init__.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/.gitkeep"
+},
+{
+"blob": "b1a5bf42d23b7d5067880b4d0bd021300c8dcb3e",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/__init__.py"
+},
+{
+"blob": "36ea64524e48b9cd8d255a838d50437292b9e625",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/classical_makharij_table.py"
+},
+{
+"blob": "919824a7bf78d0727b020f5ec2458d019a470c0b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/closure_identifiability.py"
+},
+{
+"blob": "1fcceba0084607276b753f2b8b0b395c789aaaff",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/closure_window_reduction.py"
+},
+{
+"blob": "8806ec29290d49aaf79d042d25f74c675d979064",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/composition_closure_replication.py"
+},
+{
+"blob": "a8efcb3b49357b3418ed3f75e292510680c5d6b7",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/compression_model_preregistration.py"
+},
+{
+"blob": "15621295fbf44bf3ce7161d06e76825c1e0fdec1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/decision_register.py"
+},
+{
+"blob": "37c183181f0a8fdf17590868e2b21ca14c0ee8da",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/edge_state_algebra.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/encoding/.gitkeep"
+},
+{
+"blob": "79f3e4de9429988f09b061480af47bf03518ebc1",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/fath_ayah_source_text.py"
+},
+{
+"blob": "9ec35afd2bc9c134d8707743d4d7b5a6cc5f9b6d",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/fatiha_source_text.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/fiber_contracts/.gitkeep"
+},
+{
+"blob": "341e34fd3feba33bc8db40559ff33675c56fbff8",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/gflk_feature_table_import_barrier.py"
+},
+{
+"blob": "c7524d02e7ecbaba11b13d8b3ade69d6af7c07c6",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/gflk_milestone_blocking_registration.py"
+},
+{
+"blob": "71a939d2ca77f2d43db792c7a9d0fa7f6d5c8d14",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/haraka_fiber_structure.py"
+},
+{
+"blob": "6125bb6c0163f9bdaa51ec112453026d8f14cac2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/interaction_complex_lemmas.py"
+},
+{
+"blob": "0720472d21d281e8716d7f5908660cc1ce00ca34",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/letter_fingerprint.py"
+},
+{
+"blob": "fdd51ab6561fecdfd58960fb98bbb266737bcf37",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/letter_identity_bit_codec.py"
+},
+{
+"blob": "72097fcac6ddab6b871edb0c402b012b2ff5adf0",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/makharij_edition_citation.py"
+},
+{
+"blob": "6a3011b8c4feacc984f783c8c69b123e72fc3d57",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/makhraj_bit_decoder.py"
+},
+{
+"blob": "dae4c02fe49dd551a59bcbbecd695c6c700d7f44",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/makhraj_haraka_bit_decoder.py"
+},
+{
+"blob": "7f410f2bb8682790221c0ea29023820b9a2dcc5a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/maqayis_root_table_deposit.py"
+},
+{
+"blob": "1499db5c1f2b66c97da628b972a9580b0a087c84",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/mark_pair_census.py"
+},
+{
+"blob": "ed639270e3253a3a5da6072a8aa535da14e225de",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/minimal_complete_slot_comparison.py"
+},
+{
+"blob": "01f0ebf475a77dc46cb580049eb19097088b5515",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/movement_workbook_crosscheck.py"
+},
+{
+"blob": "e6ac9d84e388c760d6fbfbfd6c123c5faca37cd5",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/pair_sample_widening.py"
+},
+{
+"blob": "805559d7d787014ca2087a56d167a360e7ab16d4",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/phonetic_economy_tool.py"
+},
+{
+"blob": "7b21dadd0014bcd5ad5a83c06cd36019508fe1c0",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/pipeline_stations.py"
+},
+{
+"blob": "6e91ac6a5ed5b10185a39739ef3add6549664ad4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/pre_articulatory_preregistration.py"
+},
+{
+"blob": "b44e74b2d3a3b73bd078af5bc31117bc27e9a3a5",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/quran_corpus_word_total.py"
+},
+{
+"blob": "c1d0f5f000e230faf9c3e51c05201a3c56cb8390",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/sifa_table_deposit.py"
+},
+{
+"blob": "cfa3c84b178e170440682925dbdd1762c200c0c7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/slgae_deposit.py"
+},
+{
+"blob": "eb1d1b2e6c256cb32b4b47a8c964ac0ef62f7821",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/slgae_fourth_version_deposit.py"
+},
+{
+"blob": "52615d6deca375ca491dea4a4c9c27ec42b2cccf",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/slgae_second_version_deposit.py"
+},
+{
+"blob": "7cb5444c46605ce91bb852a5b32830d4342dbb76",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/slgae_third_version_deposit.py"
+},
+{
+"blob": "3602a917650204d06fec1ad7772d505b3c164008",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/slot_rights_algebra.py"
+},
+{
+"blob": "22775821cd0dff202246c5cc3e89ecc141cc56df",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/triangle_licensing_preregistration.py"
+},
+{
+"blob": "2e188ebf25e36078659f9094c1ff64d1c2bd5b5e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/alghanem/arabic/word_schema_falsification.py"
+},
+{
+"blob": "b5a5f745b3de9189a6d91f4335f56bb51532f6db",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/arabic/written_haraka_mark.py"
+},
+{
+"blob": "484a73f159ced20aa3a49334967b7148cddd29b1",
+"class": "مطابق_للغانم",
+"origin": "alghanem",
+"path": "suspended/src/alghanem/canonical_content.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/capability/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/encyclopedia/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/encyclopedia/self_observation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/evaluation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/evaluation_execution/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/execution/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/fractal_experiment/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/fractal_generation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/generation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/kernel/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/kernel/_internal/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/linguistic/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/metaalgebra/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/ontology/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/prior/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/prior_fiber/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/program/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/realization/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/realization/generated/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/structural_bridge/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/src/alghanem/structural_dal/.gitkeep"
+},
+{
+"blob": "6d14594d835a5aaaa801c4e10fabf4d27921f06b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/hawk_dove/__init__.py"
+},
+{
+"blob": "222f77f2907a64c14b00e6dd4314980c9c3d5e82",
+"class": "معلق",
+"origin": "",
+"path": "suspended/src/hawk_dove/game.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/.gitkeep"
+},
+{
+"blob": "cf606e22a4759314952676de96939bdd4747306f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/harf_rules.py"
+},
+{
+"blob": "3c370a2823fb099956241ac70a476ba87752152d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/sealed_reading.py"
+},
+{
+"blob": "c8efec9d586c7e11d9f41ce7398a07642de2d202",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_adjacency_zeros.py"
+},
+{
+"blob": "29660aadde301ee4bac9986b2eb489257a48ddc5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_alghanem_closure.py"
+},
+{
+"blob": "bfb22c6640e219aaabefaf8669b1afc126d83fd3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_arabic_ladder.py"
+},
+{
+"blob": "3f7d2f2755ded349790e38d36ba32ca79b653c3f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_arramooz_crosscheck.py"
+},
+{
+"blob": "c2eb9a4b3a5201befd16e26e4d6aa76e791ffa0b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_assignment.py"
+},
+{
+"blob": "e325dfdc1d3ddce44f281e0c9f3a1b5e1b6d4c2f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_attainability.py"
+},
+{
+"blob": "1f9e01dafd62b5feb5ee613b2bc268600a5cfadb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_bit_bridge.py"
+},
+{
+"blob": "0e0825e71bcb6daee4078d026b1b54ff767184a1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_bits_primer.py"
+},
+{
+"blob": "90316d0fa9882a059685694ffe4910c3806b4b55",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_bridge.py"
+},
+{
+"blob": "50a4cd62ccb277010b1f8f5e2c39dce92b36a581",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_bridge_signature.py"
+},
+{
+"blob": "3531c2d3b537a6627f3a725beb03bbc5b590aeb3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_bridge_standing.py"
+},
+{
+"blob": "54550b1ab4f235f6131c53351aed31d3ffa69417",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_ceiling_audit.py"
+},
+{
+"blob": "4fe9618706dd33eab32ac9f94f1dd0ffe0ee9fb0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_ci_workflow.py"
+},
+{
+"blob": "8d45a68d499bf792fb917e2b8a97d24feb7a59a9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_conditional_entropy_null.py"
+},
+{
+"blob": "dbafb7a9374e3fbc8ff5be90e4b6ca3ff52bc519",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_consolidation.py"
+},
+{
+"blob": "33805d8546926ba55591a3a6430c493703536016",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_constitution.py"
+},
+{
+"blob": "bf62b3c42c5ffd027f65e28858318225297a532d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_contingency.py"
+},
+{
+"blob": "abf5dd933d1c0357badeef3a5a6fd6d3298c8f2d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_corpus_intake.py"
+},
+{
+"blob": "619995d84cb68203030b687eb226e14b0d1b40d8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_decisions.py"
+},
+{
+"blob": "7090a4cf7b06dfb598d7ae477280731b6824eb1c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_deposits_are_tracked.py"
+},
+{
+"blob": "751eea1f2424914aa238c20566abd38d265ee3e4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_design_effect.py"
+},
+{
+"blob": "ee8fc0e58df4e7688eab8ce1ad1ca89742f248cc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_duwaybba_case.py"
+},
+{
+"blob": "8a042f6b39df16654da65ce5c098f5d147df72f7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_entry_document.py"
+},
+{
+"blob": "60842ee5f45f275309c3859b485fcbb94ab7cef7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_evaluation.py"
+},
+{
+"blob": "f7df0e6c2cd22edceb9ffa1289b67d68d984d515",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_evidence_kinds.py"
+},
+{
+"blob": "8811069ed4be214d97b5a36d2ed3d494a7befdec",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_examination_design.py"
+},
+{
+"blob": "62b3b38428d1678e174b4095583951a360ab42d2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_examiner_reweighting.py"
+},
+{
+"blob": "0152b71bc58860b18fbe79767731b08f208c5570",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_examples_run.py"
+},
+{
+"blob": "0e3bb399bf047acddb1205fd321a9ad124c6ce6d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_executed_ladder.py"
+},
+{
+"blob": "afbcbacfce56e3023cd2cda14fcaa8ba57e513da",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_factor_language.py"
+},
+{
+"blob": "b978fb350c501b64c7cd4e61ec570a499cb4cdcc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_final_vowel_entropy.py"
+},
+{
+"blob": "579f93507938625e24e2705c836837345d18ed04",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_folding.py"
+},
+{
+"blob": "54545130c96ec029c7407ae313d2c931de7aa855",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_foreign_ledger_seal.py"
+},
+{
+"blob": "167dde7d21a4732ce8ebce270f9f77cf16524a0d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_fourth_layer_audit.py"
+},
+{
+"blob": "112b9e5d7396fc612dd425a9b5694e37ac2cf5aa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_fourth_version_audit.py"
+},
+{
+"blob": "bd609b03399293648c02fe00b8d921537eb00f93",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_frequency_matched_preregistration.py"
+},
+{
+"blob": "b595371c6c566a7974923e2b1c73ed33688b1e60",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_frozen_context_ladder.py"
+},
+{
+"blob": "a185bd7733fbc7810c048f94aaad37636ded2014",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_frozen_hasr_ledger.py"
+},
+{
+"blob": "372f64992d23f623f06aab29ddef333e4683112f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_frozen_number_ledger.py"
+},
+{
+"blob": "9002b2b5c6be575462629352a45c4fed8565fdd4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_frozen_rerun_audit.py"
+},
+{
+"blob": "774c9872009c482c6017e7fd51a8e1d01fa0a0c7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_frozen_stirling_greedy.py"
+},
+{
+"blob": "4853d12d68673d125d3f0945e88cadcf06985380",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_functional_load_arabic.py"
+},
+{
+"blob": "fb08b4d58bf9dbe50fd47837eeaacb5567bc390f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_gemination_ceiling.py"
+},
+{
+"blob": "1fc5770091e3763377fcac22e803339363031a53",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_generation_report_audit.py"
+},
+{
+"blob": "d310dce0876ddfed4d7bc25de9affb2deb975c13",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_gloss_authority_law.py"
+},
+{
+"blob": "b0fa07316f3cf4ff810b659806d9e13a94023aaa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_grapheme_positions.py"
+},
+{
+"blob": "c9f9a575d10eb7d10975c1e9b6c60618e3f26bcc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_harf_measurement.py"
+},
+{
+"blob": "78a551edcc73aad3b52bf10aaa6ec22fdf822044",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_harf_patch_registry.py"
+},
+{
+"blob": "e7d642a86952d3c6aa8dea94adfab517c1142fc0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_harf_preregistration.py"
+},
+{
+"blob": "166feff4f6dfadb560466570819fd6c070d6b1f5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_harf_rules_executed.py"
+},
+{
+"blob": "414247f1c3adcc9f493bbe11c97a1b323129c8c7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_harf_runner.py"
+},
+{
+"blob": "0274f59cad9bd75eac854518fcdd0b73972a9916",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_imtihan_runner.py"
+},
+{
+"blob": "e0266a0b2c58bf5ac6a931bfcc4d313b7e4b7129",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_imtina_preregistration.py"
+},
+{
+"blob": "8593bcd3c9bb467aafbf4aa128aea5d120f64648",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_inventory_criterion.py"
+},
+{
+"blob": "d85b02e13b2248e1d0addaef65353355aa5da534",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_inventory_floor.py"
+},
+{
+"blob": "12ddccf0efdb4fdb7421ed4d56c4ffc9e554c21e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_inversion_seal.py"
+},
+{
+"blob": "7b114dec5cae013796759e8aaa993810ce3b7000",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_iraab_table.py"
+},
+{
+"blob": "f5a6eecda58e9a5adb43021e92e7eaa87c3412e3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_irab_variable.py"
+},
+{
+"blob": "8140af1f36e38198c11ab525ff3d580b68daf413",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_isnad_column.py"
+},
+{
+"blob": "1248eb0be1fc15770cc45cb8867d11563c2f04a0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_isnad_examiners.py"
+},
+{
+"blob": "b17423daef8d0a9a7b111c4fcfeec92bb8b6e32e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_ittifaq_measured.py"
+},
+{
+"blob": "4f554abd133b3d2a3402ed84d1b90c3871a5e6b5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_ittifaq_runner.py"
+},
+{
+"blob": "7687cdbbdd335ada91a0c022437cbac92c3dc4b7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_izhar_mutlaq_preregistration.py"
+},
+{
+"blob": "02b9ceca5957ff30fd1d0c580a56027affec8761",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_javascript_fold.py"
+},
+{
+"blob": "371e19c85ff84d4aa228d02ebdbc17a39bab8adf",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_jisr_cartesian_closure.py"
+},
+{
+"blob": "49b5673fd942f2a788d7dfe7515783fa03dc8354",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_jisr_static_audit.py"
+},
+{
+"blob": "1984173a90909d5c51523d8252c0b8c7f9ae3fdb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_khabar_insha_audit.py"
+},
+{
+"blob": "4554129f30f75b799dbb974c9ca7c90419572224",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_khabar_insha_v2_audit.py"
+},
+{
+"blob": "675437dc5f7de9041b284ddc484303d5e191846c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_ladder.py"
+},
+{
+"blob": "f0d2d302ec9b38eaeaa1f20bae7aba34fc673e7a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_ladder_seal.py"
+},
+{
+"blob": "1e2d835e88a8e8edacb9d39a018010e02968f3d5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_lafz_maana_product.py"
+},
+{
+"blob": "730e0f1da3e35aa7d4779ee366442bc598f8b4b8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_letter_transition_census.py"
+},
+{
+"blob": "4f4b6adb17a981a30c0a39aba552aee4034be2bb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_logical_induction_audit.py"
+},
+{
+"blob": "b358ddb014b1c69c731d546d44d9cd6fb1e6ebe5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_lumping_loss.py"
+},
+{
+"blob": "7be0959a95c03ecd462fd0965a2ecd82ec8e4e4d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_maana_doors.py"
+},
+{
+"blob": "2706b982559ab5340aaca3be16b65fcffc2ec136",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_maqayis_measurement.py"
+},
+{
+"blob": "72d2aa5a68ec51d41e9169a15653d7b78da94e49",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_maqayis_preregistration.py"
+},
+{
+"blob": "950b2a48c7021ae8ad74e8c9e155dd5bf240f2c5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_marked_contrast_preregistration.py"
+},
+{
+"blob": "c5b46e11da6bb0edf7094a5e8bf328d350de21bf",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_markov_layers.py"
+},
+{
+"blob": "17e6060e74861dd0acd6ecf5b38970d5ef9145fd",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_masdar_two_source_audit.py"
+},
+{
+"blob": "86109cbed3d9ac2eedf0bc4057b2f6431ac1ebf6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_mealy_report_audit.py"
+},
+{
+"blob": "65250a2d98e1daeea9ee79cf87c9703347c6bcc7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_merge_cost_replication.py"
+},
+{
+"blob": "35604543af4324f5010ce17ae69c617e5184cf39",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_merge_information.py"
+},
+{
+"blob": "2ea0cab7bbde24dec3122638aef80cfa8680554f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_message_guard.py"
+},
+{
+"blob": "719b3bea2e2e9f0b199f06285d4fd8fdee66f0a0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_mizan_pans.py"
+},
+{
+"blob": "891ed23c108a86b792caa647811baa8b665cbea7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_module_map.py"
+},
+{
+"blob": "1d028d264bf2c43313eedeb036bc0c38a2feb898",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_nun_replication_preregistration.py"
+},
+{
+"blob": "a91710a99a59f97f33a0dc11eb7ab22683881a3f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_operator_closure.py"
+},
+{
+"blob": "d92edcfa00919bf0a4ced75efc30f3fdae8abe2f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_package_self_audit.py"
+},
+{
+"blob": "4a7a327bc384fa18cc2ff84cdb1662868b70a548",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_pan_difference_preregistration.py"
+},
+{
+"blob": "07fcb1181b9ee38ce4fb4be596e157f31a3605a2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_partial_match.py"
+},
+{
+"blob": "5d7271c4bdfa72569e6f96dd28828646be543e57",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_port_provenance.py"
+},
+{
+"blob": "fa01af08135b9c7c76c52a428042a14cf75f22d2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_provenance.py"
+},
+{
+"blob": "2d968ed5f11a3404ed5c4c849bcc525ed283a3ce",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_qac_join_closure.py"
+},
+{
+"blob": "fd3295fac37332e2aa517129ee9b0442f0d81b63",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_reach_audit.py"
+},
+{
+"blob": "25cd63105895bd4c3261440f2895098b30644b66",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_reconciliation.py"
+},
+{
+"blob": "a3efbb33dad17efd1f4ec2e5f01b3ad22808ca93",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_reference_closure_audit.py"
+},
+{
+"blob": "6f3a5559571263d21f33ed7411fe5ac69783f6de",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_registry_census.py"
+},
+{
+"blob": "62ad80701cf876105dedb65aec114ddb0acf3a28",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_rejection_matched_preregistration.py"
+},
+{
+"blob": "466a6781da6c3e64a1fcb807b4af6e1ef4ab7b1c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_repository_coherence.py"
+},
+{
+"blob": "ffb359d2888e7bd6e61c011b0631f0207c0217f4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_results.py"
+},
+{
+"blob": "b1072b0d11658133c38217f43acd36219741e029",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_results_library.py"
+},
+{
+"blob": "604cb912eb85d164f78531cf46c9cb2cf40fa846",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_root_is_certified.py"
+},
+{
+"blob": "fd0b09c28a448bc48a721f1413320ede599f8a8e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_rules_adoption.py"
+},
+{
+"blob": "0d856c6cff5b8c5b11d2acad30c3364f40f56eb4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_schema_audit_spec.py"
+},
+{
+"blob": "08907cb5b204cc8c642ae25ff804cde9f92ef1b7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_schema_transition_preregistration.py"
+},
+{
+"blob": "141772b6abc1880bdc35c188cfa58df2e933be4d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_script_guard.py"
+},
+{
+"blob": "f2fe663169d01ab2ca0721e8146d0c6f868f52c6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_seal_chain.py"
+},
+{
+"blob": "92ed8f1e012123aaa914ab4ceb997ddcb42b66e3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_seal_index.py"
+},
+{
+"blob": "910736c378b950bd0e4b99da3bcce02e466fd555",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_sealed_conditions_audit.py"
+},
+{
+"blob": "c2024ea920fafb50f8771e5144a772cf0f3ac869",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_second_construction_audit.py"
+},
+{
+"blob": "e2ab18c8a34a91dca81fcac3589a6f3b1b5a12de",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_selection.py"
+},
+{
+"blob": "57b4166fdfaffb3bb9a2eb81213bdd361bc3a8d6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_separation.py"
+},
+{
+"blob": "f5e506682d70d7c4b2549c1c76f78355b79413a6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_shahid_audit.py"
+},
+{
+"blob": "5a97b42d97f031efcc0cbe240ef41541f57ce321",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_shahid_preregistration.py"
+},
+{
+"blob": "1608349b32a1646d64b49a2f169019891a16f2ee",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_shahid_runner.py"
+},
+{
+"blob": "75ea1dc0aed36f8d225a72d99e6d46c89bf06ab6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_shahid_survey.py"
+},
+{
+"blob": "618997e4f76b1b3135e6f73fa74a81a0bb633121",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_signified.py"
+},
+{
+"blob": "816915ba4f23ecd8f777e6e971dc9cf91c517aaa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_simplicial.py"
+},
+{
+"blob": "72a1254ebae169f2e5d45f4cdd4a5a71d3c68e9d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_stipulation.py"
+},
+{
+"blob": "245edd89b26d1fe3787ec4f0d7a846fee72b6bf1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_stirling.py"
+},
+{
+"blob": "c9d661e1b19eaf8f970c8fe76f43df45aa2f92d1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_substrate_convergence.py"
+},
+{
+"blob": "20a0a8138e555343050fd11634992ce05f7a01c9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_tanafur_preregistration.py"
+},
+{
+"blob": "766b93803c73280e9f3f59665fbb49e5e447173f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_tarib_census_preregistration.py"
+},
+{
+"blob": "1ef11270ad6e9abfb7730fc6b4782b68da8b7add",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_tarib_denominator.py"
+},
+{
+"blob": "8ab6965c960364bdda6cf957eb8b3e0430509b59",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_tarib_gradient.py"
+},
+{
+"blob": "64266b8e8fbce7ab275e13d492d7ed8db7a2e01c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_tarib_placement.py"
+},
+{
+"blob": "443882e6bbea798b53041b746cba96bf607f742d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_tarib_preregistration.py"
+},
+{
+"blob": "03ce170e38b7fed916c87eddbc6fe4157c7c248d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_third_version_audit.py"
+},
+{
+"blob": "b4a8689f9bea1c4eb8d6140742f2e4a975de5c92",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_vacancy_kinds.py"
+},
+{
+"blob": "f61f9195700fddbb6359db818ff0fd1310563c92",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_vn_weak_root_closure.py"
+},
+{
+"blob": "167a90a472616372e58da077a0845fdf4f3a4ec6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_vowel_position_arbitration.py"
+},
+{
+"blob": "483a582a6e3203d1627f27b0a7f4068a32dd9ef4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_wadaa_relations.py"
+},
+{
+"blob": "2bcca23dba69854cfb93f1c1ba09f6df8b2195b0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_wazn_table_audit.py"
+},
+{
+"blob": "c55ebc8aff4bdb9c423ffca75748653e4508eee0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/algebra/test_witness.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/arabic/.gitkeep"
+},
+{
+"blob": "73e62871b8e4ae540a7150a5fac4673dca19ed48",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/conftest.py"
+},
+{
+"blob": "afc3b58d2a5663f790d46f0a8c0b952e4eb78df8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/frozen_corpus.py"
+},
+{
+"blob": "4a18f34c01946c0e3b2d32cdc9e96321f4baff53",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_absorption_detector_critique.py"
+},
+{
+"blob": "3a715e3dc09afe5bb2f7434b08ca09ffea9e6e77",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_algebraic_ascent_run.py"
+},
+{
+"blob": "93090b8bff4abed3fb661639538982c5f8fac711",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_algebraic_ascent_seal.py"
+},
+{
+"blob": "c1c8f07e65ccb3c7e4c0464c21b2042a56593919",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_arabic_token_run.py"
+},
+{
+"blob": "7c394031201fdbc0ba8d0ab5a7b110945b697a14",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_arabic_token_seal.py"
+},
+{
+"blob": "cf1a77c94b959286e91d8ebc53ae1506ab9cb0c0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_atom_coding_ledger.py"
+},
+{
+"blob": "c02f97d8062fd6da2f708df2edb37880f33345ac",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_awzan_proof_audit.py"
+},
+{
+"blob": "2f387847a2b7a70376505ef1839676f087fb4696",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_basmala_lifted_run.py"
+},
+{
+"blob": "3c790a07aea6894966ec1e435050d0f28cdb880f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_basmala_lifted_seal.py"
+},
+{
+"blob": "6008e09ac1900ae8bc9ffbb2c7ab926346ccade5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_candidate_group_coherence.py"
+},
+{
+"blob": "989f60ad5ebfcfcff078b8e1ff81725cf9c6e37d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_chapter_seventy_four_audit.py"
+},
+{
+"blob": "6aafe743e32e7965101d8e4af1fa415db3126932",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_closure_identifiability.py"
+},
+{
+"blob": "fddd1d9884a2fce90aa99ab0d6a8419646d2c8ca",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_closure_window_reduction.py"
+},
+{
+"blob": "9d434dbd3c942f6a4771aae5676f580cb5c8a9e8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_composition_closure_replication.py"
+},
+{
+"blob": "2ffc1d19e4c374a5a515cbbb0725ea187b18f391",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_context_depth_run.py"
+},
+{
+"blob": "d7ab04aa4f51b074b822b4513978a70bb6bec0ea",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_context_depth_seal.py"
+},
+{
+"blob": "643347964a79618dc9a004988f8eccf66fbd2064",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_context_ladder_run.py"
+},
+{
+"blob": "402afd302c4be654eb109ef7d5dc8144dc423e7a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_context_ladder_seal.py"
+},
+{
+"blob": "16453034b6fb72d1852cbdd9031e21b1f811c40b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_corpus_seal.py"
+},
+{
+"blob": "e34fb8b8e378d57179e2a11caef4567c3c7f2e8f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_crossing_census_run.py"
+},
+{
+"blob": "204db4c2877d6ed7c0405add051130ee1cc6bd44",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_crossing_census_seal.py"
+},
+{
+"blob": "ebdbbe40c5b63fa05243e5839ec68bf0596f1aff",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_cv_peel_run.py"
+},
+{
+"blob": "7e630a7b1ad219cac51cbe389be896907e599d43",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_decision_register.py"
+},
+{
+"blob": "51bcf69f682b648d19f17161e20e96e00b676570",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_deletion_witness_run.py"
+},
+{
+"blob": "282de04e73e6361297b210c3baec05192aa792c7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_deletion_witness_seal.py"
+},
+{
+"blob": "eb2004f47f40ae59563319fa27ea0dbe73e60fac",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_discovered_ascent_run.py"
+},
+{
+"blob": "0c1c0a54e8244ddf855ea0dbfe047f5dcbde524e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_discovered_ascent_seal.py"
+},
+{
+"blob": "6679f4ea274cc26b57bda5a8541535e7f7f22899",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_edge_state_algebra.py"
+},
+{
+"blob": "c9ee49cb09ca01414cbeca643891113b93f38f8a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_encoding_audit_run.py"
+},
+{
+"blob": "7ae16b74550be97e766c9bf61c0daa06825defc6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_fatiha_transitions.py"
+},
+{
+"blob": "b03ad1e94beb9ee6c085a27daf890b9fc75af6b3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_fifth_version_audit.py"
+},
+{
+"blob": "381d0f738535335c4b9283b7fa8f8d4aeed0202e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_five_way_identifiability.py"
+},
+{
+"blob": "136665110c13fdcc29e387f9fe0824b56099f229",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_frequency_matched_run.py"
+},
+{
+"blob": "f7c5747aa7fd69f8381fd9bc26049ac1928c64e5",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_frozen_corpus_run.py"
+},
+{
+"blob": "3f6718bc15e146e1b2e1918ba47ff24bec22773f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_greedy_algebra_run.py"
+},
+{
+"blob": "215b2c11acff1c6c6eb64d9216aa188fe5fbd599",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_greedy_algebra_seal.py"
+},
+{
+"blob": "60c56051a5792e736bf3b12c283a809262f9e1e4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_greedy_licence_run.py"
+},
+{
+"blob": "d82de8780e8510fdef2d894e0809b6fcdae55420",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_greedy_licence_seal.py"
+},
+{
+"blob": "d6cc8ff9ac6a4eccccaf54a1ff2fecba9968d7cb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_heldout_ladder_run.py"
+},
+{
+"blob": "bbb81fd516c58eaeff91ecf41df3705eacadfaf2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_heldout_ladder_seal.py"
+},
+{
+"blob": "c50b4412fb08aef17fd3d22a52f95d3637d37df8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_huffman_ascent_run.py"
+},
+{
+"blob": "008ec4433a3a2f383e0bc1fb97e14869a1c5430d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_huffman_ascent_seal.py"
+},
+{
+"blob": "8a9cb7e6870f5e95d4da4ef2f1a9166396d47b4d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_ingestion_swallows.py"
+},
+{
+"blob": "97e487737b52690ff33c4e097531272d26896604",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_interaction_complex_lemmas.py"
+},
+{
+"blob": "84a9b48d153bb6e2ff9aa3560dabf61094ab64ec",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_ladder_map_deposit.py"
+},
+{
+"blob": "e6b090e915af198928968b5c762cf50c85bcf763",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_layer_induction_run.py"
+},
+{
+"blob": "04e6ef35e9dd38fd5ecfb562d569601289e0e41b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_layer_licence_run.py"
+},
+{
+"blob": "7d548fbf839c046a78e0c8dc95b136ccdfe4fb2d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_layer_licence_seal.py"
+},
+{
+"blob": "8cda89c0f25d1033ec3bc2fb2a2f268efe208c3c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_letter_identity_bit_codec.py"
+},
+{
+"blob": "87a29323969359798ad28aab4080e76e3064c32a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_lifted_bit_run.py"
+},
+{
+"blob": "8374fdbaa5ca8a94a4000815af6a7b7029b5d8ef",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_lifted_bit_seal.py"
+},
+{
+"blob": "b5a910d720b3846006e15998541d81585b0ecde8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_long_range_decay.py"
+},
+{
+"blob": "67294db66e988b50b61f24927b2e337575544847",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_makhraj_bit_decoder.py"
+},
+{
+"blob": "55c7655a1bd3327ae997fc5f9246c597c7866904",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_makhraj_haraka_bit_decoder.py"
+},
+{
+"blob": "5e3e902a81677c73293f317fb24631fdbc72c8f7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_marked_contrast_run.py"
+},
+{
+"blob": "bfa89b89d3d88005a676dfd0ed038297437791c6",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_marking_contrast_run.py"
+},
+{
+"blob": "b8c9e46d9785196bd689213063a434ea7357e917",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_marking_contrast_seal.py"
+},
+{
+"blob": "d584d20aec19aa2fc78a028a74c0c8720e5ed672",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_markov_ladder_run.py"
+},
+{
+"blob": "eb26eb79f2b1513fee7f1be0c600c7ffe30ecee9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_markov_ladder_seal.py"
+},
+{
+"blob": "98f3f99ab36a68695b9da69802b7c4725c60336e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_markov_order_run.py"
+},
+{
+"blob": "aa4e9fe5a5e7c34788bc004ef9b0950a195f2089",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_markov_order_seal.py"
+},
+{
+"blob": "b3fd9c3e2ffc37efdffee318e84439e6a675c6c1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_measured_ranking_run.py"
+},
+{
+"blob": "dec05c88ed0e7f87b378a28dd5e226bffd4b834f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_measured_ranking_seal.py"
+},
+{
+"blob": "fa8a9c4200f92abfd9932699fe1f006155346c53",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_minimal_complete_slot_comparison.py"
+},
+{
+"blob": "e5c265c6c68e18bea652aa769a81c4327fefcdad",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_mirror_survey_reproduction.py"
+},
+{
+"blob": "69a03de7ecc89adee236aa67bcaf1e64b1ec9233",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_morph_residue_run.py"
+},
+{
+"blob": "8ee6d600204ce2b5f64d4d2f839bf5dd76e2b40a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_morph_residue_seal.py"
+},
+{
+"blob": "043ef3ea2157a88674c81232bbab84cc79061711",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_movement_workbook_crosscheck.py"
+},
+{
+"blob": "f9eb97d96b0589af123c21ce86e00180c5f9b6a3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_naqis_witness_run.py"
+},
+{
+"blob": "b5b5dca5297bd8903175eddd6779da9fe6f77079",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_naqis_witness_seal.py"
+},
+{
+"blob": "c97273d04290c6022ea2b38a578084824e41fd10",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_nasib_particle_run.py"
+},
+{
+"blob": "23a2382a1bade33daf46a76062d84500a2622d2c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_nasib_particle_seal.py"
+},
+{
+"blob": "d75b99db0bb5a046a7d6cb0278f28c81e9a49916",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_neutral_witness_run.py"
+},
+{
+"blob": "6b8c0153a97a72a1f99936387193165e4eeb8072",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_neutral_witness_seal.py"
+},
+{
+"blob": "32e1a26cdb924fa38f4f5ff0de2ae01480d31b9b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_orthography_bridge_audit.py"
+},
+{
+"blob": "d9e7425242bff147dff1d76ba643b860dce685ce",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_pan_difference_run.py"
+},
+{
+"blob": "ab765b433d232aef6600fdc4de9439b704839f61",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_pausal_split_run.py"
+},
+{
+"blob": "c509e194ebff6f43f40415bab11d0a86dafb3840",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_pausal_split_seal.py"
+},
+{
+"blob": "57444c525e3f64df087ef76d9465d0598dfb5c0c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_phonetic_atom_audit.py"
+},
+{
+"blob": "3a4529ec315f12a61dd550b9124129619177ca70",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_praise_blame_run.py"
+},
+{
+"blob": "feb94e583956a52911303732e7307699de8ac53e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_praise_blame_seal.py"
+},
+{
+"blob": "0d9a99b09dc3e33fa05c5dce236efe12e97621a0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_pre_articulatory_preregistration.py"
+},
+{
+"blob": "5b8ce91f44b68b1f6b049d2187aabcda0efd0397",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_reading_identification.py"
+},
+{
+"blob": "8cc92bf0b7b5b31bfb0e687c340cd8c83a0960ba",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_recovery_proof_audit.py"
+},
+{
+"blob": "45e3fc94397b5afbef1af243322e0675e81bd2a7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_rejection_matched_run.py"
+},
+{
+"blob": "19fbdd4a71301f8d994165a1376e38b905cd03ab",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_residue_derivation_run.py"
+},
+{
+"blob": "076416b56ca42e300b577840181c4ece08fb6eb9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_residue_derivation_seal.py"
+},
+{
+"blob": "9bb16ec3e6bee0e63eefe3272010738b2aae9f39",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_root_projection_run.py"
+},
+{
+"blob": "5121dcef1d74fa3755da8879dc66782d597f1171",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_root_table_gates_are_declared.py"
+},
+{
+"blob": "5a705f7b524ee33ab97a82d8b79182fe01e8e889",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_schema_transition_run.py"
+},
+{
+"blob": "b08205c0e53564856f60eb540868eee9f57377fa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_script_floor_run.py"
+},
+{
+"blob": "89bb40a7394c6ebea4156e4940e049f6cd7c84fa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_script_floor_seal.py"
+},
+{
+"blob": "56f826e2565bff63c858a8e94587dc7386e2bceb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_sealed_nun_runs.py"
+},
+{
+"blob": "6a29104eead6b15f33a5a04740c4bbf9f3890710",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_separation_rule_run.py"
+},
+{
+"blob": "e5c1109300499c1c280ba2094b7e99742ce99ec9",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_separation_rule_seal.py"
+},
+{
+"blob": "c4358ca84008c53d6946b6dc2c5648e7c0841e3c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_seventh_version_audit.py"
+},
+{
+"blob": "a900e8182142f1a25037010a485c20c19d02c556",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_sifa_table_deposit.py"
+},
+{
+"blob": "ce6fe31f13fc7a94c677f107d71d9238b2d70ac8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_sixth_version_audit.py"
+},
+{
+"blob": "518e132692898bf54f9d21d14c42010c2f9fec8c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_slgae_deposit.py"
+},
+{
+"blob": "160cc020a70b80d9690068aa065dd26fc86befe4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_slgae_fourth_version_deposit.py"
+},
+{
+"blob": "3bcb1deae8cdca3e855178a65bdaf251419d85d2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_slgae_second_version_deposit.py"
+},
+{
+"blob": "960d22a1c93221b675f8513e6c8183a344eebef3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_slgae_third_version_deposit.py"
+},
+{
+"blob": "bfe41465e2070d7445c608f2041f6862386e5787",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_slot_rights_algebra.py"
+},
+{
+"blob": "1fb3cfa0862aaeeaf5484b62307a73fe5e211034",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_state_cycle_run.py"
+},
+{
+"blob": "6e8d18e3873a7b8e38f4b73ad82a7138d832840c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_state_cycle_seal.py"
+},
+{
+"blob": "20336785f60a956dad2373112be1d192d53ad4fc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_stirling_greedy_run.py"
+},
+{
+"blob": "0865dfc5408f60712d9c3c87d96a8a4f95f6b863",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_stirling_greedy_seal.py"
+},
+{
+"blob": "9c5ad7939329d0575b62d67b6b31567254a1b913",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_surah_index_run.py"
+},
+{
+"blob": "1dbddfbf2b5c26a2c7aaddcb282f3f4b171e8174",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_surah_index_seal.py"
+},
+{
+"blob": "0df86a716faa1b221f48222d79f24d753fbf6eef",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_table_consequence_run.py"
+},
+{
+"blob": "e50027fdf33c47b97370db4278f57c76221ab935",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_table_consequence_seal.py"
+},
+{
+"blob": "779c67f7170783def42709b02aca05e670c798f2",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_tanafur_parallel_run.py"
+},
+{
+"blob": "364e502aa4387ccd956eb03a0072f3adf5e9572b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_temporary_marking_run.py"
+},
+{
+"blob": "b14b35fd8688f798401b83e0bc748d76c61f77d1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_temporary_marking_seal.py"
+},
+{
+"blob": "0181bd57924284a74d9498e374907a8e2e08845c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_three_slot_thesis_audit.py"
+},
+{
+"blob": "9389b3f46e695e75e90183b0c98dada7af32dff4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_transfer_arrow_run.py"
+},
+{
+"blob": "f621a67b0efbb986339fdc851234032190c61a87",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_transfer_arrow_seal.py"
+},
+{
+"blob": "f99068a6e1b88ef584b545b5a7f91e80cbb456a0",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_triangle_licensing_preregistration.py"
+},
+{
+"blob": "d747b23e288b2265295eb0766f96abfb913c678e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_verse_ending_run.py"
+},
+{
+"blob": "7cb8937cef5738244eccbbd013e0b2464151a5f3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_verse_ending_seal.py"
+},
+{
+"blob": "640dfae3bee73852c6601d27e5bcc21c193b089a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_vowel_ladder_run.py"
+},
+{
+"blob": "6540f399cc36fb924f83e6ad404fa0e57f1c9df8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_vowel_ladder_seal.py"
+},
+{
+"blob": "33e75cd46ccc09b880329a644c6f157120a37db4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_word_escalation_run.py"
+},
+{
+"blob": "fb8332fae84de8cc43c873741215bb1fcb4f50de",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_word_escalation_seal.py"
+},
+{
+"blob": "b7709f46ab48dd06df66021f281fd0e786c1104d",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/arabic/test_word_schema_falsification.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/capability/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/encyclopedia/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/encyclopedia/self_observation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/evaluation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/evaluation/readers/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/evaluation_execution/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/execution/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/execution/fixtures/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/fractal_experiment/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/fractal_generation/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/generation/.gitkeep"
+},
+{
+"blob": "b6aef808bed941623f33428a61183f0ed0cba1fd",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tests/hawk_dove/test_game.py"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/kernel/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/linguistic/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/metaalgebra/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/ontology/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/prior/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/prior_fiber/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/program/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/realization/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/structural_bridge/.gitkeep"
+},
+{
+"blob": "e69de29bb2d1d6434b8b29ae775ad8c2e48c5391",
+"class": "فارغ",
+"origin": "",
+"path": "suspended/tests/structural_dal/.gitkeep"
+},
+{
+"blob": "e6e07b689350bf0dc2d72c82e717faa7000bcc3c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/bridge_signature.py"
+},
+{
+"blob": "9e28a46310308bb1866302c73a65f80b21058d10",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/context_ladder_seal.py"
+},
+{
+"blob": "8dd5e9ed9986eb3dbee46b47bf316a57a52cc621",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/corpus_seal.py"
+},
+{
+"blob": "a824db77a65d0d0ce076fda95e2e295d84b7bc69",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/foreign_ledger_seal.py"
+},
+{
+"blob": "b328820d1caa8bb7cf6c8c5aa7266dc29469a560",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/hasr_ledger_seal.py"
+},
+{
+"blob": "2accf19e6316974f6bbac6758677d0670e5ef9c8",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "suspended/tools/intake_corpus.py"
+},
+{
+"blob": "4415adf1ba5cb1ada0beace15b7b800854925170",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/inversion_seal.py"
+},
+{
+"blob": "ee25c2f26e572b3e8204144c279db3b5483e302c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/ladder_seal.py"
+},
+{
+"blob": "a2c64bd253de09a486f6c4d24694e54d54e9e64e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/message_guard.py"
+},
+{
+"blob": "28cc28688835dfed9cfffa7b36e93f4f7ed26a83",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/number_ledger_seal.py"
+},
+{
+"blob": "a6ffb9dceb96b361b19cc7830aa2049d6bbceaeb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/pr45_signature.py"
+},
+{
+"blob": "d2260145b5f1bcd96b9d1d2d370809fe8f9707a4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/rerun_audit.py"
+},
+{
+"blob": "2522a870e472a6f5c42421a12145dfe273467402",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/rerun_audit_seal.py"
+},
+{
+"blob": "3e8b4c8765f83b1b8c0c93088bc0c88aa5744fff",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/root_certificate.py"
+},
+{
+"blob": "dff7f251045b7d0a44075ff578faa5f844c6b01e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/rules_adoption.py"
+},
+{
+"blob": "d0ccb3c50f50f106ccef7a7d36a5ccfe4481c17b",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/seal_chain.py"
+},
+{
+"blob": "5f04b036d67b07689f7ba6f74f8849d75c5d5f73",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/stirling_greedy_seal.py"
+},
+{
+"blob": "c14d30daf1fa85d3ff719244f3e5c9afb99bdaa4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/verify.sh"
+},
+{
+"blob": "8f703cfe16f685a9d504b1e84833ac885abcb825",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_algebra_paper.py"
+},
+{
+"blob": "740af4ec74fd1958823e9f77ea4d6cb3a4407a70",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_bit_bridge.py"
+},
+{
+"blob": "b159482e40df3065ef225051a4789198c41b518a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_bits_primer.py"
+},
+{
+"blob": "862e540d7224f7012c89ccdce94017568d28c2fb",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_bridge_tables.py"
+},
+{
+"blob": "d1a1b4ad256554ddc35625db421421a80008fe64",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_constitution.py"
+},
+{
+"blob": "4671552c41a054e4267fc595002db9bb8d98731f",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_context_ladder_paper.py"
+},
+{
+"blob": "c34789c219b695c5d1c3502630127785945722a7",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_entry.py"
+},
+{
+"blob": "bb21467ec8bbcad36519da1641ad1d2f89be604a",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_folding_paper.py"
+},
+{
+"blob": "5022ad61da281b16887f956442d02b65b6125c56",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_foreign_ledger_paper.py"
+},
+{
+"blob": "71bc02ec7a997f5579b94e3cf3a1163fe2bfdc33",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_hasr_paper.py"
+},
+{
+"blob": "5a51824d8df5ab6414c2c8679c286835d7e964c3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_inversion_paper.py"
+},
+{
+"blob": "16829b3246a6fadcf2897885f601cde74a1fe1aa",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_ladder_paper.py"
+},
+{
+"blob": "119b70160b1dcf0b15edcdd50becc077feb291b1",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_licence_paper.py"
+},
+{
+"blob": "a28261591c4af5e9198b0a7f4b366c74d7bc6b5c",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_lifted_paper.py"
+},
+{
+"blob": "188ddb233bbedaa55bc60bfc01c34131001033f8",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_module_map.py"
+},
+{
+"blob": "c958ddb92159e22fbb4a666e6600d8bf515c496e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_number_ladder_paper.py"
+},
+{
+"blob": "3fb4db0b98747d8d112126c2bc785d3c0981d801",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_praise_blame_paper.py"
+},
+{
+"blob": "92fa4417d5968750422fcee0ce6f41b1e1887417",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_reach_audit.py"
+},
+{
+"blob": "3ab101749ff9c7e19bdd5d764fd746ad72ee779e",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_root.py"
+},
+{
+"blob": "f390fb1bc4190bd14def915c0f555d72bed74dcf",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_rules_adoption.py"
+},
+{
+"blob": "964cefc0dbfd267dc22b160e9a4bc6a3d7e20467",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_seal_chain_paper.py"
+},
+{
+"blob": "b2d055b94310b162de1bc29c9b0a3bd74b3065b3",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_seal_index.py"
+},
+{
+"blob": "2ae614453b680fcabaa5e398df5179b99a716cb4",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_state_cycle_paper.py"
+},
+{
+"blob": "7469da6e7a59b43714231e3e9cfec5143a8ba1bc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_stirling_paper.py"
+},
+{
+"blob": "4fe75d080e2a4741a2f287319cfd1e065e94d7dc",
+"class": "معلق",
+"origin": "",
+"path": "suspended/tools/write_transfer_arrow_paper.py"
+},
+{
+"blob": "1bb5f04e2dc804cf8a54dab4056c41ae64c87edf",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "tests/test_guard.py"
+},
+{
+"blob": "c3bf5c8e64ded24d2eb48666e7d522ed813392a2",
+"class": "بقية",
+"origin": "",
+"path": "tests/test_tree.py"
+},
+{
+"blob": "b2349e9d76aa03de80524eca1c5c001f6b292d07",
+"class": "مختلف_عن_الغانم",
+"origin": "alghanem",
+"path": "tools/gen_registry.py"
+},
+{
+"blob": "9bfe65bd1ad81e9e2a297e637f52e67459c4551e",
+"class": "بقية",
+"origin": "",
+"path": "tools/gen_tree_index.py"
+},
+{
+"blob": "a4186e315249fa85887cf1fb145f76dc40fca22d",
+"class": "بقية",
+"origin": "",
+"path": "tools/guard.py"
+},
+{
+"blob": "709f351cdc263e6115752a39dea4ee6d8c1c63b4",
+"class": "بقية",
+"origin": "",
+"path": "web/fold.js"
+},
+{
+"blob": "4f6f3fe80bd36e6ecad063031da3926a6d0deb0c",
+"class": "بقية",
+"origin": "",
+"path": "web/harness.mjs"
+},
+{
+"blob": "5bfaf58a8cb1ffaf051043a2a8931f32f12cf1ab",
+"class": "بقية",
+"origin": "",
+"path": "web/index.html"
+},
+{
+"blob": "cb38363afa7f3b08011d5e78a6c8e42c94a0eba4",
+"class": "بقية",
+"origin": "",
+"path": "web/page.js"
+},
+{
+"blob": "2da555c36c5a36f9325badb1c9ec8802909633ee",
+"class": "بقية",
+"origin": "",
+"path": "web/style.css"
+}
+],
+"total": 650
+}

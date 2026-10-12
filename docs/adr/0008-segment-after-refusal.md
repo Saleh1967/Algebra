@@ -26,4 +26,4 @@
 * الدماغ: `Harf.Tazamun` و`HarfBridge.Tazamun`.
 
 **ما بقي باسمه.** أنّ المودَع يقطع السطر عند كلّ رفضٍ هو قراءةٌ للمولِّد لا برهان. والفحصُ عليه في الغانم
-(`test_context_deposit_shapes.py`، ADR ٣٧ هناك).
+(`test_context_deposit_shapes.py`، ADR ٣٨ هناك).

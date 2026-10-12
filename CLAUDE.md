@@ -217,6 +217,8 @@
 
 - (2026-10-12، ADR ٥) **السطرُ قرانُ أزواجه** إن بدأت كلُّ كلمةٍ بعد الأولى بمتحرّك (`line_eq_pairwise`، والشرطُ لازم: `pairwise_needs_vowel_start`) — سدُّ `LINE_VS_PAIRWISE_JOIN_UNPROVEN` في الغانم؛ و**الكلمةُ الفارغةُ محايدُ السطر**: في الغانم تُسقط فحصَ الحدّ (`empty_word_smuggles_straddle`)، والتكافؤُ بعد حذفها لكلّ سطر (`lineN_eq_strictLineN`).
 
+- (2026-10-12، ADR ٦) **مودَعُ السياق هو السطرُ المصلَح وشرطُ الخام**: `deposit_eq_line` وصلًا، و`deposit_eq_line_pause` وآخرُ السطر وقفٌ كما يُولَّد المودَع؛ المودَعُ = `strictLinePauseB` على الكلمات مصلَحةً، وصورةُ ابتداء الأولى، وكلُّ كلمةٍ خامٍ بعد «بَ»، بشروطٍ مسمّاة (`okLen`، `freeA`، `StartFormA`)؛ والشرطان لازمان (`deposit_needs_raw`، `deposit_needs_free`) — سدُّ `CONTEXT_DEPOSIT_VS_PAIRS_UNPROVEN` في الغانم.
+
 ## قبل أن تقول «تمّ»
 
 ```sh

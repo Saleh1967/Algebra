@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-EXEMPT_DIRS = ("suspended", "tests", ".git", "__pycache__", ".pytest_cache")
+EXEMPT_DIRS = ("suspended", "tests", ".git", "__pycache__", ".pytest_cache", ".lake")  # .lake: بناءُ Lean المحلّيّ (ADR ٣)
 # الأخير: يقرأ من git أسماءً وبصماتٍ لا نصًّا (ADR ٢)
 EXEMPT_FILES = ("tools/gen_registry.py", "tools/guard.py", "tools/gen_tree_index.py")
 IO_ATTRS = frozenset(

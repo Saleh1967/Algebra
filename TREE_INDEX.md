@@ -2,24 +2,24 @@
 
 مولَّدٌ بـ`python3 tools/gen_tree_index.py`؛ لا يُحرَّر باليد، و`--check` في CI يطابقه (ADR ٢). الغانم مثبَّتٌ بإيداعه `5d769d19c4f40725c7595fc9e3c7aa0a0a81b6d6` (`deposits/alghanem-tree.json`). لا يُقرأ نصّ: أسماءٌ وبصماتٌ من git فقط.
 
-**650 ملفًّا، 579 بصمةً متميّزة؛ القسمةُ تامّة: كلُّ ملفٍّ في صنفٍ واحد.**
+**663 ملفًّا، 592 بصمةً متميّزة؛ القسمةُ تامّة: كلُّ ملفٍّ في صنفٍ واحد.**
 
 | الصنف | العدد | النسبة |
 |---|---|---|
-| `فارغ` | 72 | 11.1% |
-| `مطابق_للغانم` | 16 | 2.5% |
+| `فارغ` | 72 | 10.9% |
+| `مطابق_للغانم` | 17 | 2.6% |
 | `مكرر_داخلي` | 0 | 0.0% |
-| `مختلف_عن_الغانم` | 14 | 2.2% |
-| `معلق` | 428 | 65.8% |
-| `بقية` | 120 | 18.5% |
+| `مختلف_عن_الغانم` | 14 | 2.1% |
+| `معلق` | 428 | 64.6% |
+| `بقية` | 132 | 19.9% |
 
 ## الأصنافُ بالمجلّد الأعلى
 
 - `فارغ`: `suspended` 49، `examples` 15، `case_data` 5، `corpora` 1، `fonts` 1، `gloss_data` 1
-- `مطابق_للغانم`: `suspended` 14، `LICENSE` 1، `quran-simple-enhanced.txt` 1
+- `مطابق_للغانم`: `suspended` 14، `LICENSE` 1، `formal` 1، `quran-simple-enhanced.txt` 1
 - `مختلف_عن_الغانم`: `suspended` 6، `.gitignore` 1، `CLAUDE.md` 1، `README.md` 1، `SUSPENDED_REGISTRY.json` 1، `docs` 1، `pyproject.toml` 1، `tests` 1، `tools` 1
 - `معلق`: `suspended` 428
-- `بقية`: `deposits` 73، `docs` 35، `web` 5، `tools` 2، `.claude` 1، `.github` 1، `gflk-ocp-markov-adhlaqi-2026-09-4.md` 1، `src` 1، `tests` 1
+- `بقية`: `deposits` 73، `docs` 36، `formal` 10، `web` 5، `tests` 2، `tools` 2، `.claude` 1، `.github` 1، `gflk-ocp-markov-adhlaqi-2026-09-4.md` 1، `src` 1
 
 ## ما يقوله الرقم — باسمه
 

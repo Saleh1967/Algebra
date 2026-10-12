@@ -1,0 +1,16 @@
+name = "harf"
+version = "0.1.0"
+defaultTargets = ["Harf", "HarfBridge"]
+
+# الجسرُ وحدَه يقرأ نواةَ الغانم؛ `Harf` لا يستوردها (tests/test_harf_independent.py).
+[[require]]
+name = "a116"
+git = "https://github.com/Saleh1967/Alghanem.git"
+rev = "df76f395369c5f7b32aca240734c8665e965f114"
+subDir = "formal/a116"
+
+[[lean_lib]]
+name = "Harf"
+
+[[lean_lib]]
+name = "HarfBridge"

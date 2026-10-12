@@ -20,3 +20,35 @@ jobs:
       - name: الشجرةُ المرخَّصة مطابقةٌ للشجرة (ADR ٢)
         run: python3 tools/gen_tree_index.py --check
       - run: pip install pytest && python3 -m pytest tests/ -q
+
+  lean:
+    # شاهدٌ مستقلّ (ADR ٣): `Harf` بتعريفات Algebra بلا استيرادٍ من A116، والجسرُ يبرهن تكافؤَه مع قيد الحدّ
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: formal
+    steps:
+      - uses: actions/checkout@v4
+      - name: install elan (toolchain pinned by formal/lean-toolchain)
+        run: |
+          curl -sSfL https://raw.githubusercontent.com/leanprover/elan/master/elan-init.sh \
+            | sh -s -- -y --default-toolchain none
+          echo "$HOME/.elan/bin" >> "$GITHUB_PATH"
+      - name: kernel checks every theorem, no warning swallowed
+        run: |
+          set -euo pipefail
+          lake build 2>&1 | tee build.log
+          if grep -n "warning" build.log; then echo "::error::تحذيرٌ في البناء"; exit 1; fi
+      - name: no sorry, no native_decide, standard axioms only; the equivalences are audited
+        run: |
+          set -euo pipefail
+          if grep -rnE "\bsorry\b|native_decide|^\s*axiom\b" --include=*.lean Harf HarfBridge Harf.lean HarfBridge.lean; then
+            echo "::error::برهانٌ ناقصٌ أو مسلَّمةٌ مُضافة"; exit 1
+          fi
+          lake env lean Audit.lean | tee axioms.txt
+          if grep -nE "sorryAx|Lean.ofReduceBool" axioms.txt; then exit 1; fi
+          if grep -oE "\[[^]]*\]" axioms.txt | tr -d '[] ' | tr ',' '\n' | grep -v '^$' \
+               | grep -vxE "propext|Classical.choice|Quot.sound"; then exit 1; fi
+          for t in wasl_eq_strictB waqf_eq_strictPauseB mutant_refuted proj_bijective; do
+            grep -q "HarfBridge.$t" axioms.txt || { echo "::error::$t غيرُ مدقَّقة"; exit 1; }
+          done

@@ -211,10 +211,13 @@
 - الحارسُ `tools/guard.py`، والمدخلُ الوحيد `src/entry.py`، وCI: السجلُّ والحارسُ ثمّ pytest.
 - (2026-10-12، ADR ٢) الشجرةُ المرخَّصة: `tools/gen_tree_index.py` يقسم كلَّ ملفٍّ بالبصمة ومقارنًا بالغانم المثبَّت (`deposits/alghanem-tree.json`) قسمةً تامّة؛ المخرجُ `TREE_INDEX.md` و`docs/tree/tree.json`، ويُعاد توليدُه بعد `git add` كلَّما تغيّر ملفّ.
 
+- (2026-10-12، ADR ٣) **الشاهدُ المستقلّ**: `formal/` حزمةُ Lean — `Harf` (الخانةُ 29 × 4 وآلةُ المقاطع والألفُ المحايد، بلا استيرادٍ من A116) و`HarfBridge` (التكافؤ: `wasl_eq_strictB`، `waqf_eq_strictPauseB`، وطفرتُه `mutant_refuted`)؛ الغانمُ مثبَّتٌ بنقطته في `formal/lakefile.toml`.
+
 ## قبل أن تقول «تمّ»
 
 ```sh
-python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 12 اختبارًا
+python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 16 اختبارًا
+(cd formal && lake build && lake env lean Audit.lean)   # صفرُ تحذير؛ المسلّماتُ propext/Classical.choice/Quot.sound فقط (ADR ٣)
 ```
 
 ## الخطوة التالية المأذونة

@@ -5,3 +5,4 @@ import Harf.Satr
 import Harf.Thunai
 import Harf.Azwaj
 import Harf.Mawda
+import Harf.Tazamun

@@ -5,11 +5,11 @@
 ".claude": 1,
 ".github": 1,
 "deposits": 73,
-"docs": 36,
-"formal": 10,
+"docs": 37,
+"formal": 15,
 "gflk-ocp-markov-adhlaqi-2026-09-4.md": 1,
 "src": 1,
-"tests": 2,
+"tests": 3,
 "tools": 2,
 "web": 5
 },
@@ -44,14 +44,14 @@
 "مكرر_داخلي": {}
 },
 "classes": {
-"بقية": 132,
+"بقية": 139,
 "فارغ": 72,
 "مختلف_عن_الغانم": 14,
 "مطابق_للغانم": 17,
 "معلق": 428,
 "مكرر_داخلي": 0
 },
-"distinct_blobs": 592,
+"distinct_blobs": 599,
 "files": [
 {
 "blob": "bf04f091d5424558aa64a7e11bf283b60a5eef85",
@@ -60,7 +60,7 @@
 "path": ".claude/settings.json"
 },
 {
-"blob": "7e1a4edce33860863d832fbccc49636145eb5028",
+"blob": "5ebcdf3d122a1e12edf49dce9fd57378291a7f72",
 "class": "بقية",
 "origin": "",
 "path": ".github/workflows/ci.yml"
@@ -72,7 +72,7 @@
 "path": ".gitignore"
 },
 {
-"blob": "9cf133e8c72dee5c7b9ed0618394fb66ac278de9",
+"blob": "0cf0fa7a2c1dcb8b9da8b43375d008eac22469d7",
 "class": "مختلف_عن_الغانم",
 "origin": "alghanem",
 "path": "CLAUDE.md"
@@ -600,6 +600,12 @@
 "path": "docs/adr/0003-harf-independent-witness.md"
 },
 {
+"blob": "69484789c65820963e04bae925349fd94939e0bf",
+"class": "بقية",
+"origin": "",
+"path": "docs/adr/0004-hadd-letter-and-binary-restriction.md"
+},
+{
 "blob": "09b411c4984f77b74c7699cd3eb99e56bc37581d",
 "class": "بقية",
 "origin": "",
@@ -894,13 +900,13 @@
 "path": "formal/.gitignore"
 },
 {
-"blob": "f7bdf201bc6d67647242deb9cc61cbb58e1a2699",
+"blob": "a101bcfeacd5a3dcafdb272135a0427016c9be28",
 "class": "بقية",
 "origin": "",
 "path": "formal/Audit.lean"
 },
 {
-"blob": "343c7f5815d15eef3fc46a794bda47f48e8d5967",
+"blob": "5daf9e7de706d0d59f3db2c4571ba10015e7bbd3",
 "class": "بقية",
 "origin": "",
 "path": "formal/Harf.lean"
@@ -918,22 +924,52 @@
 "path": "formal/Harf/Khana.lean"
 },
 {
-"blob": "068f3d6fbda9854d72f9805ded5fb1a38db45c6d",
+"blob": "a072fdbdc4b460b04710a5f67413195443419e1a",
 "class": "بقية",
 "origin": "",
 "path": "formal/Harf/Maqta.lean"
 },
 {
-"blob": "c07c63099770a2cd7623ff57e65bc5f3277a6d4c",
+"blob": "c3ff81feda051f2e05af8525327b8a0e88e3ba9c",
+"class": "بقية",
+"origin": "",
+"path": "formal/Harf/Satr.lean"
+},
+{
+"blob": "58486f1d778524b83b70b7bf497de624e7501f5a",
+"class": "بقية",
+"origin": "",
+"path": "formal/Harf/Thunai.lean"
+},
+{
+"blob": "45e812aab6b4753122341b3e4ce94141fd7bb2b8",
 "class": "بقية",
 "origin": "",
 "path": "formal/HarfBridge.lean"
 },
 {
-"blob": "7b9fa8025ee6f668d273129c40d6a6556340a8ef",
+"blob": "1571be95d8a0592a9d8031431bafdfafebbfaccb",
+"class": "بقية",
+"origin": "",
+"path": "formal/HarfBridge/Satr.lean"
+},
+{
+"blob": "09a2a04c51a746d1bcd8842dd19996125115624e",
 "class": "بقية",
 "origin": "",
 "path": "formal/HarfBridge/Takafu.lean"
+},
+{
+"blob": "108118d612450f63e7e04cd26fb56e1b801096a8",
+"class": "بقية",
+"origin": "",
+"path": "formal/Main.lean"
+},
+{
+"blob": "e1e5a1f84dec380e94be8cd32c1ea5720ed3fabb",
+"class": "بقية",
+"origin": "",
+"path": "formal/binary.csv"
 },
 {
 "blob": "1d53027fd835e815a114c9403a3ad11d4abf5547",
@@ -942,7 +978,7 @@
 "path": "formal/lake-manifest.json"
 },
 {
-"blob": "4e4085a6261154829e68c76dd9f0113684da01d1",
+"blob": "e7dffb5dc3bcf409aad80289a11c7a495587e5d0",
 "class": "بقية",
 "origin": "",
 "path": "formal/lakefile.toml"
@@ -3972,7 +4008,13 @@
 "path": "tests/test_guard.py"
 },
 {
-"blob": "b2af25dfc766292465accc0bb56217d9cf243ed2",
+"blob": "65a0719b27a17c99e68bb58fb4c0a251e1a76b96",
+"class": "بقية",
+"origin": "",
+"path": "tests/test_harf_binary.py"
+},
+{
+"blob": "3514f8019dfbf8c939a30556a099ce906a5cff36",
 "class": "بقية",
 "origin": "",
 "path": "tests/test_harf_independent.py"
@@ -4032,5 +4074,5 @@
 "path": "web/style.css"
 }
 ],
-"total": 663
+"total": 670
 }

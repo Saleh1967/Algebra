@@ -14,3 +14,7 @@ name = "Harf"
 
 [[lean_lib]]
 name = "HarfBridge"
+
+[[lean_exe]]
+name = "harf-table"
+root = "Main"

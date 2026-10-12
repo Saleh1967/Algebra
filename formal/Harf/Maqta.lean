@@ -13,6 +13,7 @@ import Harf.Khana
   `k` نفسُه (المُغلِقُ أوّلُ مثلين: حَاجَّ)، ولا يكون آخرًا وصلًا.
 * `hamzaAwwal`، `farq`، `tawilFarq`: **مدُّ الفرق** (ءَ اْ ل… أوّلَ الكلمة: آلْآنَ) — طويلٌ مغلقٌ بلا مثل.
 * `khatm` (وقفًا وحدَه): ساكنان بعد النواة في الطرف (CVCC: بَحْرْ، CVVCC: تَامّْ — والثاني مثلُ الأوّل).
+* `maddHadd` (في السطر وحدَه): مدٌّ آخرَ الكلمة قبل الحدّ — لا يليه ساكنٌ في الكلمة التالية (يَا + الشَّافِعِينَ).
 * `mayyit`: لا يُرخَّص.
 
 والوصلُ يرفض ساكنًا ثالثًا وساكنين بعد المغلق، والوقفُ يزيد الطرفَ وحدَه.
@@ -32,12 +33,13 @@ inductive Hal where
   | tawilFarq
   | tawil (k : Hamil)
   | khatm
+  | maddHadd
   | mayyit
   deriving DecidableEq, Repr
 
 def Hal.all : List Hal :=
   [.bad', .hamzaAwwal, .farq] ++ Haal.all.map .nawah ++ [.madd, .qasir, .tawilFarq]
-    ++ (List.finRange 29).map .tawil ++ [.khatm, .mayyit]
+    ++ (List.finRange 29).map .tawil ++ [.khatm, .maddHadd, .mayyit]
 
 theorem Hal.mem_all (a : Hal) : a ∈ Hal.all := by
   cases a with
@@ -65,6 +67,7 @@ def wasl : Hal → Khana → Hal
   | .tawilFarq, x => if x.haal ≠ .sukun then .nawah x.haal else .mayyit
   | .tawil h, x => if x.haal ≠ .sukun ∧ x.hamil = h then .nawah x.haal else .mayyit
   | .khatm, _ => .mayyit
+  | .maddHadd, x => if x.haal ≠ .sukun then .nawah x.haal else .mayyit
   | .mayyit, _ => .mayyit
 
 /-- خطوةُ الوقف: كالوصل، ويُقبل ساكنٌ ثانٍ بعد المغلق طرفًا. -/

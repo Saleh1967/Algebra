@@ -213,11 +213,13 @@
 
 - (2026-10-12، ADR ٣) **الشاهدُ المستقلّ**: `formal/` حزمةُ Lean — `Harf` (الخانةُ 29 × 4 وآلةُ المقاطع والألفُ المحايد، بلا استيرادٍ من A116) و`HarfBridge` (التكافؤ: `wasl_eq_strictB`، `waqf_eq_strictPauseB`، وطفرتُه `mutant_refuted`)؛ الغانمُ مثبَّتٌ بنقطته في `formal/lakefile.toml`.
 
+- (2026-10-12، ADR ٤) **الحدُّ حرفٌ في الآلة**: السطرُ والكلمتان (`line_eq_strictLineB`، `join_eq_strictJoinB` ووقفًا) وطفرتُه؛ و**الثنائيُّ تقييدٌ**: `binB_eq_strict` (`entry.licensed` = `strictB` مقصورًا على ما لا يتجاور فيه ساكنان)، وجدولُه `formal/binary.csv` مقابلَ `entry.licensed`.
+
 ## قبل أن تقول «تمّ»
 
 ```sh
-python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 16 اختبارًا
-(cd formal && lake build && lake env lean Audit.lean)   # صفرُ تحذير؛ المسلّماتُ propext/Classical.choice/Quot.sound فقط (ADR ٣)
+python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 18 اختبارًا
+(cd formal && lake build && lake env lean Audit.lean && lake exe harf-table > binary.csv && git diff --exit-code binary.csv)   # صفرُ تحذير؛ المسلّماتُ propext/Classical.choice/Quot.sound فقط (ADR ٣–٤)
 ```
 
 ## الخطوة التالية المأذونة

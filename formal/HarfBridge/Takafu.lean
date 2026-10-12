@@ -287,12 +287,13 @@ def sim : Hal → Option FS
   | .tawilFarq => some ⟨some .sukun, .nvc, .none⟩
   | .tawil k => some ⟨some .sukun, .nvc, .need (proj ⟨k, .sukun⟩).carrier⟩
   | .khatm => some ⟨some .sukun, .fin, .none⟩
+  | .maddHadd => some ⟨some .sukun, .nv, .afterV⟩
   | .mayyit => none
 
 open Harf in
 /-- الحالُ «العاديّ»: بعد الخانة الأولى وما يخصّ مدَّ الفرق. -/
 def good : Hal → Bool
-  | .bad' | .hamzaAwwal | .farq => false
+  | .bad' | .hamzaAwwal | .farq | .maddHadd => false
   | _ => true
 
 /-- الشرطُ العامّ: على كلّ حالٍ عاديّ تُطابَق الخطوتان ويبقى الحالُ عاديًّا، والقبولُ هو القبول. -/

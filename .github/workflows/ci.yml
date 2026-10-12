@@ -49,6 +49,12 @@ jobs:
           if grep -nE "sorryAx|Lean.ofReduceBool" axioms.txt; then exit 1; fi
           if grep -oE "\[[^]]*\]" axioms.txt | tr -d '[] ' | tr ',' '\n' | grep -v '^$' \
                | grep -vxE "propext|Classical.choice|Quot.sound"; then exit 1; fi
-          for t in wasl_eq_strictB waqf_eq_strictPauseB mutant_refuted proj_bijective; do
+          for t in wasl_eq_strictB waqf_eq_strictPauseB mutant_refuted proj_bijective \
+                   line_eq_strictLineB lineWaqf_eq_strictLinePauseB join_eq_strictJoinB \
+                   joinWaqf_eq_strictJoinPauseB line_mutant_refuted binB_eq_strict; do
             grep -q "HarfBridge.$t" axioms.txt || { echo "::error::$t غيرُ مدقَّقة"; exit 1; }
           done
+      - name: the binary table is what Lean prints (ADR 4)
+        run: |
+          lake exe harf-table > binary.csv
+          git diff --exit-code binary.csv

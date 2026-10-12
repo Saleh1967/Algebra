@@ -158,3 +158,8 @@ import HarfBridge
 #print axioms HarfBridge.abbaA_start
 #print axioms HarfBridge.lifted_examples
 #print axioms HarfBridge.hamza_prefix
+#print axioms Harf.depT_shape
+#print axioms Harf.depTQ_shape
+#print axioms HarfBridge.segment_eq_line
+#print axioms HarfBridge.segment_eq_line_wasl
+#print axioms HarfBridge.dead_left_rejects

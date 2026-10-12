@@ -5,7 +5,7 @@
 ".claude": 1,
 ".github": 1,
 "deposits": 73,
-"docs": 40,
+"docs": 41,
 "formal": 21,
 "gflk-ocp-markov-adhlaqi-2026-09-4.md": 1,
 "src": 1,
@@ -44,14 +44,14 @@
 "مكرر_داخلي": {}
 },
 "classes": {
-"بقية": 148,
+"بقية": 149,
 "فارغ": 72,
 "مختلف_عن_الغانم": 14,
 "مطابق_للغانم": 17,
 "معلق": 428,
 "مكرر_داخلي": 0
 },
-"distinct_blobs": 608,
+"distinct_blobs": 609,
 "files": [
 {
 "blob": "bf04f091d5424558aa64a7e11bf283b60a5eef85",
@@ -60,7 +60,7 @@
 "path": ".claude/settings.json"
 },
 {
-"blob": "ff93fd128c97c4b292a029157cf129e4264f707f",
+"blob": "58a91ee2604b0767d169ee1662ac2d4ea7bd22e1",
 "class": "بقية",
 "origin": "",
 "path": ".github/workflows/ci.yml"
@@ -72,7 +72,7 @@
 "path": ".gitignore"
 },
 {
-"blob": "d4a97a2ed40daf0bd7b7ed15addaf0b1c56a790e",
+"blob": "0f9dfdcd4f84f04830b5cfc7d840e0c51f15b92b",
 "class": "مختلف_عن_الغانم",
 "origin": "alghanem",
 "path": "CLAUDE.md"
@@ -624,6 +624,12 @@
 "path": "docs/adr/0007-deposit-sync-and-shapes.md"
 },
 {
+"blob": "b78398480c7b51c53b286ba91300bb30ba546917",
+"class": "بقية",
+"origin": "",
+"path": "docs/adr/0008-segment-after-refusal.md"
+},
+{
 "blob": "09b411c4984f77b74c7699cd3eb99e56bc37581d",
 "class": "بقية",
 "origin": "",
@@ -918,7 +924,7 @@
 "path": "formal/.gitignore"
 },
 {
-"blob": "b1023872b3e01ec7c3e6837211beace4521243e3",
+"blob": "931be6a1565919a3af469aba03cbba851682aa83",
 "class": "بقية",
 "origin": "",
 "path": "formal/Audit.lean"
@@ -966,7 +972,7 @@
 "path": "formal/Harf/Satr.lean"
 },
 {
-"blob": "88625d1e3856a5a5a58995cebf6128177294dd7b",
+"blob": "2a71c49495b95b310b53a62fcd54df90d055764f",
 "class": "بقية",
 "origin": "",
 "path": "formal/Harf/Tazamun.lean"
@@ -1008,7 +1014,7 @@
 "path": "formal/HarfBridge/Takafu.lean"
 },
 {
-"blob": "30429f21d5fb0340a880cac11fbd037323d780b7",
+"blob": "cb5e0f29e89a17cb85e326a7892fbd582ea8ba40",
 "class": "بقية",
 "origin": "",
 "path": "formal/HarfBridge/Tazamun.lean"
@@ -4068,7 +4074,7 @@
 "path": "tests/test_harf_binary.py"
 },
 {
-"blob": "43a2748737814d04dec710128da7095f6a1d73f8",
+"blob": "463babbc80babe2c60d5d4140aadc68732cc16c6",
 "class": "بقية",
 "origin": "",
 "path": "tests/test_harf_independent.py"
@@ -4128,5 +4134,5 @@
 "path": "web/style.css"
 }
 ],
-"total": 679
+"total": 680
 }

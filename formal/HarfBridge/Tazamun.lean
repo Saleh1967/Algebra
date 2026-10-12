@@ -595,4 +595,117 @@ theorem hamza_prefix (v : Haraka) (hv : v ∈ [Haraka.fatha, .kasra, .damma]) (W
   · simp only [List.mem_cons, List.not_mem_nil, or_false] at hv
     rcases hv with rfl | rfl | rfl <;> decide
 
+/-! ## ٨. القطعة: ما بعد موضعٍ مرفوض (ADR ٨) -/
+
+/-- **القطعةُ بعد موضعٍ مرفوض** (آخرُها وقف): يسارُها `L` صورةُ ابتداء المرفوض، فمودَعُها هو السطرُ أوّلُه `L`
+مصلَحةً والخامُ — بلا شرطٍ على `L` سوى ألّا تفرغ. -/
+theorem segment_eq_line (L : List Cell) (q : List Cell × List Cell)
+    (rest : List (List Cell × List Cell)) (hL : L ≠ []) (h : ∀ p ∈ q :: rest, CondB p) :
+    depTailAQ L (q :: rest) =
+      (strictLinePauseB (repairsL (L :: (q :: rest).map Prod.fst)) && rawAQ (q :: rest)) := by
+  obtain ⟨W2, S2⟩ := q
+  have hne := fun p (hp : p ∈ (W2, S2) :: rest) => cond_ne p (h p hp)
+  have e : build ((L, L) :: (W2, S2) :: rest) = posOf L L (some W2) :: build ((W2, S2) :: rest) := rfl
+  obtain ⟨b, bs, hb⟩ : ∃ b bs, build ((W2, S2) :: rest) = b :: bs := by
+    cases rest with
+    | nil => exact ⟨_, _, rfl⟩
+    | cons q r => exact ⟨_, _, rfl⟩
+  have hdep : depTailAQ L ((W2, S2) :: rest) = Harf.depTQ (posOf L L (some W2)).S (b :: bs) := by
+    have ht := depTQ_build' rest (repair L W2).1 W2 S2 (repair_ne' L W2 hL) hne
+    rw [hb] at ht
+    simp only [posOf]
+    rw [ht]
+    cases rest with
+    | nil => rfl
+    | cons q r => rfl
+  rw [hdep]
+  have hs : ∀ x ∈ b :: bs, Harf.PosShape x := by rw [← hb]; exact build_posShape _ h
+  have hh : Harf.HeadChain (posOf L L (some W2)).R (b :: bs) := by
+    rw [← hb]; exact headChain_build ((W2, S2) :: rest) L hL h
+  have hlast := build_last ((W2, S2) :: rest)
+  rw [hb] at hlast
+  rw [Harf.depTQ_shape _ _ (by simp) rfl (unprojW_ne (repair_ne' L W2 hL)) hs hh hlast]
+  have hRs : (posOf L L (some W2) :: b :: bs).map Harf.Pos.R =
+      (repairsL (L :: ((W2, S2) :: rest).map Prod.fst)).map unprojW := by
+    rw [← hb, ← e, build_R]; rfl
+  have hne' : ∀ w ∈ repairsL (L :: ((W2, S2) :: rest).map Prod.fst), w ≠ [] :=
+    repairsL_ne' _ (by
+      intro w hw
+      rcases List.mem_cons.1 hw with rfl | hw
+      · exact hL
+      · obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hw; exact (hne p hp).1)
+  have hline : Harf.lineWaqfB ((repairsL (L :: ((W2, S2) :: rest).map Prod.fst)).map unprojW) =
+      strictLinePauseB (repairsL (L :: ((W2, S2) :: rest).map Prod.fst)) := by
+    rw [lineWaqf_eq_strictLinePauseB _ (by
+      intro w hw; simp only [List.mem_map] at hw; obtain ⟨u, hu, rfl⟩ := hw; exact unprojW_ne (hne' u hu))]
+    congr 1
+    simp only [projL, List.map_map]
+    conv => rhs; rw [← List.map_id (repairsL _)]
+    exact List.map_congr_left (fun w _ => projW_unprojW w)
+  have hraw : Harf.localQ (b :: bs) = rawAQ ((W2, S2) :: rest) := by
+    rw [← hb]; exact localQ_build _ (fun p hp => (hne p hp).1)
+  rw [hRs, hline, hraw]
+
+/-- **والقطعةُ وصلًا**. -/
+theorem segment_eq_line_wasl (L : List Cell) (q : List Cell × List Cell)
+    (rest : List (List Cell × List Cell)) (hL : L ≠ []) (h : ∀ p ∈ q :: rest, CondB p) :
+    depTailA L (q :: rest) =
+      (strictLineB (repairsL (L :: (q :: rest).map Prod.fst)) &&
+        (q :: rest).all fun p => strictJoinB baA p.1) := by
+  obtain ⟨W2, S2⟩ := q
+  have hne := fun p (hp : p ∈ (W2, S2) :: rest) => cond_ne p (h p hp)
+  have e : build ((L, L) :: (W2, S2) :: rest) = posOf L L (some W2) :: build ((W2, S2) :: rest) := rfl
+  have hdep : depTailA L ((W2, S2) :: rest) = Harf.depT (posOf L L (some W2)).S (build ((W2, S2) :: rest)) := by
+    simp only [posOf]
+    rw [depT_build' rest _ W2 S2 (repair_ne' L W2 hL) hne]
+    rfl
+  rw [hdep]
+  have hs : ∀ x ∈ build ((W2, S2) :: rest), Harf.PosShape x := build_posShape _ h
+  have hh : Harf.HeadChain (posOf L L (some W2)).R (build ((W2, S2) :: rest)) :=
+    headChain_build ((W2, S2) :: rest) L hL h
+  have hbne : build ((W2, S2) :: rest) ≠ [] := by
+    cases rest with
+    | nil => simp [build]
+    | cons q r => simp [build]
+  rw [Harf.depT_shape _ _ hbne rfl (unprojW_ne (repair_ne' L W2 hL)) hs hh]
+  have hRs : (posOf L L (some W2) :: build ((W2, S2) :: rest)).map Harf.Pos.R =
+      (repairsL (L :: ((W2, S2) :: rest).map Prod.fst)).map unprojW := by
+    rw [← e, build_R]; rfl
+  have hne' : ∀ w ∈ repairsL (L :: ((W2, S2) :: rest).map Prod.fst), w ≠ [] :=
+    repairsL_ne' _ (by
+      intro w hw
+      rcases List.mem_cons.1 hw with rfl | hw
+      · exact hL
+      · obtain ⟨p, hp, rfl⟩ := List.mem_map.1 hw; exact (hne p hp).1)
+  have hline : Harf.lineB ((repairsL (L :: ((W2, S2) :: rest).map Prod.fst)).map unprojW) =
+      strictLineB (repairsL (L :: ((W2, S2) :: rest).map Prod.fst)) := by
+    rw [line_eq_strictLineB _ (by
+      intro w hw; simp only [List.mem_map] at hw; obtain ⟨u, hu, rfl⟩ := hw; exact unprojW_ne (hne' u hu))]
+    congr 1
+    simp only [projL, List.map_map]
+    conv => rhs; rw [← List.map_id (repairsL _)]
+    exact List.map_congr_left (fun w _ => projW_unprojW w)
+  have hraw : ((build ((W2, S2) :: rest)).all fun p => Harf.joinB [Harf.k 'ب' .fath] p.W) =
+      ((W2, S2) :: rest).all fun p => strictJoinB baA p.1 := by
+    have e1 : ((build ((W2, S2) :: rest)).all fun p => Harf.joinB [Harf.k 'ب' .fath] p.W) =
+        ((build ((W2, S2) :: rest)).map Harf.Pos.W).all fun w => Harf.joinB [Harf.k 'ب' .fath] w := by
+      simp [List.all_map, Function.comp_def]
+    rw [e1, build_W, List.all_map, Bool.eq_iff_iff]
+    simp only [List.all_eq_true, Function.comp_def]
+    have e : ∀ p ∈ (W2, S2) :: rest, Harf.joinB [Harf.k 'ب' .fath] (unprojW p.1) = strictJoinB baA p.1 := by
+      intro p hp
+      rw [← unproj_ba, join_eq_strictJoinB _ _ (by decide +kernel) (unprojW_ne (hne p hp).1),
+        projW_unprojW, projW_unprojW]
+    constructor
+    · intro H p hp; rw [← e p hp]; exact H p hp
+    · intro H p hp; rw [e p hp]; exact H p hp
+  rw [hRs, hline, hraw]
+
+/-- **الموضعُ بعد يسارٍ ميّت مرفوض**: إن لم تُرخَّص صورةُ ابتداء اليسار مصلَحةً فالزوجُ الأوّلُ مرفوض — شاهدٌ أنّ
+القطعة لا تُرخَّص من يسارٍ ميّت. -/
+theorem dead_left_rejects :
+    strictB [atom 'ب' .sukun] = false ∧
+    depTailAQ [atom 'ب' .sukun] [([atom 'ب' .fatha], [atom 'ب' .fatha])] = false := by
+  decide +kernel
+
 end HarfBridge

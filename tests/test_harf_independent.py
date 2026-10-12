@@ -66,5 +66,6 @@ def test_audit_names_the_equivalences() -> None:
               "HarfBridge.deposit_needs_free", "Harf.dep_eq_waqf", "Harf.line_mix",
               "HarfBridge.deposit_eq_line_pause", "HarfBridge.deposit_needs_raw_pause",
               "Harf.dep_sync", "Harf.dep_shape_waqf", "HarfBridge.deposit_eq_line_shape",
-              "HarfBridge.deposit_eq_line_shape_wasl", "HarfBridge.deposit_needs_vowel_after_madd"):
+              "HarfBridge.deposit_eq_line_shape_wasl", "HarfBridge.deposit_needs_vowel_after_madd",
+              "HarfBridge.segment_eq_line", "HarfBridge.segment_eq_line_wasl"):
         assert f"#print axioms {t}\n" in audit, t

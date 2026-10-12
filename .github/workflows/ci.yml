@@ -55,7 +55,8 @@ jobs:
                    line_eq_pairwise pairwise_needs_vowel_start empty_word_smuggles_straddle \
                    lineN_eq_strictLineN deposit_eq_line deposit_needs_raw deposit_needs_free \
                    deposit_eq_line_pause deposit_needs_raw_pause \
-                   deposit_eq_line_shape deposit_eq_line_shape_wasl deposit_needs_vowel_after_madd; do
+                   deposit_eq_line_shape deposit_eq_line_shape_wasl deposit_needs_vowel_after_madd \
+                   segment_eq_line segment_eq_line_wasl; do
             grep -q "HarfBridge.$t" axioms.txt || { echo "::error::$t غيرُ مدقَّقة"; exit 1; }
           done
       - name: the binary table is what Lean prints (ADR 4)

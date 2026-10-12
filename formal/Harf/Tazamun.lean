@@ -645,4 +645,65 @@ theorem dep_shape_waqf (p1 : Pos) (ps : List Pos) (hps : ps ≠ []) (h1S : p1.S 
     raw_local_waqf ps _ (fun q hq => (hs q hq).2.1) (locAllQ_of ps .bad' p1.R h1ne hs hh hlast),
     ← Bool.and_assoc]
 
+/-! ## ٦. القطعة: السطرُ بعد موضعٍ مرفوض (ADR ٨)
+
+بعد موضعٍ رفضته البوّابة يُقرن ما بعده بصورة ابتداء المرفوض؛ فالقطعةُ سطرٌ أوّلُه تلك الصورة. والمودَعُ عليها
+**السطرُ والخامُ** بلا شرطٍ على الأولى: إن ماتت صورةُ الابتداء مات الزوجُ الأوّل ومات السطر. -/
+
+theorem depT_shape (p1 : Pos) (ps : List Pos) (hps : ps ≠ []) (h1S : p1.S = p1.R) (h1ne : p1.R ≠ [])
+    (hs : ∀ q ∈ ps, PosShape q) (hh : HeadChain p1.R ps) :
+    depT p1.S ps = (lineB ((p1 :: ps).map Pos.R) && ps.all fun p => joinB [k 'ب' .fath] p.W) := by
+  rw [List.map_cons, lineB_lineSt]
+  cases hq : qabilWasl (run wasl .bad' p1.R)
+  · obtain ⟨q, r, rfl⟩ : ∃ q r, ps = q :: r := by
+      cases ps with
+      | nil => exact absurd rfl hps
+      | cons q r => exact ⟨q, r, rfl⟩
+    have e1 : depT p1.S (q :: r) = (joinB p1.S q.W && depT q.S r) := rfl
+    rw [e1, joinB_fwd, h1S, (fwd_doom _ hq q.W (hs q (by simp)).1).1,
+      doom_wasl_line _ hq (q :: r) (fun u hu => (hs u hu).2.1) (by simp)]
+    simp [qabilWasl]
+  · rw [dep_syncT ps p1.S _ (run_ne_bad_any _ _ h1ne) hq (by
+      rw [h1S]
+      cases ps with
+      | nil => trivial
+      | cons q r => exact ⟨⟨rfl, rfl⟩, ⟨rfl, rfl⟩⟩) (syncL_of ps hs)
+      (fun q hq => alive_of _ _ (hs q hq).2.2.2.2.2.1) (fun q hq => (hs q hq).2.1),
+      raw_local ps _ (fun q hq => (hs q hq).2.1) (locAll_of ps .bad' p1.R h1ne hs hh)]
+
+theorem depTQ_shape (p1 : Pos) (ps : List Pos) (hps : ps ≠ []) (h1S : p1.S = p1.R) (h1ne : p1.R ≠ [])
+    (hs : ∀ q ∈ ps, PosShape q) (hh : HeadChain p1.R ps)
+    (hlast : (ps.getLast?.map fun p => p.R) = (ps.getLast?.map fun p => p.W)) :
+    depTQ p1.S ps = (lineWaqfB ((p1 :: ps).map Pos.R) && localQ ps) := by
+  have hne : ∀ w ∈ p1.R :: ps.map Pos.R, w ≠ [] := by
+    intro w hw
+    rcases List.mem_cons.1 hw with rfl | hw
+    · exact h1ne
+    · obtain ⟨u, hu, rfl⟩ := List.mem_map.1 hw; exact (hs u hu).2.1
+  rw [List.map_cons, lineWaqfB_lineStQ _ _ hps hne]
+  cases hq : qabilWasl (run wasl .bad' p1.R)
+  · rw [doom_waqf_line _ hq ps (fun u hu => (hs u hu).2.1) hps]
+    obtain ⟨q, r, rfl⟩ : ∃ q r, ps = q :: r := by
+      cases ps with
+      | nil => exact absurd rfl hps
+      | cons q r => exact ⟨q, r, rfl⟩
+    cases r with
+    | nil =>
+      simp only [depTQ]
+      rw [joinWaqfB_fwdQ _ _ (by rw [h1S]; exact h1ne) (hs q (by simp)).1, h1S,
+        (fwd_doom _ hq q.W (hs q (by simp)).1).2]
+      simp [qabilWaqf]
+    | cons q' r =>
+      have e1 : depTQ p1.S (q :: q' :: r) = (joinB p1.S q.W && depTQ q.S (q' :: r)) := rfl
+      rw [e1, joinB_fwd, h1S, (fwd_doom _ hq q.W (hs q (by simp)).1).1]
+      simp [qabilWasl]
+  · rw [dep_syncTQ ps p1.S _ hps (by rw [h1S]; exact h1ne) (run_ne_bad_any _ _ h1ne) hq (by
+      rw [h1S]
+      cases ps with
+      | nil => trivial
+      | cons q r => exact ⟨⟨rfl, rfl⟩, ⟨rfl, rfl⟩⟩) (syncL_of ps hs)
+      (fun q hq => alive_of _ _ (hs q hq).2.2.2.2.2.1)
+      (fun q hq => ⟨(hs q hq).2.1, (hs q hq).1, (hs q hq).2.2.1⟩) hlast,
+      raw_local_waqf ps _ (fun q hq => (hs q hq).2.1) (locAllQ_of ps .bad' p1.R h1ne hs hh hlast)]
+
 end Harf

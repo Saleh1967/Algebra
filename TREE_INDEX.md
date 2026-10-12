@@ -2,7 +2,7 @@
 
 مولَّدٌ بـ`python3 tools/gen_tree_index.py`؛ لا يُحرَّر باليد، و`--check` في CI يطابقه (ADR ٢). الغانم مثبَّتٌ بإيداعه `5d769d19c4f40725c7595fc9e3c7aa0a0a81b6d6` (`deposits/alghanem-tree.json`). لا يُقرأ نصّ: أسماءٌ وبصماتٌ من git فقط.
 
-**679 ملفًّا، 608 بصمةً متميّزة؛ القسمةُ تامّة: كلُّ ملفٍّ في صنفٍ واحد.**
+**680 ملفًّا، 609 بصمةً متميّزة؛ القسمةُ تامّة: كلُّ ملفٍّ في صنفٍ واحد.**
 
 | الصنف | العدد | النسبة |
 |---|---|---|
@@ -10,8 +10,8 @@
 | `مطابق_للغانم` | 17 | 2.5% |
 | `مكرر_داخلي` | 0 | 0.0% |
 | `مختلف_عن_الغانم` | 14 | 2.1% |
-| `معلق` | 428 | 63.0% |
-| `بقية` | 148 | 21.8% |
+| `معلق` | 428 | 62.9% |
+| `بقية` | 149 | 21.9% |
 
 ## الأصنافُ بالمجلّد الأعلى
 
@@ -19,7 +19,7 @@
 - `مطابق_للغانم`: `suspended` 14، `LICENSE` 1، `formal` 1، `quran-simple-enhanced.txt` 1
 - `مختلف_عن_الغانم`: `suspended` 6، `.gitignore` 1، `CLAUDE.md` 1، `README.md` 1، `SUSPENDED_REGISTRY.json` 1، `docs` 1، `pyproject.toml` 1، `tests` 1، `tools` 1
 - `معلق`: `suspended` 428
-- `بقية`: `deposits` 73، `docs` 40، `formal` 21، `web` 5، `tests` 3، `tools` 2، `.claude` 1، `.github` 1، `gflk-ocp-markov-adhlaqi-2026-09-4.md` 1، `src` 1
+- `بقية`: `deposits` 73، `docs` 41، `formal` 21، `web` 5، `tests` 3، `tools` 2، `.claude` 1، `.github` 1، `gflk-ocp-markov-adhlaqi-2026-09-4.md` 1، `src` 1
 
 ## ما يقوله الرقم — باسمه
 

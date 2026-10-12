@@ -215,6 +215,8 @@
 
 - (2026-10-12، ADR ٤) **الحدُّ حرفٌ في الآلة**: السطرُ والكلمتان (`line_eq_strictLineB`، `join_eq_strictJoinB` ووقفًا) وطفرتُه؛ و**الثنائيُّ تقييدٌ**: `binB_eq_strict` (`entry.licensed` = `strictB` مقصورًا على ما لا يتجاور فيه ساكنان)، وجدولُه `formal/binary.csv` مقابلَ `entry.licensed`.
 
+- (2026-10-12، ADR ٥) **السطرُ قرانُ أزواجه** إن بدأت كلُّ كلمةٍ بعد الأولى بمتحرّك (`line_eq_pairwise`، والشرطُ لازم: `pairwise_needs_vowel_start`) — سدُّ `LINE_VS_PAIRWISE_JOIN_UNPROVEN` في الغانم؛ و**الكلمةُ الفارغةُ محايدُ السطر**: في الغانم تُسقط فحصَ الحدّ (`empty_word_smuggles_straddle`)، والتكافؤُ بعد حذفها لكلّ سطر (`lineN_eq_strictLineN`).
+
 ## قبل أن تقول «تمّ»
 
 ```sh

@@ -31,7 +31,7 @@ def harf_files() -> list[Path]:
 
 def test_harf_imports_only_harf() -> None:
     files = harf_files()
-    assert len(files) == 6
+    assert len(files) == 7
     assert foreign_imports(files) == []
 
 
@@ -57,5 +57,8 @@ def test_audit_names_the_equivalences() -> None:
               "Harf.factor_through_mahw", "Harf.licence_not_through_mahw",
               "HarfBridge.line_eq_strictLineB", "HarfBridge.lineWaqf_eq_strictLinePauseB",
               "HarfBridge.join_eq_strictJoinB", "HarfBridge.joinWaqf_eq_strictJoinPauseB",
-              "HarfBridge.line_mutant_refuted", "HarfBridge.binB_eq_strict", "Harf.binB_eq"):
+              "HarfBridge.line_mutant_refuted", "HarfBridge.binB_eq_strict", "Harf.binB_eq",
+              "HarfBridge.line_eq_pairwise", "HarfBridge.pairwise_needs_vowel_start",
+              "HarfBridge.empty_word_smuggles_straddle", "HarfBridge.lineN_eq_strictLineN",
+              "Harf.line_eq_pairs", "Harf.lineB_erase_empty"):
         assert f"#print axioms {t}\n" in audit, t

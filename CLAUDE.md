@@ -223,11 +223,14 @@
 
 - (2026-10-12، ADR ٨) **القطعة**: بعد موضعٍ مرفوضٍ ما بعده سطرٌ يسارُه صورةُ ابتداء المرفوض — `segment_eq_line` (وقفًا) و`segment_eq_line_wasl`: المودَعُ = السطرُ المصلَحُ أوّلُه اليسارُ والخامُ بعد «بَ»، بلا شرطٍ على اليسار (`depT_shape`، `depTQ_shape`؛ شاهد `dead_left_rejects`).
 
+- (2026-10-14، ADR ٩) **بوّابةُ المدلول وحده** — Algebra مقرُّها بقرار المالك، ودستورُها `docs/MADLUL_CONSTITUTION.md`: `formal/Madlul.lean` بلا استيرادٍ من A116 ولا `Harf`؛ الأقسامُ الخمسة (ج3 س409) والمعنى كلّيٌّ/جزئيّ، و`enter`/`exit` على مودَعٍ يقول لكلّ مرجعٍ شاهدَه، والرفضُ المسمّى؛ مبرهن: `exit_enter`، `enter_exit`، `absence_refused`، `muhmal_needs_witness`، `mufrad_iff_single`، `maana_iff_node`؛ وشواهدُ النبهانيّ مولَّدةٌ من الحاوية ببصمتها (`tools/gen_madlul_shawahid.py --check`)؛ وجدولُ `formal/madlul.csv` مرآتُه `src/madlul.py`. ورُفعت نواةُ الغانم المثبَّتة إلى `2c7f18d`. البوّابةُ لا تقرأ نصًّا: القانونُ الواحد أعلاه قائم.
+
 ## قبل أن تقول «تمّ»
 
 ```sh
-python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 18 اختبارًا
+python3 tools/gen_registry.py --check && python3 tools/guard.py && python3 tools/gen_tree_index.py --check && python3 -m pytest tests -q   # 24 اختبارًا
 (cd formal && lake build && lake env lean Audit.lean && lake exe harf-table > binary.csv && git diff --exit-code binary.csv)   # صفرُ تحذير؛ المسلّماتُ propext/Classical.choice/Quot.sound فقط (ADR ٣–٤)
+(cd formal && lake exe madlul-table > madlul.csv && git diff --exit-code madlul.csv) && python3 tools/gen_madlul_shawahid.py --check   # بوّابةُ المدلول وحده (ADR ٩)
 ```
 
 ## الخطوة التالية المأذونة

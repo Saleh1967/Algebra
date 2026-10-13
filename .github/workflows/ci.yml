@@ -42,7 +42,7 @@ jobs:
       - name: no sorry, no native_decide, standard axioms only; the equivalences are audited
         run: |
           set -euo pipefail
-          if grep -rnE "\bsorry\b|native_decide|^\s*axiom\b" --include=*.lean Harf HarfBridge Harf.lean HarfBridge.lean; then
+          if grep -rnE "\bsorry\b|native_decide|^\s*axiom\b" --include=*.lean Harf HarfBridge Madlul Harf.lean HarfBridge.lean Madlul.lean MadlulMain.lean; then
             echo "::error::برهانٌ ناقصٌ أو مسلَّمةٌ مُضافة"; exit 1
           fi
           lake env lean Audit.lean | tee axioms.txt
@@ -59,7 +59,17 @@ jobs:
                    segment_eq_line segment_eq_line_wasl; do
             grep -q "HarfBridge.$t" axioms.txt || { echo "::error::$t غيرُ مدقَّقة"; exit 1; }
           done
+          for t in qism_mem_all all_nodup exit_enter enter_agrees enter_exit absence_refused \
+                   muhmal_needs_witness mufrad_iff_single maana_iff_node \
+                   every_qism_witnessed every_naw_witnessed; do
+            grep -q "Madlul.$t" axioms.txt || { echo "::error::Madlul.$t غيرُ مدقَّقة"; exit 1; }
+          done
       - name: the binary table is what Lean prints (ADR 4)
         run: |
           lake exe harf-table > binary.csv
           git diff --exit-code binary.csv
+      - name: the madlul gate table is what Lean prints, and its witnesses are in the sealed container (ADR 9)
+        run: |
+          lake exe madlul-table > madlul.csv
+          git diff --exit-code madlul.csv
+          python3 ../tools/gen_madlul_shawahid.py --check

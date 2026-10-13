@@ -1,5 +1,6 @@
 import Harf
 import HarfBridge
+import Madlul
 #print axioms Harf.alphabet_length
 #print axioms Harf.alphabet_nodup
 #print axioms Harf.Khana.all_length
@@ -163,3 +164,14 @@ import HarfBridge
 #print axioms HarfBridge.segment_eq_line
 #print axioms HarfBridge.segment_eq_line_wasl
 #print axioms HarfBridge.dead_left_rejects
+#print axioms Madlul.qism_mem_all
+#print axioms Madlul.all_nodup
+#print axioms Madlul.exit_enter
+#print axioms Madlul.enter_agrees
+#print axioms Madlul.enter_exit
+#print axioms Madlul.absence_refused
+#print axioms Madlul.muhmal_needs_witness
+#print axioms Madlul.mufrad_iff_single
+#print axioms Madlul.maana_iff_node
+#print axioms Madlul.every_qism_witnessed
+#print axioms Madlul.every_naw_witnessed

@@ -1,12 +1,12 @@
 name = "harf"
 version = "0.1.0"
-defaultTargets = ["Harf", "HarfBridge"]
+defaultTargets = ["Harf", "HarfBridge", "Madlul", "madlul-table"]
 
 # الجسرُ وحدَه يقرأ نواةَ الغانم؛ `Harf` لا يستوردها (tests/test_harf_independent.py).
 [[require]]
 name = "a116"
 git = "https://github.com/Saleh1967/Alghanem.git"
-rev = "df76f395369c5f7b32aca240734c8665e965f114"
+rev = "2c7f18d58bbf1065ad61e9a60808b980f4934714"
 subDir = "formal/a116"
 
 [[lean_lib]]
@@ -14,6 +14,14 @@ name = "Harf"
 
 [[lean_lib]]
 name = "HarfBridge"
+
+# بوّابةُ المدلول وحده (ADR ٩): لا تستورد نواةَ الغانم ولا `Harf` (tests/test_madlul.py).
+[[lean_lib]]
+name = "Madlul"
+
+[[lean_exe]]
+name = "madlul-table"
+root = "MadlulMain"
 
 [[lean_exe]]
 name = "harf-table"

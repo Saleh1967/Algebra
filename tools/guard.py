@@ -4,7 +4,8 @@
 يمشي على كلّ `.py` خارج `suspended/` و`tests/` ويرفض: `open`/`read_text`/`write_text`/`decode`/
 `encode`/`normalize`/`json.load`/`csv.reader`، و`print`/`input`/`sys.argv`/`stdin`، واستيرادَ `suspended`.
 القائمةُ البيضاء: `tools/gen_registry.py` و`tools/guard.py` نفسُه و`tools/gen_tree_index.py`
-(يقرأ من git أسماءً وبصماتٍ لا نصًّا؛ ADR ٢).
+(يقرأ من git أسماءً وبصماتٍ لا نصًّا؛ ADR ٢)، و`tools/gen_madlul_shawahid.py` (يقرأ الحاويةَ المختومة ببصمتها
+ويكتب مراسيَ Lean؛ ADR ٩).
 """
 
 from __future__ import annotations
@@ -16,7 +17,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 EXEMPT_DIRS = ("suspended", "tests", ".git", "__pycache__", ".pytest_cache", ".lake")  # .lake: بناءُ Lean المحلّيّ (ADR ٣)
 # الأخير: يقرأ من git أسماءً وبصماتٍ لا نصًّا (ADR ٢)
-EXEMPT_FILES = ("tools/gen_registry.py", "tools/guard.py", "tools/gen_tree_index.py")
+EXEMPT_FILES = ("tools/gen_registry.py", "tools/guard.py", "tools/gen_tree_index.py",
+                "tools/gen_madlul_shawahid.py")  # الأخير: الحاويةُ المختومة ← المراسي (ADR ٩)
 IO_ATTRS = frozenset(
     {
         "read_text", "read_bytes", "write_text", "write_bytes", "open", "decode", "encode",

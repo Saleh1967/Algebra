@@ -1,0 +1,43 @@
+N:0	maana:0:jins:20	maana	back
+N:1	maana:1:damir:21	maana	back
+N:2	rafd:MAANA_WITHOUT_WITNESS	-	-
+L:	rafd:EMPTY_LAFZ_REF	-	-
+L:0	mufrad:0:mustamal:10	mufradMustamal	back
+L:1	mufrad:1:muhmal:11	mufradMuhmal	back
+L:2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 1	murakkab:0 1:mustamal:12	murakkabMustamal	back
+L:0 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 1	murakkab:1 1:muhmal:13	murakkabMuhmal	back
+L:1 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 0 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 0 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 0 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 1 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 1 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 1 2	murakkab:0 1 2:muhmal:14	murakkabMuhmal	back
+L:0 2 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 2 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:0 2 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 0 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 0 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 0 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 1 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 1 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 1 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 2 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 2 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:1 2 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 0 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 0 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 0 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 1 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 1 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 1 2	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 2 0	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 2 1	rafd:ISTI_WITHOUT_WITNESS	-	-
+L:2 2 2	rafd:ISTI_WITHOUT_WITNESS	-	-

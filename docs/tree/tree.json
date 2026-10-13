@@ -5,7 +5,7 @@
 ".claude": 1,
 ".github": 1,
 "deposits": 73,
-"docs": 44,
+"docs": 45,
 "formal": 24,
 "gflk-ocp-markov-adhlaqi-2026-09-4.md": 1,
 "src": 2,
@@ -44,14 +44,14 @@
 "مكرر_داخلي": {}
 },
 "classes": {
-"بقية": 158,
+"بقية": 159,
 "فارغ": 72,
 "مختلف_عن_الغانم": 14,
 "مطابق_للغانم": 18,
 "معلق": 428,
 "مكرر_داخلي": 0
 },
-"distinct_blobs": 619,
+"distinct_blobs": 620,
 "files": [
 {
 "blob": "bf04f091d5424558aa64a7e11bf283b60a5eef85",
@@ -72,7 +72,7 @@
 "path": ".gitignore"
 },
 {
-"blob": "8d7c9b03383cf18920c6b6376ce0f00e46d8ca31",
+"blob": "32df18655819e92deb7b639959a8bf91d07e1fcd",
 "class": "مختلف_عن_الغانم",
 "origin": "alghanem",
 "path": "CLAUDE.md"
@@ -576,7 +576,7 @@
 "path": "docs/CONSTITUTION.md"
 },
 {
-"blob": "fe2cd8cabcc1ed8baaa2f4c37e410a36c30c32c9",
+"blob": "cd106bb6ca884998196cc266a4426bf03e846b20",
 "class": "بقية",
 "origin": "",
 "path": "docs/MADLUL_CONSTITUTION.md"
@@ -640,6 +640,12 @@
 "class": "بقية",
 "origin": "",
 "path": "docs/adr/0009-madlul-gate.md"
+},
+{
+"blob": "3162c35ab1c9a72499718bd4d780f63848f7db6d",
+"class": "بقية",
+"origin": "",
+"path": "docs/adr/0010-dal-madlul-seat.md"
 },
 {
 "blob": "c0495e512d1170d075a820cc92136cc571dfcfdf",
@@ -4194,5 +4200,5 @@
 "path": "web/style.css"
 }
 ],
-"total": 690
+"total": 691
 }

@@ -5,7 +5,7 @@
 ".claude": 1,
 ".github": 1,
 "deposits": 73,
-"docs": 45,
+"docs": 46,
 "formal": 24,
 "gflk-ocp-markov-adhlaqi-2026-09-4.md": 1,
 "src": 2,
@@ -44,14 +44,14 @@
 "مكرر_داخلي": {}
 },
 "classes": {
-"بقية": 159,
+"بقية": 160,
 "فارغ": 72,
 "مختلف_عن_الغانم": 14,
 "مطابق_للغانم": 18,
 "معلق": 428,
 "مكرر_داخلي": 0
 },
-"distinct_blobs": 620,
+"distinct_blobs": 621,
 "files": [
 {
 "blob": "bf04f091d5424558aa64a7e11bf283b60a5eef85",
@@ -60,7 +60,7 @@
 "path": ".claude/settings.json"
 },
 {
-"blob": "1b106a73aad7db8710e8425bba221b5b0ec5bfd7",
+"blob": "9261424c667b05745e6c9255d883410cd8a7460d",
 "class": "بقية",
 "origin": "",
 "path": ".github/workflows/ci.yml"
@@ -72,7 +72,7 @@
 "path": ".gitignore"
 },
 {
-"blob": "32df18655819e92deb7b639959a8bf91d07e1fcd",
+"blob": "95af6adec5c8e5fc9bdeb1b6ac49d41da6cd06e9",
 "class": "مختلف_عن_الغانم",
 "origin": "alghanem",
 "path": "CLAUDE.md"
@@ -84,7 +84,7 @@
 "path": "LICENSE"
 },
 {
-"blob": "382d8044e936b45229b9a4e6da78eff0b130abad",
+"blob": "e7a736ffb1bd81367ab99525c81a5e13a3006dcc",
 "class": "مختلف_عن_الغانم",
 "origin": "alghanem",
 "path": "README.md"
@@ -646,6 +646,12 @@
 "class": "بقية",
 "origin": "",
 "path": "docs/adr/0010-dal-madlul-seat.md"
+},
+{
+"blob": "53ef19ee7204e2fdad3d22378cb260c875981157",
+"class": "بقية",
+"origin": "",
+"path": "docs/history/README-2026-09.md"
 },
 {
 "blob": "c0495e512d1170d075a820cc92136cc571dfcfdf",
@@ -4200,5 +4206,5 @@
 "path": "web/style.css"
 }
 ],
-"total": 691
+"total": 692
 }

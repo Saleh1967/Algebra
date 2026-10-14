@@ -9,7 +9,7 @@ permissions:
 
 jobs:
   checks:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -23,7 +23,7 @@ jobs:
 
   lean:
     # شاهدٌ مستقلّ (ADR ٣): `Harf` بتعريفات Algebra بلا استيرادٍ من A116، والجسرُ يبرهن تكافؤَه مع قيد الحدّ
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: formal

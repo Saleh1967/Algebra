@@ -20,6 +20,7 @@
 from __future__ import annotations
 
 import ast
+import re
 import sys
 from pathlib import Path
 from typing import Final
@@ -28,7 +29,32 @@ REPOSITORY: Final[Path] = Path(__file__).resolve().parents[1]
 DOCS: Final[Path] = REPOSITORY / "docs"
 PAPER: Final[Path] = DOCS / "وحدات-المعياريّة.md"
 AUDIT: Final[Path] = REPOSITORY / "tests" / "algebra" / "test_package_self_audit.py"
+WORKFLOW: Final[Path] = REPOSITORY / ".github" / "workflows" / "ci.yml"
 EASTERN: Final[dict[int, int]] = str.maketrans("0123456789", "٠١٢٣٤٥٦٧٨٩")
+
+# **عددُ وحداتِ المعياريّةِ مُودَعٌ لا مقروءٌ وقتَ التوليد** (العطل ٣٨):
+# `len(sys.stdlib_module_names)` يتبع إصدارَ المفسّر — ٣٠٣ في 3.10 و٣٠٥ في
+# 3.11 — فكانت الوثيقةُ تُولَّد بعددِ مفسّرِ مَن ولَّدها، وتسقط مقابلتُها
+# عند كلِّ مَن ولَّدها بغيره. فالعددُ ههنا **مقيسٌ على مفسّرِ البوّابة**
+# المُعلَنِ في `ci.yml`، ويُحرَس أنّه يساوي الحيَّ حين يكون المفسّرُ هو هو.
+STDLIB_ON_GATE: Final[int] = 303
+
+
+def gate_python() -> str:
+    """إصدارُ مفسّرِ البوّابة — يُقرَأ من `ci.yml` لا يُكتَب ههنا مرّةً ثانية."""
+
+    text = WORKFLOW.read_text(encoding="utf-8")
+    hit = re.search(r'^\s*python-version:\s*"(\d+\.\d+)"', text, re.MULTILINE)
+    if hit is None:
+        raise SystemExit(f"لا إصدارَ مفسّرٍ في {WORKFLOW.name}")
+    return hit.group(1)
+
+
+def running_python() -> str:
+    """إصدارُ المفسّرِ الذي يعمل الآن، بالصيغةِ نفسِها التي في `ci.yml`."""
+
+    return f"{sys.version_info[0]}.{sys.version_info[1]}"
+
 
 # الطبقاتُ بمسارِها لا باسمِها: المسارُ في الشجرة، والاسمُ للعرض.
 LAYERS: Final[tuple[tuple[str, str], ...]] = (
@@ -179,7 +205,8 @@ def render() -> str:
     permitted = allowlist()
     algebra_uses = frozenset(name for name, rows in use.items() if "الجبر" in rows)
     unexercised = tuple(sorted(permitted - algebra_uses))
-    total = len(sys.stdlib_module_names)
+    total = STDLIB_ON_GATE
+    gate = gate_python()
 
     lines: list[str] = ["# وحداتُ المعياريّة", ""]
     lines += [
@@ -188,7 +215,8 @@ def render() -> str:
         "",
         "## القياسُ أوّلًا",
         "",
-        f"- وحداتُ المعياريّةِ في هذا المفسّر: **{eastern(total)}**",
+        f"- وحداتُ المعياريّةِ في مفسّرِ البوّابة (Python {eastern(gate)}):"
+        f" **{eastern(total)}** — مُودَعٌ، لا مقروءٌ من مفسّرِ مَن ولَّد",
         f"- ما تستورده الشجرةُ منها: **{eastern(len(use))}**"
         f" — أي {eastern(round(100 * len(use) / total))}٪",
         f"- ملفّاتُ `.py` الممسوحة: **{grouped(files)}**",

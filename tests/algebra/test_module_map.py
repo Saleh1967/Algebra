@@ -20,6 +20,8 @@ from pathlib import Path
 from types import ModuleType
 from typing import Final
 
+import pytest
+
 REPOSITORY: Final[Path] = Path(__file__).resolve().parents[2]
 GENERATOR: Final[Path] = REPOSITORY / "tools" / "write_module_map.py"
 PAPER: Final[Path] = REPOSITORY / "docs" / "وحدات-المعياريّة.md"
@@ -108,3 +110,42 @@ def test_the_permission_is_wider_than_the_use_and_the_gap_is_named() -> None:
     assert unexercised, "لو خلا الفرقُ لوجب حذفُ هذا القسمِ من الوثيقة"
     for name in unexercised:
         assert f"`{name}`" in PAPER.read_text(encoding="utf-8")
+
+
+def test_the_deposited_stdlib_count_equals_the_live_count_on_the_gate() -> None:
+    """العددُ المُودَعُ يساوي الحيَّ **على مفسّرِ البوّابة** — وإلّا سُمّي.
+
+    العطلُ ٣٨: كان العددُ يُقرَأ من مفسّرِ مَن ولَّد، فتسقط المقابلةُ على
+    كلِّ مفسّرٍ غيرِه. فصار مُودَعًا، وهذا الفحصُ يقيسه حيث يُقاس فقط،
+    **ويُسمّي سببَ التخطّي** حيث لا يُقاس.
+    """
+
+    gate = MAP.gate_python()
+    here = MAP.running_python()
+    if here != gate:
+        pytest.skip(
+            f"المفسّرُ {here} لا {gate} — والعددُ المُودَعُ يُقاس على مفسّرِ "
+            "البوّابة وحدَه؛ والحالُ مُصنَّفةٌ لا مُصفَّرة"
+        )
+    assert len(sys.stdlib_module_names) == MAP.STDLIB_ON_GATE
+
+
+def test_the_rendered_count_does_not_follow_the_running_interpreter(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """الصورةُ المكذِّبة: المولَّدُ لا يتغيّر بتغيّرِ `sys.stdlib_module_names`.
+
+    فلو قرأ المولّدُ العددَ من المفسّرِ الحيِّ لاختلف المولَّدُ ههنا عن
+    المولَّد على البوّابة — **وذلك عينُ العطل ٣٨**. وتُزاد الأسماءُ ولا
+    تُبدَّل، فالمسحُ يُصنِّف بها الاستيرادَ ولا يُمَسّ.
+    """
+
+    deposited = MAP.render()
+    assert f"**{MAP.eastern(MAP.STDLIB_ON_GATE)}**" in deposited
+    assert MAP.gate_python() in deposited.translate(
+        str.maketrans("٠١٢٣٤٥٦٧٨٩", "0123456789")
+    )
+    wider = frozenset(sys.stdlib_module_names) | {"zz_not_a_module", "zz_nor_this"}
+    monkeypatch.setattr(sys, "stdlib_module_names", wider)
+    assert len(sys.stdlib_module_names) != MAP.STDLIB_ON_GATE
+    assert MAP.render() == deposited

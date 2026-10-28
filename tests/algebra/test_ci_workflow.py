@@ -138,7 +138,8 @@ def test_no_step_is_added_without_being_counted() -> None:
     """وعددُ الخطوات مُثبَت — فلا خطوةٌ تُدَسّ ولا تُحذَف صامتة."""
 
     text = _workflow()
-    assert len(runs(text)) == 2
+    # ثلاثٌ: التثبيتُ، واستقبالُ المتن، والبوّابة — والثانيةُ زيدت مُسمّاةً.
+    assert len(runs(text)) == 3
     assert len(re.findall(r"^\s*-\s*uses:\s*(\S+)", text, re.MULTILINE)) == 2
     assert "actions/checkout@v4" in text
     assert "actions/setup-python@v5" in text
@@ -206,3 +207,32 @@ def test_the_guard_says_what_it_does_not_do() -> None:
     assert "**فلا يحرس صحّةَ YAML نحويًّا**" in here
     assert "`ONE_GATE_IN_ONE_FILE_LEAVES_NO_ROOM_FOR_DIVERGENCE`" in here
     assert "**والشقُّ الأوّلُ من السبب كان خاطئًا**" in here
+
+
+def test_the_runner_receives_the_corpus_before_the_gate() -> None:
+    """المتنُ يُستقبَل على Runner **قبل** البوّابة — فلا يُتخطّى ما يقرؤه.
+
+    اثنان وثلاثون فحصًا في `tests/arabic` مشروطةٌ بحضورِ جدولِ الجذور،
+    وكانت تُتخطّى على Runner بسببٍ مكتوبٍ. والاستقبالُ بالأداةِ المُعلَنة
+    لا بنسخٍ: فهي تردُّ ما خالف الطولَ والبصمة، **فلا يُقاس على غيرِ
+    المُعلَن**. ويُقاس ههنا الترتيبُ: الاستقبالُ سطرٌ واحدٌ يسبق البوّابة،
+    ويُشغَّل خارجَ الشجرة.
+    """
+
+    lines = runs(_workflow())
+    intake = [one for one in lines if "tools/intake_corpus.py" in one]
+    assert len(intake) == 1, lines
+    assert "--source-root" in intake[0]
+    assert "$RUNNER_TEMP" in intake[0], "الاستنساخُ خارجَ الشجرة لا فيها"
+    assert lines.index(intake[0]) < lines.index(
+        next(one for one in lines if "verify.sh" in one)
+    )
+    # وما يستقبله هو عينُ ما يشترطه الحارسُ في `tests/arabic/conftest.py`
+    conftest = (REPOSITORY / "tests" / "arabic" / "conftest.py").read_text(
+        encoding="utf-8"
+    )
+    assert "maqayis_by_root_csv_999.csv" in conftest
+    intake_tool = (REPOSITORY / "tools" / "intake_corpus.py").read_text(
+        encoding="utf-8"
+    )
+    assert 'destination_relative="maqayis_by_root_csv_999.csv"' in intake_tool
